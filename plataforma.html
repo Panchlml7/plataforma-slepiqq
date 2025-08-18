@@ -146,27 +146,27 @@
       <section id="asistencia" class="card-sec">
         <h3>ASISTENCIA</h3>
         <p>Panel para controlar y visualizar métricas de asistencia. Puedes integrar datos en tiempo real más adelante.</p>
-        <a href="..\plataform-slepiqq-main\other_pag\asistencia.html" class="mini-link card-txt">Ver detalle →</a>
+  <a href="other_pag/asistencia.html" class="mini-link card-txt">Ver detalle →</a>
       </section>
       <section id="establecimiento" class="card-sec">
         <h3>ESTABLECIMIENTO</h3>
         <p>Información general de establecimientos, perfiles, infraestructura y contactos principales.</p>
-        <a href="..\plataform-slepiqq-main\other_pag\establecimiento.html" class="mini-link card-txt">Administrar →</a>
+  <a href="other_pag/establecimiento.html" class="mini-link card-txt">Administrar →</a>
       </section>
       <section id="documentos" class="card-sec">
         <h3>DOCUMENTOS</h3>
         <p>Repositorio para subir, versionar y compartir documentos internos y oficiales.</p>
-        <a href="..\plataform-slepiqq-main\other_pag\documentos.html" class="mini-link card-txt">Abrir repositorio →</a>
+  <a href="other_pag/documentos.html" class="mini-link card-txt">Abrir repositorio →</a>
       </section>
       <section id="habilitacion" class="card-sec">
         <h3>HABILITACION</h3>
         <p>Gestión de procesos de habilitación, estados de revisión y seguimiento de cumplimiento.</p>
-        <button href="#" class="mini-link card-txt">Procesos →</button>
+  <a href="#habilitacion" class="mini-link card-txt">Procesos →</a>
       </section>
       <section id="convivencia" class="card-sec">
         <h3>CONVIVENCIA ESCOLAR</h3>
         <p>Monitoreo de casos, iniciativas de convivencia y reportes de clima escolar.</p>
-        <button href="#" class="mini-link card-txt">Panel convivencia →</button>
+  <a href="#convivencia" class="mini-link card-txt">Panel convivencia →</a>
       </section>
     </div>
   </main>
@@ -269,9 +269,9 @@
     document.querySelector('nav.top-nav a[href="#habilitacion"]')?.addEventListener('click', (e)=>{ e.preventDefault(); openSoon(); });
     document.querySelector('nav.top-nav a[href="#convivencia"]')?.addEventListener('click', (e)=>{ e.preventDefault(); openSoon(); });
 
-    // Enlaces en tarjetas
-    document.querySelector('#habilitacion .mini-link')?.addEventListener('click', (e)=>{ e.preventDefault(); openSoon(); });
-    document.querySelector('#convivencia .mini-link')?.addEventListener('click', (e)=>{ e.preventDefault(); openSoon(); });
+  // Enlaces en tarjetas (mismo comportamiento que el menú)
+  document.querySelector('#habilitacion a.mini-link')?.addEventListener('click', (e)=>{ e.preventDefault(); openSoon(); });
+  document.querySelector('#convivencia a.mini-link')?.addEventListener('click', (e)=>{ e.preventDefault(); openSoon(); });
   </script>
 </body>
 </html>
