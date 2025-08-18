@@ -130,6 +130,7 @@
     <a href="other_pag/asistencia.html">Asistencia</a>
     <a href="other_pag/establecimiento.html">Establecimiento</a>
     <a href="other_pag/documentos.html">Acompañamiento Visita</a>
+  <a id="adminLink" href="other_pag/admin.html" style="display:none;">Admin usuarios</a>
     <a href="#habilitacion">Habilitación</a>
     <a href="#convivencia">Convivencia</a>
     <div class="user-badge">
@@ -212,14 +213,21 @@
       location.replace('index.html');
     }, 1200);
 
-    async function loadProfile(uid, fallbackEmail) {
+  async function loadProfile(uid, fallbackEmail) {
       try {
         const snap = await getDoc(doc(db, 'users', uid));
-        const name = snap.exists() && snap.data().name ? snap.data().name : fallbackEmail || uid;
+    const data = snap.exists() ? snap.data() : {};
+    const name = data.name ? data.name : (fallbackEmail || uid);
         navUserName.textContent = name;
+    // Mostrar enlace de Admin si rol === 'admin'
+    const role = (data.role || '').toString().trim().toLowerCase();
+    const adminLink = document.getElementById('adminLink');
+    if (adminLink) adminLink.style.display = role === 'admin' ? '' : 'none';
       } catch (e) {
         console.warn('No se pudo leer perfil:', e);
         navUserName.textContent = fallbackEmail || uid;
+    const adminLink = document.getElementById('adminLink');
+    if (adminLink) adminLink.style.display = 'none';
       }
     }
 
