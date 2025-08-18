@@ -1,0 +1,1872 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8">
+  <title>Acompañamiento Visita - SLEP IQUIQUE</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <link rel="stylesheet" href="style.css">
+  <style>
+    .grid {
+      display: grid;
+      gap: .8rem;
+    }
+
+    @media(min-width:900px) {
+      .grid.cols-2 {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+
+    .full {
+      grid-column: 1 / -1;
+    }
+
+    label.small {
+      display: block;
+      font-size: .75rem;
+      opacity: .8;
+      margin-bottom: .25rem;
+    }
+
+    input,
+    select,
+    textarea {
+      width: 100%;
+      background: #0f1b2d;
+      border: 1px solid #2e435f;
+      color: #fff;
+      border-radius: 10px;
+      padding: .7rem .8rem;
+      font-size: .9rem;
+    }
+
+    textarea {
+      min-height: 110px;
+    }
+
+    .actions {
+      display: flex;
+      gap: .6rem;
+      margin-top: 1rem;
+    }
+
+    /* NUEVO: esquema claro para el formulario Datos Básico */
+    #datosBasicosForm.section-card {
+      background: #ffffff;
+      color: #0f172a;
+      border: 1px solid #e5e7eb;
+      /* slate-200 */
+      box-shadow: var(--shadow);
+    }
+
+    #datosBasicosForm h2 {
+      color: #0f172a;
+    }
+
+    #datosBasicosForm label.small {
+      color: #334155;
+    }
+
+    /* slate-700 */
+
+    #datosBasicosForm input,
+    #datosBasicosForm select,
+    #datosBasicosForm textarea {
+      background: #ffffff;
+      color: #0f172a;
+      border: 1px solid #cbd5e1;
+      /* slate-300 */
+    }
+
+    #datosBasicosForm input::placeholder,
+    #datosBasicosForm textarea::placeholder {
+      color: #64748b;
+      /* slate-500 */
+      opacity: .95;
+    }
+
+    #datosBasicosForm input:focus,
+    #datosBasicosForm select:focus,
+    #datosBasicosForm textarea:focus {
+      outline: none;
+      border-color: #6366f1;
+      /* accent */
+      box-shadow: 0 0 0 2px rgba(99, 102, 241, .2);
+    }
+
+    /* NUEVO: Tabs estilo ejemplo */
+    .tabs {
+      display: flex;
+      gap: .8rem;
+      align-items: center;
+      background: #f8fafc;
+      /* tono claro */
+      border: 1px solid #e5e7eb;
+      border-radius: 12px;
+      padding: .4rem;
+      margin: 0 0 .9rem;
+    }
+
+    .tab {
+      display: flex;
+      align-items: center;
+      gap: .4rem;
+      padding: .55rem .9rem;
+      border-radius: 10px;
+      font-size: .85rem;
+      text-decoration: none;
+      color: #334155;
+      border: 1px solid transparent;
+      transition: all .2s ease;
+    }
+
+    .tab:hover {
+      background: #eef2ff;
+      border-color: #c7d2fe;
+      color: #1e293b;
+    }
+
+    .tab.active {
+      background: #ffffff;
+      border-color: #c7d2fe;
+      color: #1e293b;
+      box-shadow: 0 2px 0 0 #6366f1 inset;
+    }
+
+    .tab .ico {
+      font-size: .95rem;
+      opacity: .85;
+    }
+
+    /* Wizard mínimo */
+    .hidden {
+      display: none !important;
+    }
+
+    .wizard-actions {
+      display: flex;
+      gap: .6rem;
+      margin-top: 1rem;
+    }
+
+    .wizard-legend {
+      font-size: .8rem;
+      opacity: .8;
+      margin: .1rem 0 .6rem;
+    }
+
+    /* Layout de pestañas principales y secciones */
+    .main-tabs-navigation {
+      display: flex;
+      gap: .8rem;
+      margin: 1rem 0;
+    }
+
+    .main-tab {
+      flex: 1;
+      padding: .8rem 1rem;
+      border-radius: 10px;
+      text-align: center;
+      font-weight: 600;
+      background: #eef2ff;
+      color: #334155;
+      border: 1px solid #c7d2fe;
+      cursor: pointer;
+    }
+
+    .main-tab.active {
+      background: #6366f1;
+      color: #fff;
+      border-color: #6366f1;
+    }
+
+    .main-content-section {
+      display: none;
+    }
+
+    .main-content-section.active {
+      display: block;
+    }
+
+    /* Tarjetas de estadísticas */
+    .stats-section {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(140px, 1fr));
+      gap: 1rem;
+      margin: 1rem 0;
+    }
+
+    .stat-card {
+      background: #111827;
+      color: #e5e7eb;
+      border: 1px solid #27324a;
+      border-radius: 12px;
+      padding: 1rem;
+      text-align: center;
+      box-shadow: 0 8px 18px -10px rgba(0, 0, 0, .45);
+    }
+
+    .stat-card .num {
+      font-size: 1.6rem;
+      font-weight: 700;
+    }
+
+    .stat-card .lbl {
+      font-size: .8rem;
+      opacity: .8;
+    }
+
+    /* Buscador y lista */
+    .search-card {
+      background: #ffffff;
+      border: 1px solid #e5e7eb;
+      border-radius: 14px;
+      padding: 1rem;
+      margin: 1rem 0;
+    }
+
+    .search-row {
+      display: flex;
+      gap: .6rem;
+      align-items: center;
+    }
+
+    .search-row input[type="text"] {
+      flex: 1;
+      padding: .7rem .9rem;
+      border: 1px solid #cbd5e1;
+      border-radius: 10px;
+    }
+
+    .chips {
+      display: flex;
+      gap: .5rem;
+      flex-wrap: wrap;
+      margin-top: .7rem;
+    }
+
+    .chip {
+      display: inline-flex;
+      align-items: center;
+      gap: .35rem;
+      padding: .4rem .6rem;
+      border-radius: 1000px;
+      font-size: .75rem;
+      border: 1px solid #d4d4f7;
+      background: #f6f7ff;
+      color: #334155;
+      cursor: pointer;
+    }
+
+    .chip.active {
+      background: #fff1f2;
+      border-color: #fecaca;
+      color: #991b1b;
+    }
+
+    .results {
+      /* antes: column; ahora filas con wrap */
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem;
+      align-items: stretch;
+    }
+
+    .doc-card {
+      /* base: 1 por fila en móvil */
+      width: 100%;
+    }
+
+    @media (min-width: 768px) {
+      .doc-card {
+        /* pedido: 45% en pantallas medianas (2 por fila con gap) */
+        width: 45%;
+      }
+    }
+
+    @media (min-width: 1200px) {
+      .doc-card {
+        /* 3 por fila (ajuste por gap) */
+        width: 31.5%;
+      }
+    }
+
+    /* Campo de búsqueda más legible (tema claro) */
+    .search-row input[type="text"] {
+      background: #ffffff;
+      /* antes heredaba fondo oscuro */
+      color: #0f172a;
+      border: 1px solid #cbd5e1;
+    }
+
+    .search-row input[type="text"]::placeholder {
+      color: #64748b;
+      opacity: .95;
+    }
+
+    /* UI polish: layout y tipografía más legibles en esta página */
+    main {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 0 1rem 2rem;
+    }
+
+    h1 {
+      color: #0f172a;
+      margin: .25rem 0 .75rem;
+      font-weight: 700;
+    }
+
+    .section-card {
+      /* Mejora: tarjeta más legible y consistente */
+      background: #ffffff;
+      color: #0f172a;
+      border: 1px solid #e5e7eb;
+      box-shadow: 0 8px 18px -12px rgba(15, 23, 42, .15);
+      margin: 1rem 0;
+    }
+
+    .section-card h2 {
+      /* Mejora: espaciado interno de títulos */
+      margin: .2rem 0 .8rem;
+    }
+
+    @media (max-width: 640px) {
+      .section-card {
+        /* Mejora: padding más contenido en móvil */
+        padding: .9rem 1rem;
+      }
+    }
+
+    /* Labels e inputs más “normales” (menos pequeños y con mayor contraste) */
+    label.small {
+      font-size: .85rem;
+      opacity: 1;
+      color: #334155;
+    }
+
+    input,
+    select,
+    textarea {
+      min-height: 42px;
+      border-radius: 12px;
+    }
+
+    textarea {
+      line-height: 1.35;
+    }
+
+    /* Botones coherentes y accesibles */
+    .btn,
+    .btn-sm {
+      appearance: none;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: .45rem;
+      font-weight: 700;
+      letter-spacing: .2px;
+      border: 1px solid transparent;
+      border-radius: 12px;
+      cursor: pointer;
+      transition: transform .06s ease, box-shadow .2s ease, filter .15s ease, background .2s ease;
+    }
+
+    .btn {
+      padding: .65rem 1rem;
+      font-size: .95rem;
+    }
+
+    .btn-sm {
+      padding: .5rem .8rem;
+      font-size: .85rem;
+    }
+
+    .btn:focus,
+    .btn-sm:focus {
+      outline: none;
+    }
+
+    .btn:focus-visible,
+    .btn-sm:focus-visible {
+      box-shadow: 0 0 0 3px rgba(99, 102, 241, .25);
+    }
+
+    .btn:hover,
+    .btn-sm:hover {
+      transform: translateY(-1px);
+    }
+
+    .btn:active,
+    .btn-sm:active {
+      transform: translateY(0);
+    }
+
+    .btn[disabled],
+    .btn-sm[disabled] {
+      opacity: .55;
+      cursor: not-allowed;
+      box-shadow: none;
+    }
+
+    /* Variantes de acción en tarjetas */
+    .btn-view {
+      background: linear-gradient(180deg, #4f46e5, #4338ca);
+      color: #fff;
+      box-shadow: 0 8px 18px -12px rgba(79, 70, 229, .6);
+    }
+
+    .btn-view:hover {
+      filter: brightness(.98);
+    }
+
+    .btn-edit {
+      background: linear-gradient(180deg, #f59e0b, #d97706);
+      color: #1f2937;
+      box-shadow: 0 8px 18px -12px rgba(245, 158, 11, .45);
+    }
+
+    .btn-edit:hover {
+      filter: brightness(.98);
+    }
+
+    .btn-del {
+      background: linear-gradient(180deg, #ef4444, #dc2626);
+      color: #fff;
+      box-shadow: 0 8px 18px -12px rgba(239, 68, 68, .5);
+    }
+
+    .btn-del:hover {
+      filter: brightness(.98);
+    }
+
+    .btn-pdf {
+      background: linear-gradient(180deg, #dc2626, #b91c1c);
+      color: #fff;
+      box-shadow: 0 8px 18px -12px rgba(220, 38, 38, .5);
+    }
+
+    .btn-pdf:hover {
+      filter: brightness(.98);
+    }
+
+    /* Botones de navegación (tabs) ya definidos; mejor hover suave */
+    .main-tab:hover {
+      filter: brightness(.98);
+    }
+
+    /* Chips con interacción consistente */
+    .chip {
+      font-weight: 600;
+      border-radius: 999px;
+      transition: transform .06s ease, background .2s ease, box-shadow .2s ease;
+    }
+
+    .chip:hover {
+      transform: translateY(-1px);
+    }
+
+    .chip:active {
+      transform: translateY(0);
+    }
+
+    
+
+    /* Clase reutilizable: 2 columnas 50% (misma configuración)
+    .doc-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1rem;
+      align-items: stretch;
+      justify-content: center;
+    } */
+
+    /* doc-card: 50% (una celda), fondo blanco y radius 2% */
+    .results .doc-card {
+      width: 100% !important;
+      /* anula 45%/31.5% anteriores */
+      background: #ffffff;
+      border-radius: 1%;
+    }
+
+    /* Texto negro en tarjetas (sobrescribe colores previos) */
+    .results .doc-card {
+      color: #513737;
+      /* antes: #000 */
+    }
+
+    .results .doc-card h3 {
+      color: #374151 !important;
+      /* antes: #000 */
+    }
+
+    .results .doc-card .doc-meta {
+      color: #374151 !important;
+      /* antes: #000 */
+    }
+
+    .results .doc-card .obj-preview,
+    .results .doc-card .obj-preview strong {
+      color: #374151 !important;
+      /* antes: #000 */
+    }
+
+    .results .doc-card .doc-header span {
+      color: #374151 !important;
+      opacity: 1 !important;
+    }
+
+    /* Centrar acciones de cada tarjeta */
+    .results .doc-card .card-actions {
+      display: flex;
+      justify-content: center;
+      gap: .5rem;
+      margin-top: .7rem;
+      /* conserva separación amable */
+    }
+
+    /* Altura fija para las tarjetas */
+    .results .doc-card {
+      height: 250px;
+    }
+
+    /* Centrar encabezado de la tarjeta */
+    .results .doc-card .doc-header {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: .6rem;
+      text-align: center;
+    }
+
+    /* Modal detalle documento */
+    #viewModal {
+      position: fixed;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(0, 0, 0, .5);
+      z-index: 1000;
+    }
+
+    #viewModal .modal-card {
+      width: min(92vw, 860px);
+      max-height: 85vh;
+      overflow: auto;
+      background: #fff;
+      color: #0f172a;
+      border: 1px solid #e5e7eb;
+      border-radius: 14px;
+      box-shadow: 0 20px 40px -20px rgba(15, 23, 42, .45);
+    }
+
+    .modal-header,
+    .modal-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: .6rem;
+      padding: .9rem 1rem;
+      border-bottom: 1px solid #e5e7eb;
+    }
+
+    .modal-footer {
+      border-top: 1px solid #e5e7eb;
+      border-bottom: 0;
+    }
+
+    .modal-content {
+      padding: 1rem;
+    }
+
+    .modal-content .grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: .8rem;
+    }
+
+    .modal-content p {
+      margin: .25rem 0;
+    }
+
+    .divider {
+      height: 1px;
+      background: #e5e7eb;
+      margin: .75rem 0;
+    }
+
+    body.modal-open {
+      overflow: hidden;
+    }
+
+    /* Bordes en tablas (gris plomo) */
+    table,
+    tr,
+    th,
+    td {
+      border: 1px solid #6b7280;
+      /* antes: #000 */
+    }
+
+    table {
+      border-collapse: collapse;
+      /* NUEVO: más ancho por defecto */
+      width: 100%;
+      min-width: 1200px;
+    }
+
+    /* NUEVO: centrar texto en tablas */
+    th,
+    td {
+      text-align: center;
+      vertical-align: middle;
+    }
+
+    /* Impresión: mostrar solo el contenedor de impresión */
+    @media print {
+      body > *:not(.print-area) {
+        display: none !important;
+      }
+
+      .print-area {
+        display: block !important;
+      }
+
+      /* Actualizado: borde + radios en cada página impresa */
+      .print-page {
+        page-break-after: always;
+        border: 2px solid #6b7280;
+        /* antes: #111827 */
+        border-radius: 1%;
+        padding: 14mm;
+  /* Mejor ajuste para textos largos en PDF */
+  overflow-wrap: anywhere;
+  word-break: break-word;
+  hyphens: auto;
+  -webkit-hyphens: auto;
+        box-sizing: border-box;
+        overflow: hidden;
+        /* NUEVO: permitir pegar la franja de firmas al fondo */
+        display: flex;
+        flex-direction: column;
+      }
+
+      /* Cambiar a 3 columnas para incluir Director/a */
+      .print-sign-row {
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr;
+        gap: 10mm;
+        margin-top: auto;
+        padding-top: 10mm;
+      }
+
+      /* NUEVO: “cuadro” para cada firma y línea al fondo */
+      .print-sign-box {
+        text-align: center;
+        border: 1px solid #6b7280;
+        /* antes: #111827 */
+        border-radius: 2mm;
+        padding: 4mm;
+  min-height: 40mm;
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-end;
+        /* línea al fondo del cuadro */
+      }
+
+      .print-sign-line {
+        height: 0;
+        border-top: 1px solid #6b7280;
+        /* antes: #111827 */
+        margin: 0 0 4mm;
+      }
+
+      .print-sign-label {
+        font-size: .9rem;
+        color: #000; /* antes: #ffffff - mejora legibilidad en fondo blanco */
+      }
+
+      /* Nombres en firmas: negrita y un poco más grandes */
+      .print-sign-label .sign-name {
+        font-weight: 700;
+        font-size: 1rem;
+      }
+
+      /* NUEVO: cabecera de impresión con logo + metadatos */
+      .print-header {
+        display: grid;
+        grid-template-columns: 50mm 1fr;
+        gap: 6mm;
+        align-items: center;
+        margin-bottom: 8mm;
+  /* Evitar cortes en cabecera */
+  break-inside: avoid;
+  page-break-inside: avoid;
+      }
+
+      .print-logo-cell,
+      .print-meta-cell {
+        display: flex;
+        align-items: center;
+      }
+
+      .print-logo-cell {
+        justify-content: center;
+      }
+
+      .print-logo {
+        max-width: 34mm;
+        max-height: 22mm;
+        width: 100%;
+        height: auto;
+        object-fit: contain;
+      }
+
+      .print-meta {
+        color: #000;
+        font-size: .9rem;
+  /* Ajuste de líneas en metadatos */
+  overflow-wrap: anywhere;
+  word-break: break-word;
+  hyphens: auto;
+  -webkit-hyphens: auto;
+      }
+
+      /* Tabla de metadatos de detalles (solo impresión) */
+      .print-meta-table {
+        width: 50%;
+        min-width: 0;
+        border-collapse: collapse;
+        table-layout: auto;
+        font-size: .9rem;
+        color: #111827;
+  /* Evitar cortes de tabla en páginas */
+  break-inside: avoid;
+  page-break-inside: avoid;
+      }
+      .print-meta-table, .print-meta-table tr, .print-meta-table th, .print-meta-table td {
+        border: 0 !important;
+      }
+      .print-meta-table th {
+  text-align: center;
+        padding: 2mm 2mm;
+  /* Permitir salto natural si el texto es largo */
+  white-space: normal;
+  overflow-wrap: anywhere;
+  word-break: break-word;
+  hyphens: auto;
+  -webkit-hyphens: auto;
+        color: #000;
+        font-weight: 500;
+      }
+      .print-meta-table td {
+        padding: 2mm 2mm;
+  white-space: normal;
+  overflow-wrap: anywhere;
+  word-break: break-word;
+  hyphens: auto;
+  -webkit-hyphens: auto;
+  vertical-align: top;
+      }
+      .print-meta-table tr + tr td,
+      .print-meta-table tr + tr th {
+        border-top: 1px solid #cbd5e1 !important;
+      }
+
+      /* Evitar cortes dentro de la franja/box de firmas */
+      .print-sign-row,
+      .print-sign-box {
+        break-inside: avoid;
+        page-break-inside: avoid;
+      }
+
+      /* Separadores del cuerpo del documento (mejor legibilidad) */
+      .print-section {
+        margin-bottom: 6mm;
+      }
+      /* Ajuste de líneas para contenido de secciones */
+      .print-section div {
+        overflow-wrap: anywhere;
+        word-break: break-word;
+        hyphens: auto;
+        -webkit-hyphens: auto;
+        line-height: 1.35;
+      }
+    }
+
+    .print-area {
+      display: none;
+    }
+  </style>
+</head>
+
+<body>
+  <nav class="top-nav">
+    <span class="brand">SLEP IQQ</span>
+    <a class="nav-link" href="asistencia.html">Asistencia</a>
+    <a class="nav-link" href="establecimiento.html">Establecimiento</a>
+    <a class="nav-link" href="planilla.html">Planilla de Acompañamiento Visita</a>
+    <a class="nav-link" href="../plataforma.html">INICIO</a>
+    <span class="user-badge"><span id="userName">...</span><button id="logoutBtn" class="btn"
+        type="button">Salir</button></span>
+  </nav>
+
+  <main>
+    <!-- Pestañas principales -->
+    <div class="main-tabs-navigation">
+      <button id="tabNuevo" class="main-tab active">Nuevo Documento</button>
+      <button id="tabGuardados" class="main-tab">Documentos Guardados</button>
+    </div>
+
+    <!-- Estadísticas -->
+    <div class="stats-section">
+      <div class="stat-card"><div class="num" id="statTotal">0</div><div class="lbl">Documentos Totales</div></div>
+      <div class="stat-card"><div class="num" id="statEst">0</div><div class="lbl">Establecimientos</div></div>
+      <div class="stat-card"><div class="num" id="statMes">0</div><div class="lbl">Este Mes</div></div>
+      <div class="stat-card"><div class="num" id="statAses">0</div><div class="lbl">Asesores</div></div>
+    </div>
+
+    <!-- Sección: Nuevo Documento (wizard existente) -->
+    <div id="nuevo-documento" class="main-content-section active">
+      <!-- ABRIR FORM: envuelve ambos pasos y acciones -->
+      <form id="datosBasicosForm" class="section-card">
+        <!-- Paso 1: Datos Básicos -->
+        <div class="wizard-step" data-step="1">
+          <div class="wizard-legend" style="text-align: end;">Paso 1 de 2: Datos Básicos</div>
+          <!-- Información General -->
+          <h1 style="text-align: center;">Acta de Acompañamiento Técnico UATP</h1>
+          <div class="grid cols-2">
+            <div>
+              <label class="small" for="actaNumber">N° Acta (automática)</label>
+              <input id="actaNumber" name="actaNumber" type="text" readonly style="text-align: center;">
+            </div>
+            <div>
+              <label class="small" for="fecha">Fecha</label>
+              <input id="fecha" name="fecha" type="date" required style="text-align: center;">
+            </div>
+          </div>
+
+          <!-- Establecimiento y Ubicación -->
+          <h2 style="margin-top:1rem;">DATOS INSTITUCIÓN VISITADA</h2>
+          <div class="grid cols-2">
+            <div>
+              <label class="small" for="establecimiento">Establecimiento</label>
+              <select id="establecimiento" name="establecimiento" required>
+                <option value="" disabled selected>Selecciona establecimiento</option>
+                <!-- Se cargará dinámicamente desde Firestore; fallback estático en script -->
+              </select>
+              
+            <div class="full">
+              <label class="small" for="objetivoEstrategico">Objetivo Estratégico</label>
+              <textarea id="objetivoEstrategico" name="objetivoEstrategico" required
+                placeholder="Describe el objetivo estratégico..."></textarea>
+            </div>
+            </div>
+            <div>
+              <label class="small" for="rbd">RBD</label>
+              <input id="rbd" name="rbd" type="text" placeholder="Ej: 12345-6" required>
+            </div>
+            <div>
+              <label class="small" for="director">Director/a de Establecimiento</label>
+              <input id="director" name="director" type="text" placeholder="Nombre del/la director/a">
+            </div>
+          </div>
+
+          <!-- Equipo de Asesores -->
+          <h2 style="margin-top:1rem;">Equipo de Asesores</h2>
+          <div class="grid cols-2">
+            <div>
+              <label class="small" for="asesorPrincipal">Asesor principal</label>
+              <input id="asesorPrincipal" name="asesorPrincipal" type="text" required>
+            </div>
+            <div>
+              <label class="small" for="asesorSegundo">Asesor segundo</label>
+              <input id="asesorSegundo" name="asesorSegundo" type="text">
+            </div>
+          </div>
+
+          <!-- Horario y Modalidad -->
+          <h2 style="margin-top:1rem;">Horario y Modalidad</h2>
+          <div class="grid cols-2">
+            <div>
+              <label class="small" for="horaInicio">Hora inicio (opcional)</label>
+              <input id="horaInicio" name="horaInicio" type="time">
+            </div>
+            <div>
+              <label class="small" for="horaTermino">Hora término (opcional)</label>
+              <input id="horaTermino" name="horaTermino" type="time">
+            </div>
+            <div class="full">
+              <label class="small" for="modalidad">Modalidad</label>
+              <select id="modalidad" name="modalidad" required>
+                <option value="" disabled selected>Selecciona modalidad</option>
+                <option>Presencial</option>
+                <option>Remoto</option>
+                <option>Híbrida</option>
+              </select>
+              <small style="display:block;opacity:.75;margin-top:.35rem;">
+                Puedes dejar las horas vacías y agregarlas más adelante.
+              </small>
+            </div>
+          </div>
+
+          <!-- Capacidades y competencias -->
+          <h2 style="margin-top:1rem;">Capacidades y competencias</h2>
+          <div class="grid cols-2">
+            <div>
+              <label class="small" for="cicloApoyo">Ciclo de Apoyo Técnico Pedagógica</label>
+              <select id="cicloApoyo" name="cicloApoyo" required>
+                <option value="" disabled selected>Selecciona</option>
+                <option value="Involucramiento">Involucramiento</option>
+                <option value="Diagnóstico">Diagnóstico</option>
+                <option value="Planificación">Planificación</option>
+                <option value="Ejecución">Ejecución</option>
+                <option value="Evaluación">Evaluación</option>
+              </select>
+            </div>
+            <div>
+              <label class="small" for="capacidadBasal">Capacidad Basal Focalizada</label>
+              <select id="capacidadBasal" name="capacidadBasal" required>
+                <option value="" disabled selected>Selecciona</option>
+                <option value="Reflexión">Reflexión</option>
+                <option value="Colaboración">Colaboración</option>
+                <option value="Confianza Relacional">Confianza Relacional</option>
+                <option value="Liderazgo Distribuido">Liderazgo Distribuido</option>
+              </select>
+            </div>
+            <div>
+              <label class="small" for="nivelImplementacion">Nivel de Implementación Capacidad Basal</label>
+              <select id="nivelImplementacion" name="nivelImplementacion" required>
+                <option value="" disabled selected>Selecciona</option>
+                <option value="Exploración">Exploración</option>
+                <option value="Emergente">Emergente</option>
+                <option value="Satisfactoria">Satisfactoria</option>
+                <option value="Sustentabilidad">Sustentabilidad</option>
+              </select>
+            </div>
+            <div>
+              <label class="small" for="rolProfesional">Rol profesional Acompañamiento</label>
+              <select id="rolProfesional" name="rolProfesional" required>
+                <option value="" disabled selected>Selecciona</option>
+                <option value="Acompañante">Acompañante</option>
+                <option value="Orientador">Orientador(a)</option>
+                <option value="Facilitador">Facilitador(a)</option>
+                <option value="Articulador">Articulador(a)</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <!-- Paso 2: Desarrollo de visita -->
+        <div class="wizard-step hidden" data-step="2">
+          <div class="wizard-legend">Paso 2 de 2: Desarrollo de visita</div>
+
+          <h2>Objetivo de la visita</h2>
+          <div class="grid">
+            <div class="full">
+              <label class="small" for="objetivoVisita">Objetivo</label>
+              <textarea id="objetivoVisita" name="objetivoVisita" required placeholder="Describe el objetivo de la visita..."></textarea>
+            </div>
+          </div>
+
+          <div class="grid">
+            <div class="full">
+              <label class="small" for="antecedentes">Antecedentes</label>
+              <textarea id="antecedentes" name="antecedentes" placeholder="Antecedentes relevantes..."></textarea>
+            </div>
+          </div>
+
+          <div class="grid">
+            <div class="full">
+              <label class="small" for="instrumentos">Instrumentos / Insumos</label>
+              <textarea id="instrumentos" name="instrumentos" placeholder="Listar instrumentos o insumos utilizados..."></textarea>
+            </div>
+          </div>
+
+          <div class="grid">
+            <div class="full">
+              <label class="small" for="practicaProblematica">Práctica problemática</label>
+              <textarea id="practicaProblematica" name="practicaProblematica" placeholder="Describir la práctica problemática observada..."></textarea>
+            </div>
+          </div>
+
+          <h2 style="margin-top:1rem;">Actividades realizadas</h2>
+          <div class="grid">
+            <div class="full">
+              <label class="small" for="actividadesRealizadas">Actividades</label>
+              <textarea id="actividadesRealizadas" name="actividadesRealizadas" placeholder="Detalle de actividades realizadas..."></textarea>
+            </div>
+          </div>
+
+          <h2 style="margin-top:1rem;">Acuerdos</h2>
+          <div class="grid cols-2">
+            <div class="full">
+              <label class="small" for="acuerdos">Acuerdos/ Fecha de la implementación/ Responsables</label>
+              <textarea id="acuerdos" name="acuerdos" placeholder="Compromisos y acuerdos..."></textarea>
+            </div>            
+          </div>
+
+          <h2 style="margin-top:1rem;">Observaciones</h2>
+          <div class="grid cols-2">
+            <div class="full">
+              <label class="small" for="aspectosPositivos">Aspectos positivos observados</label>
+              <textarea id="aspectosPositivos" name="aspectosPositivos" placeholder="Aspectos positivos..."></textarea>
+            </div>
+            <div class="full">
+              <label class="small" for="areasMejora">Áreas de mejora identificadas</label>
+              <textarea id="areasMejora" name="areasMejora" placeholder="Áreas de mejora..."></textarea>
+            </div>
+          </div>
+        </div>
+
+        <!-- Acciones wizard -->
+        <div class="wizard-actions">
+          <button type="button" id="btnBack" class="btn" disabled>Atrás</button>
+          <!-- NUEVO: vista previa antes de guardar -->
+          <button type="button" id="btnPreview" class="btn">Vista Previa</button>
+          <button type="button" id="btnNext" class="btn">Siguiente</button>
+          <button type="submit" id="btnSubmit" class="btn hidden">Guardar</button>
+        </div>
+      </form>
+      <!-- CERRAR FORM -->
+    </div>
+
+    <!-- Sección: Documentos Guardados -->
+    <div id="documentos-guardados" class="main-content-section">
+      <div class="search-card">
+        <h3 style="margin:.1rem 0 .7rem; display:flex; align-items:center; gap:.5rem; color:#000;">
+          <span style="font-size:1.1rem;">🔎</span> Buscar Documentos
+        </h3>
+        <div class="search-row">
+          <input id="searchBox" type="text" placeholder="Buscar por N° ACTA, establecimiento, asesor, fecha, modalidad, capacidad">
+          <button id="btnSearch" class="btn-sm" style="background:#7c3aed;color:#fff;">Buscar</button>
+          <button id="btnClear" class="btn-sm" style="background:#374151;color:#fff;">Limpiar</button>
+        </div>
+        <small style="display:block;opacity:.75;margin-top:.5rem; color: #000;">Busca por cualquier campo. Consejo: para N° ACTA exacto, escribe el código completo (ej: ACT-20240809-123).</small>
+        <hr style="border:none;border-top:1px solid #e5e7eb; margin:.8rem 0;">
+        <div class="chips">
+          <button type="button" class="chip" data-filter="Presencial">📌 Presencial</button>
+          <button type="button" class="chip" data-filter="Remoto">💻 Virtual</button>
+          <button type="button" class="chip" data-filter="Híbrida">🔀 Híbrida</button>
+          <button type="button" class="chip" data-filter="Recientes">⚡ Recientes</button>
+          <button type="button" class="chip active" data-filter="Todos">📄 Todos</button>
+        </div>
+        <div class="search-row">
+          <button id="btnPrintAll" class="btn-sm" style="background:#dc2626;color:#fff;">PDF (todos)</button>
+        </div>
+      </div>
+
+  <div id="results" class="results doc-grid"></div>
+    </div>
+  </main>
+
+  <!-- Contenedor imprimible (se llena al exportar) -->
+  <div id="printAll" class="print-area">
+    <!-- Se inyectan páginas con class="print-page" -->
+  </div>
+
+  <footer>&copy; SLEP IQUIQUE</footer>
+
+  <!-- Modal: Ver Completo -->
+  <div id="viewModal" class="hidden" role="dialog" aria-modal="true" aria-labelledby="viewModalTitle">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3 id="viewModalTitle" style="margin:0;">Detalle del Documento</h3>
+        <button class="btn-sm btn-del" type="button" data-close-view title="Cerrar">✕</button>
+      </div>
+      <div class="modal-content" id="viewModalBody">
+        <!-- contenido inyectado dinámicamente -->
+      </div>
+      <div class="modal-footer">
+        <span style="font-size:.8rem;opacity:.75;">Presiona ESC para cerrar</span>
+        <button class="btn" type="button" data-close-view>Cerrar</button>
+      </div>
+    </div>
+  </div>
+
+  <script type="module">
+    import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js';
+    import { getAuth, onAuthStateChanged, signOut } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js';
+    import {
+      getFirestore, collection, addDoc, serverTimestamp, doc, getDoc, getDocs,
+      onSnapshot, query, where, updateDoc
+    } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js';
+
+  // Logo de impresión: archivo local (ruta relativa al HTML)
+  const PRINT_LOGO_URL = './Imagen/slepiqq.png';
+  // Precarga simple del logo para mejorar aparición en PDF
+  const _preloadLogo = (()=>{ const img = new Image(); img.src = PRINT_LOGO_URL; return img; })();
+
+    const firebaseConfig = { apiKey: "AIzaSyDzUGdJT-eyYjKtej63iThVLgvTHVzvxvA", authDomain: "ia-slep-iqq.firebaseapp.com", projectId: "ia-slep-iqq", storageBucket: "ia-slep-iqq.appspot.com", messagingSenderId: "528895424744", appId: "1:528895424744:web:7144f5e5db1bce5ffb315d" };
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+
+    const userNameEl = document.getElementById('userName');
+    const logoutBtn = document.getElementById('logoutBtn');
+
+    // Cargar nombre usuario
+    async function loadProfile(uid, email) {
+      try {
+        const snap = await getDoc(doc(db, 'users', uid));
+        userNameEl.textContent = snap.exists() && snap.data().name ? snap.data().name : (email || uid);
+      } catch { userNameEl.textContent = email || uid; }
+    }
+
+    // Generar N° Acta
+    function genActa() {
+      const d = new Date();
+      const pad = n => String(n).padStart(2, '0');
+      const code = `${d.getFullYear()}${pad(d.getMonth() + 1)}${pad(d.getDate())}${pad(d.getHours())}${pad(d.getMinutes())}${pad(d.getSeconds())}`;
+      const rnd = Math.floor(100 + Math.random() * 900);
+      return `ACT-${code}-${rnd}`;
+    }
+    document.getElementById('actaNumber').value = genActa();
+
+    // Cargar establecimientos (Firestore > establecimientos) con fallback
+  async function loadEstablecimientos() {
+      const sel = document.getElementById('establecimiento');
+      sel.innerHTML = '<option value="" disabled selected>Cargando...</option>';
+      const fallback = [
+        { name: 'SLEP IQUIQUE - Oficina Central', rbd: 'SLEP IQUIQUE'},
+        { name: 'Instituto Comercial Baldomero Wolnitzky', rbd: '97', directorName: 'Land-Yen Beatriz Davila Castillo' },
+        { name: 'Esc. Educ. Especial Flor Del Inca', rbd: '102', directorName: 'Ivonne Del Carmen Alonso Oyarzo' },
+        { name: 'Esc. Educ.Gral. Bas. Y Des. Art. Violeta Parra', rbd: '103', directorName: 'Juana Cecilia Rojas Fredes' },
+        { name: 'Centro De Capacitación Laboral', rbd: '105', directorName: 'Sandra Veronica Figueroa Meneses' },
+        { name: 'Liceo Libert. Gral. Bernardo O Higgins', rbd: '107', directorName: 'Sebastian Yuk-Kin Chang Brack' },
+        { name: 'Liceo Politec. José Gutiérrez De La Fuente', rbd: '108', directorName: 'Ingrid Soledad Cofré Castro' },
+        { name: 'Liceo Deportivo Técnico Profesional Elena Duvauchelle Cabezón', rbd: '109', directorName: 'Cristian Eduardo Bugueño Marambio' },
+        { name: 'Liceo Bicentenario Domingo Santa Marí­a', rbd: '110', directorName: 'María Verónica Ormazábal Vera' },
+        { name: 'Esc. Gabriela Mistral', rbd: '111', directorName: 'María Amparo Del Carmen Lobos Estay' },
+        { name: 'Esc. Eduardo Llanos', rbd: '112', directorName: 'Hugo Manuel Alegria Miranda' },
+        { name: 'Esc. Almirante Patricio Lynch', rbd: '113', directorName: 'Lilia Del Carmen Espinosa Tapia' },
+        { name: 'Esc. Placido Villarroel', rbd: '114', directorName: 'Anicia Malvina González Gutiérrez' },
+        { name: 'Colegio República De Croacia', rbd: '116', directorName: 'Jorge Eduardo Aracena Cerda' },
+        { name: 'Esc. Paula Jaraquemada Alquizar', rbd: '117', directorName: 'Marjorie Marcia Cortez Rojas' },
+        { name: 'Esc. Centenario De La República De Chile', rbd: '119', directorName: 'Marta Victoria Ruz Pérez' },
+        { name: 'Esc. Thilda Portillo Olivares', rbd: '122', directorName: 'Julia Elizabeth Dávila Olivares' },
+        { name: 'Colegio España', rbd: '123', directorName: 'Rosa Elizabeth Córdova Alache' },
+        { name: 'Liceo Luis Cruz Martínez', rbd: '124', directorName: 'Eduardo Manfredo González Estay' },
+        { name: 'Esc. Profesor Manuel Castro Ramos', rbd: '125', directorName: 'Gilberto Eduardo Miños Parra' },
+        { name: 'Colegio República De Italia', rbd: '126', directorName: 'Miguel Eleazar Baez Carreño' },
+        { name: 'Esc. Caleta Chanavayita', rbd: '10916', directorName: 'Sixto Rosendo Pure Calane' },
+        { name: 'LICEO BICENTENARIO MINERO SS JUAN PABLO II', rbd: '10917', directorName: 'Goighet Dionisia Andrade Yana' },
+        { name: 'Esc. Chipana', rbd: '12538', directorName: 'César Humberto Sepúlveda Villarroel' },
+        { name: 'Esc. Caleta San Marcos', rbd: '12542', directorName: 'Mónica Patricia Cabezas Castillo' },
+        { name: 'COLEGIO SIMON BOLIVAR', rbd: '12632', directorName: 'Paul Enrique Spaudo Vasquez' },
+        { name: 'ESC ESP DE LENGUAJE OASIS DEL SABER', rbd: '12739', directorName: 'Katherine Colomba Bravo Muñoz' },
+        { name: 'Liceo José Alejandro Soria Varas', rbd: '12758', directorName: 'Héctor Gilberto Inostroza Rojas' },
+        { name: 'LICEO TECNICO PROFESIONAL DE ADULTOS', rbd: '40429', directorName: 'Nancy Del Carmen Pérez Lobos' },
+        { name: 'J. I. OASIS DEL SABER', rbd: '33019', directorName: 'Carla Andrea Araya Cadagán' },
+        { name: 'J. I. INTINA WAWAPA', rbd: '33020', directorName: 'Maritza Rossana Pérez Guerrero' },
+        { name: 'J. I. LOS NARANJOS', rbd: '33021', directorName: 'Ana Maria Inzunza Fontecilla' },
+        { name: 'J. I. TORTUGUITAS', rbd: '33022', directorName: 'Marjorie Lorna Díaz Longa' },
+        { name: 'J. I. ARUMANTI', rbd: '33024', directorName: 'Madeleine Jesús Baez Matamala' },
+        { name: 'J. I. LUCERITO DORADO', rbd: '33025', directorName: 'Michelle Alejandra Longa Bautista' },
+        { name: 'J. I. AVENTURAS DE APRENDER', rbd: '33026', directorName: 'Karina Daisy Alcaíno Alfaro' },
+        { name: 'J. I. ARCOIRIS DEL DESIERTO', rbd: '33027', directorName: 'Ximena Del Carmen Lara Rivas' },
+        { name: 'J. I. MAGIA DE APRENDER', rbd: '33028', directorName: 'Danitza Patricia Piñones Rosskoff' },
+        { name: 'J. I. MI PEQUEÑO MUNDO', rbd: '33030', directorName: 'Daniela Alejandra Loayza Loyola' },
+        { name: 'J. I. SUMA INTI', rbd: '35987', directorName: 'Carla Amanda Milena Clery Cabezas' },
+        { name: 'J. I. CARITA DE SOL', rbd: '33015', directorName: 'Loreto Ester Videla Vasquez' },
+      ];
+      try {
+        const snap = await getDocs(collection(db, 'establecimientos'));
+        const items = snap.empty ? fallback : snap.docs.map(d => ({
+          name: d.data().name || d.id,
+          rbd: d.data().rbd || '',
+          directorName: d.data().directorName || d.data().director || d.data().directorEstablecimiento || ''
+        }));
+        sel.innerHTML = '<option value="" disabled selected>Selecciona establecimiento</option>';
+        for (const it of items) {
+          const opt = document.createElement('option');
+          opt.value = it.name;
+          opt.textContent = it.name;
+          if (it.rbd) opt.setAttribute('data-rbd', it.rbd);
+          if (it.directorName) opt.setAttribute('data-director', it.directorName);
+          sel.appendChild(opt);
+        }
+      } catch (e) {
+        console.warn('No se pudo cargar establecimientos, usando fallback:', e);
+        sel.innerHTML = '<option value="" disabled selected>Selecciona establecimiento</option>';
+        for (const it of fallback) {
+          const opt = document.createElement('option');
+          opt.value = it.name;
+          opt.textContent = it.name;
+          opt.setAttribute('data-rbd', it.rbd);
+          if (it.directorName) opt.setAttribute('data-director', it.directorName);
+          sel.appendChild(opt);
+        }
+      }
+    }
+
+    // Autocompletar RBD y Director al cambiar establecimiento
+    document.getElementById('establecimiento').addEventListener('change', (e) => {
+      const opt = e.target.selectedOptions?.[0];
+      const rbd = opt?.getAttribute('data-rbd') || '';
+      document.getElementById('rbd').value = rbd;
+      const dir = opt?.getAttribute('data-director') || '';
+      const dirEl = document.getElementById('director');
+      if (dirEl) dirEl.value = dir;
+    });
+
+    // Validar horario
+    function validateTimes() {
+      const hi = document.getElementById('horaInicio').value;
+      const ht = document.getElementById('horaTermino').value;
+      if (hi && ht && hi >= ht) {
+        alert('La hora de término debe ser posterior a la hora de inicio.');
+        return false;
+      }
+      return true;
+    }
+
+    // Guardar en Firestore (ahora crea o actualiza)
+    async function saveForm(uid) {
+      if (!validateTimes()) return;
+      const payload = {
+        // Paso 1
+        actaNumber: document.getElementById('actaNumber').value,
+        fecha: document.getElementById('fecha').value,
+        objetivoEstrategico: document.getElementById('objetivoEstrategico').value,
+        establecimiento: document.getElementById('establecimiento').value,
+        rbd: document.getElementById('rbd').value,
+  director: document.getElementById('director')?.value?.trim() || null,
+        asesorPrincipal: document.getElementById('asesorPrincipal').value,
+        asesorSegundo: document.getElementById('asesorSegundo').value || null,
+        horaInicio: document.getElementById('horaInicio').value,
+        horaTermino: document.getElementById('horaTermino').value,
+        modalidad: document.getElementById('modalidad').value,
+        cicloApoyo: document.getElementById('cicloApoyo').value,
+        capacidadBasal: document.getElementById('capacidadBasal').value,
+        nivelImplementacion: document.getElementById('nivelImplementacion').value,
+        rolProfesional: document.getElementById('rolProfesional').value,
+        // Paso 2
+        objetivoVisita: document.getElementById('objetivoVisita').value.trim(),
+        antecedentes: document.getElementById('antecedentes').value.trim() || null,
+        instrumentos: document.getElementById('instrumentos').value.trim() || null,
+        practicaProblematica: document.getElementById('practicaProblematica').value.trim() || null,
+        actividadesRealizadas: document.getElementById('actividadesRealizadas').value.trim() || null,
+  acuerdos: document.getElementById('acuerdos').value.trim() || null,
+  // Campos opcionales (pueden no existir en el DOM): proteger accesos
+  fechaImplementacion: document.getElementById('fechaImplementacion')?.value || null,
+  responsables: document.getElementById('responsables')?.value?.trim() || null,
+        aspectosPositivos: document.getElementById('aspectosPositivos').value.trim() || null,
+        areasMejora: document.getElementById('areasMejora').value.trim() || null,
+        // Metadatos base
+        ownerUid: uid
+      };
+      if (!payload.objetivoVisita) { alert('El objetivo de la visita es obligatorio.'); return; }
+
+      if (editingId) {
+        // Actualizar (no tocar createdAt)
+        await updateDoc(doc(db, 'datosBasicos', editingId), { ...payload, updatedAt: serverTimestamp() });
+        alert('Documento actualizado.');
+      } else {
+        // Crear
+        await addDoc(collection(db, 'datosBasicos'), { ...payload, createdAt: serverTimestamp() });
+        alert('Datos guardados correctamente.');
+      }
+
+      // Reset a modo "nuevo"
+      editingId = null;
+      document.getElementById('btnSubmit').textContent = 'Guardar';
+      document.getElementById('datosBasicosForm').reset();
+      document.getElementById('actaNumber').value = genActa();
+      stepIndex = 0; showStep(stepIndex);
+    }
+
+    // Cargar un documento al formulario para edición
+    function loadDocIntoForm(d) {
+      // Paso 1
+      document.getElementById('actaNumber').value = d.actaNumber || '';
+      document.getElementById('fecha').value = toInputDate(d.fecha);
+      document.getElementById('objetivoEstrategico').value = d.objetivoEstrategico || '';
+      document.getElementById('establecimiento').value = d.establecimiento || '';
+      document.getElementById('rbd').value = d.rbd || '';
+  const elDir = document.getElementById('director');
+  if (elDir) elDir.value = d.director || '';
+      document.getElementById('asesorPrincipal').value = d.asesorPrincipal || '';
+      document.getElementById('asesorSegundo').value = d.asesorSegundo || '';
+      document.getElementById('horaInicio').value = d.horaInicio || '';
+      document.getElementById('horaTermino').value = d.horaTermino || '';
+      document.getElementById('modalidad').value = d.modalidad || '';
+      document.getElementById('cicloApoyo').value = d.cicloApoyo || '';
+      document.getElementById('capacidadBasal').value = d.capacidadBasal || '';
+      document.getElementById('nivelImplementacion').value = d.nivelImplementacion || '';
+      document.getElementById('rolProfesional').value = d.rolProfesional || '';
+      // Paso 2
+      document.getElementById('objetivoVisita').value = d.objetivoVisita || '';
+      document.getElementById('antecedentes').value = d.antecedentes || '';
+      document.getElementById('instrumentos').value = d.instrumentos || '';
+      document.getElementById('practicaProblematica').value = d.practicaProblematica || '';
+      document.getElementById('actividadesRealizadas').value = d.actividadesRealizadas || '';
+      document.getElementById('acuerdos').value = d.acuerdos || '';
+  // Campos opcionales: asignar solo si existen
+  const _fi = document.getElementById('fechaImplementacion');
+  if (_fi) _fi.value = toInputDate(d.fechaImplementacion);
+  const _resp = document.getElementById('responsables');
+  if (_resp) _resp.value = d.responsables || '';
+      document.getElementById('aspectosPositivos').value = d.aspectosPositivos || '';
+      document.getElementById('areasMejora').value = d.areasMejora || '';
+    }
+
+    // Entrar a modo edición desde una tarjeta
+    function startEdit(d) {
+      editingId = d._id;
+      loadDocIntoForm(d);
+      // Activar pestaña "Nuevo Documento"
+      document.getElementById('tabNuevo').click();
+      // Ir a Paso 1
+      stepIndex = 0; showStep(stepIndex);
+      // Cambiar texto botón submit
+      const btnSubmit = document.getElementById('btnSubmit');
+      btnSubmit.textContent = 'Actualizar';
+    }
+
+    // Tabs: activa/inactiva con mejor accesibilidad y scroll al cambiar
+    const tabNuevo = document.getElementById('tabNuevo');
+    const tabGuard = document.getElementById('tabGuardados');
+    const secNuevo = document.getElementById('nuevo-documento');
+    const secGuard = document.getElementById('documentos-guardados');
+
+    tabNuevo.addEventListener('click', ()=>{
+      tabNuevo.classList.add('active'); tabGuard.classList.remove('active');
+      tabNuevo.setAttribute('aria-selected','true'); tabGuard.setAttribute('aria-selected','false');
+      secNuevo.classList.add('active'); secGuard.classList.remove('active');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+    tabGuard.addEventListener('click', ()=>{
+      tabGuard.classList.add('active'); tabNuevo.classList.remove('active');
+      tabGuard.setAttribute('aria-selected','true'); tabNuevo.setAttribute('aria-selected','false');
+      secGuard.classList.add('active'); secNuevo.classList.remove('active');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+
+    const form = document.getElementById('datosBasicosForm');
+    const steps = Array.from(form.querySelectorAll('.wizard-step'));
+    const btnBack = document.getElementById('btnBack');
+    const btnNext = document.getElementById('btnNext');
+    const btnSubmit = document.getElementById('btnSubmit');
+    const btnPreview = document.getElementById('btnPreview');
+    let stepIndex = 0;
+
+    function showStep(i) {
+      steps.forEach((s, idx) => s.classList.toggle('hidden', idx !== i));
+      btnBack.disabled = i === 0;
+      btnNext.classList.toggle('hidden', i === steps.length - 1);
+      btnSubmit.classList.toggle('hidden', i !== steps.length - 1);
+    }
+
+    function validateCurrentStep() {
+      const required = steps[stepIndex].querySelectorAll('[required]');
+      for (const el of required) {
+        if (!el.reportValidity()) return false;
+      }
+      return true;
+    }
+    btnNext.addEventListener('click', () => {
+      if (!validateCurrentStep()) return;
+      stepIndex = Math.min(stepIndex + 1, steps.length - 1);
+      showStep(stepIndex);
+    });
+    btnBack.addEventListener('click', () => {
+      stepIndex = Math.max(stepIndex - 1, 0);
+      showStep(stepIndex);
+    });
+    // Inicial
+    showStep(stepIndex);
+
+    // Helpers UI (faltaban y causaban ReferenceError)
+    function formatDate(d) {
+      if (!d) return '';
+      try {
+        // Firestore Timestamp o Date/string
+        const dt = (d && typeof d === 'object' && 'seconds' in d)
+          ? new Date(d.seconds * 1000)
+          : new Date(d);
+        if (isNaN(dt.getTime())) return '';
+        return dt.toLocaleDateString('es-CL', { year:'numeric', month:'2-digit', day:'2-digit' });
+      } catch { return ''; }
+    }
+    function truncate(s, n = 120) {
+      s = (s ?? '').toString();
+      return s.length > n ? s.slice(0, n).trim() + '…' : s;
+    }
+
+    // NUEVO: fecha para inputs type="date" (YYYY-MM-DD)
+    function toInputDate(val) {
+      if (!val) return '';
+      const dt = (typeof val === 'object' && 'seconds' in val) ? new Date(val.seconds * 1000) : new Date(val);
+      if (isNaN(dt.getTime())) return '';
+      const p = n => String(n).padStart(2, '0');
+      return `${dt.getFullYear()}-${p(dt.getMonth() + 1)}-${p(dt.getDate())}`;
+    }
+
+    // Estado de edición
+    let allDocs = [];
+    let filtered = [];
+    let editingId = null; // <= id del doc en edición
+
+    // Estadísticas
+    function renderStats(list){
+      document.getElementById('statTotal').textContent = list.length;
+      const estSet = new Set(list.map(x=>x.establecimiento).filter(Boolean));
+      document.getElementById('statEst').textContent = estSet.size;
+      const now = new Date(); const ym = now.getFullYear()+'-'+String(now.getMonth()+1).padStart(2,'0');
+      const thisMonth = list.filter(x=>{
+        const f = x.fecha || x.createdAt;
+        if (!f) return false;
+        const dd = (f.seconds? new Date(f.seconds*1000): new Date(f));
+        const ymm = dd.getFullYear()+'-'+String(dd.getMonth()+1).padStart(2,'0');
+        return ymm===ym;
+      }).length;
+      document.getElementById('statMes').textContent = thisMonth;
+      const asesSet = new Set(list.map(x=>x.asesorPrincipal).filter(Boolean));
+      document.getElementById('statAses').textContent = asesSet.size;
+    }
+
+    // NUEVO: referencia al contenedor de resultados (fix ReferenceError)
+    const resultsEl = document.getElementById('results');
+
+    // Render resultados (ajuste: usar modal en "view" y corregir style inválido del header)
+    function renderList(list){
+      resultsEl.innerHTML = '';
+      if (!list.length){
+        resultsEl.innerHTML = '<div class="doc-card"><em>No hay resultados.</em></div>';
+        return;
+      }
+      list.forEach(d=>{
+        const el = document.createElement('div');
+        el.className = 'doc-card';
+        el.innerHTML = `
+          <div class="doc-header" style="margin: 1rem;">
+            <span class="badge">${d.actaNumber || 'SIN-ACTA'}</span>
+            <span style="font-size:.8rem;opacity:.7;">${formatDate(d.createdAt || d.fecha)}</span>
+          </div>
+          <h3 style="margin:.2rem 0 1rem; text-align:center;">${d.establecimiento || '—'}</h3>
+          <div class="doc-meta">
+            <span style="margin-left: 1.5rem;">🪪 RBD: <strong>${d.rbd || '—'}</strong></span>
+            <span>⏰ ${d.horaInicio || '—'} - ${d.horaTermino || '—'}</span>
+            <span>👤 ${d.asesorPrincipal || '—'}</span>
+            <span>📍 ${d.modalidad || '—'}</span>
+          </div>
+          <div class="obj-preview" style="margin: 1rem;"><strong>Objetivo:</strong> ${truncate(d.objetivoEstrategico || d.objetivoVisita || '')}</div>
+          <div class="card-actions">
+            <button type="button" class="btn-sm btn-view" data-act="view">Ver Completo</button>
+            <button type="button" class="btn-sm btn-edit" data-act="edit">Editar</button>
+            <button type="button" class="btn-sm btn-del" data-act="del">Eliminar</button>
+            <button type="button" class="btn-sm btn-pdf" data-act="pdf">PDF</button>
+          </div>
+        `;
+        el.querySelectorAll('button').forEach(b=>{
+          b.addEventListener('click', async (e)=>{
+            e.preventDefault();
+            e.stopPropagation();
+            const act = b.getAttribute('data-act');
+            if (act==='del'){
+              if (confirm('¿Eliminar este documento?')) {
+                try { await import('https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js').then(m=>m.deleteDoc(m.doc(db,'datosBasicos', d._id))); }
+                catch (e) { console.error(e); alert('No se pudo eliminar'); }
+              }
+            } else if (act==='view'){
+              openViewModal(d);
+            } else if (act==='edit'){
+              startEdit(d);
+            } else if (act==='pdf'){
+              // Exportar/Imprimir solo este documento
+              printOne(d);
+            }
+          });
+        });
+        resultsEl.appendChild(el);
+      });
+    }
+
+    // NUEVO: helpers modal
+    const viewModal = document.getElementById('viewModal');
+    const viewModalBody = document.getElementById('viewModalBody');
+    function openViewModal(d){
+      if (!viewModal || !viewModalBody) { 
+        console.warn('Modal no encontrado, usando fallback'); 
+        alert('Vista completa:\n\n' + JSON.stringify(d, null, 2)); 
+        return; 
+      }
+      const f = (v)=> (v && typeof v === 'string' ? v : (v ?? '—'));
+      const dt = formatDate(d.fecha || d.createdAt);
+      viewModalBody.innerHTML = `
+        <div style="margin-bottom:1rem;">
+          <div style="font-size:1.2rem; font-weight:600; color:#111827;">${f(d.establecimiento)}</div>
+          <div style="font-size:.85rem; color:#6b7280;">
+            ${f(d.rbd)} &bull; ${f(d.horaInicio)} - ${f(d.horaTermino)} &bull; ${f(d.modalidad)}
+          </div>
+        </div>
+
+        <div style="margin-bottom:1rem;">
+          <strong>Objetivo Estratégico:</strong>
+          <div style="white-space:pre-wrap;">${f(d.objetivoEstrategico)}</div>
+        </div>
+
+        <div style="margin-bottom:1rem;">
+          <strong>Objetivo de la Visita:</strong>
+          <div style="white-space:pre-wrap;">${f(d.objetivoVisita)}</div>
+        </div>
+
+        <div style="margin-bottom:1rem;">
+          <strong>Antecedentes:</strong>
+          <div style="white-space:pre-wrap;">${f(d.antecedentes)}</div>
+        </div>
+
+        <div style="margin-bottom:1rem;">
+          <strong>Instrumentos / Insumos:</strong>
+          <div style="white-space:pre-wrap;">${f(d.instrumentos)}</div>
+        </div>
+
+        <div style="margin-bottom:1rem;">
+          <strong>Práctica Problemática:</strong>
+          <div style="white-space:pre-wrap;">${f(d.practicaProblematica)}</div>
+        </div>
+
+        <div style="margin-bottom:1rem;">
+          <strong>Actividades Realizadas:</strong>
+          <div style="white-space:pre-wrap;">${f(d.actividadesRealizadas)}</div>
+        </div>
+
+        <div style="margin-bottom:1rem;">
+          <strong>Acuerdos:</strong>
+          <div style="white-space:pre-wrap;">${f(d.acuerdos)}</div>
+        </div>
+
+        <div style="margin-bottom:1rem;">
+          <strong>Aspectos Positivos:</strong>
+          <div style="white-space:pre-wrap;">${f(d.aspectosPositivos)}</div>
+        </div>
+
+        <div>
+          <strong>Áreas de Mejora:</strong>
+          <div style="white-space:pre-wrap;">${f(d.areasMejora)}</div>
+        </div>
+      `;
+      viewModal.classList.remove('hidden');
+      document.body.classList.add('modal-open');
+    }
+
+    // NUEVO: cerrar modal (ESC, botón Cerrar, X y clic fuera) — FIX: la función estaba incompleta
+    function closeViewModal(){
+      if (!viewModal) return;
+      viewModal.classList.add('hidden');
+      document.body.classList.remove('modal-open');
+      if (viewModalBody) viewModalBody.innerHTML = '';
+    }
+    // Cerrar al hacer clic en el fondo o en elementos con data-close-view (botón Cerrar y la “X”)
+    viewModal?.addEventListener('click', (e)=>{
+      if (e.target === viewModal || e.target.closest?.('[data-close-view]')) {
+        closeViewModal();
+      }
+    });
+    // Cerrar con tecla ESC
+    window.addEventListener('keydown', (e)=>{
+      if (e.key === 'Escape' && !viewModal.classList.contains('hidden')) {
+        closeViewModal();
+      }
+    });
+
+    // NUEVO: filtros y búsqueda
+    const searchInput = document.getElementById('searchBox');
+    const btnSearch = document.getElementById('btnSearch');
+    const btnClear = document.getElementById('btnClear');
+    let quickFilter = 'Todos';
+
+    function applyFilters(){
+      const q = (searchInput?.value || '').trim().toLowerCase();
+      let list = [...allDocs];
+
+      if (quickFilter === 'Presencial' || quickFilter === 'Remoto' || quickFilter === 'Híbrida') {
+        list = list.filter(x => (x.modalidad || '').toLowerCase() === quickFilter.toLowerCase());
+      } else if (quickFilter === 'Recientes') {
+        list = list.sort((a,b)=>(b.createdAt?.seconds||0)-(a.createdAt?.seconds||0)).slice(0,20);
+      }
+
+      if (q) {
+        const exact = list.filter(x => (x.actaNumber || '').toLowerCase() === q);
+        filtered = exact.length ? exact : list.filter(x=>{
+          const hay = [
+            x.actaNumber, x.establecimiento, x.asesorPrincipal, x.fecha, x.modalidad, x.capacidadBasal, x.cicloApoyo
+          ].map(v => (typeof v === 'string' ? v.toLowerCase() : (v?.toString?.().toLowerCase?.() || '')));
+          return hay.some(s => s.includes(q));
+        });
+      } else {
+        filtered = list;
+      }
+      renderStats(filtered);
+      renderList(filtered);
+    }
+
+    document.querySelectorAll('.chip').forEach(c=>{
+      c.addEventListener('click', ()=>{
+        document.querySelectorAll('.chip').forEach(x=>x.classList.remove('active'));
+        c.classList.add('active');
+        quickFilter = c.getAttribute('data-filter') || 'Todos';
+        applyFilters();
+      });
+    });
+    btnSearch?.addEventListener('click', (e)=>{ e.preventDefault(); applyFilters(); });
+    btnClear?.addEventListener('click', (e)=>{
+      e.preventDefault();
+      if (searchInput) searchInput.value = '';
+      quickFilter = 'Todos';
+      document.querySelectorAll('.chip').forEach(x=>x.classList.remove('active'));
+      document.querySelector('.chip[data-filter="Todos"]')?.classList.add('active');
+      applyFilters();
+    });
+
+    // NUEVO: suscripción a documentos del usuario
+    function subscribeUserDocs(uid){
+      const qRef = query(collection(db,'datosBasicos'), where('ownerUid','==', uid));
+      return onSnapshot(qRef, (snap)=>{
+        allDocs = snap.docs.map(d=> ({ _id:d.id, ...d.data() }));
+        allDocs.sort((a,b)=>(b.createdAt?.seconds||0)-(a.createdAt?.seconds||0));
+        applyFilters();
+      }, (err)=>{
+        console.error('Error leyendo documentos:', err);
+        getDocs(qRef).then(s=>{
+          allDocs = s.docs.map(d=> ({ _id:d.id, ...d.data() }));
+          applyFilters();
+        });
+      });
+    }
+
+    // NUEVO: restaurar onAuthStateChanged para cargar y suscribirse
+    onAuthStateChanged(auth, async (user) => {
+      if (!user) { location.replace('../index.html'); return; }
+      await loadProfile(user.uid, user.email);
+      await loadEstablecimientos();
+
+      document.getElementById('datosBasicosForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        try {
+          await saveForm(user.uid);
+        } catch (err) {
+          console.error('Error al guardar:', err);
+          alert('No se pudieron guardar los datos. Revisa consola.');
+        }
+      });
+
+  const unsubDocs = subscribeUserDocs(user.uid);
+  const cleanup = ()=>{ try{unsubDocs&&unsubDocs();}catch{} };
+  window.addEventListener('pagehide', cleanup);
+  document.addEventListener('visibilitychange', ()=>{ if (document.visibilityState === 'hidden') cleanup(); });
+    });
+
+    // NUEVO: vista previa (ya existente arriba)
+    function buildPreviewFromForm(){
+      const v = id => (document.getElementById(id)?.value ?? '').toString();
+      return {
+        // Paso 1
+        actaNumber: v('actaNumber'),
+        fecha: v('fecha'), // formato input date
+        objetivoEstrategico: v('objetivoEstrategico').trim(),
+        establecimiento: v('establecimiento'),
+        rbd: v('rbd'),
+  director: v('director').trim(),
+        asesorPrincipal: v('asesorPrincipal'),
+        asesorSegundo: v('asesorSegundo'),
+        horaInicio: v('horaInicio'),
+        horaTermino: v('horaTermino'),
+        modalidad: v('modalidad'),
+        cicloApoyo: v('cicloApoyo'),
+        capacidadBasal: v('capacidadBasal'),
+        nivelImplementacion: v('nivelImplementacion'),
+        rolProfesional: v('rolProfesional'),
+        // Paso 2
+        objetivoVisita: v('objetivoVisita').trim(),
+        antecedentes: v('antecedentes').trim(),
+        instrumentos: v('instrumentos').trim(),
+        practicaProblematica: v('practicaProblematica').trim(),
+        actividadesRealizadas: v('actividadesRealizadas').trim(),
+        acuerdos: v('acuerdos').trim(),
+        fechaImplementacion: v('fechaImplementacion'),
+        responsables: v('responsables').trim(),
+        aspectosPositivos: v('aspectosPositivos').trim(),
+        areasMejora: v('areasMejora').trim()
+      };
+    }
+    btnPreview?.addEventListener('click', (e)=>{
+      e.preventDefault();
+      const data = buildPreviewFromForm();
+      openViewModal(data);
+    });
+
+    // Construye el contenido imprimible con todos los documentos
+    function buildPrintableDoc(d){
+      const f = v => {
+        const s = (v ?? '').toString().trim();
+        return s ? s : '—';
+      };
+      const fmt = v => {
+        try {
+          const dt = (v && typeof v === 'object' && 'seconds' in v) ? new Date(v.seconds*1000) : new Date(v);
+          return isNaN(dt.getTime()) ? '' : dt.toLocaleDateString('es-CL', { year:'numeric', month:'2-digit', day:'2-digit' });
+        } catch { return ''; }
+      };
+      // Fallback para nombre de Director/a en documentos antiguos (normalizado y con respaldo)
+      const directorName = [d.director, d.directorEstablecimiento, d.directora, d.directorNombre, d.nombreDirector]
+        .map(x => (x ?? '').toString().trim())
+        .find(Boolean) || '—';
+      // NUEVO: se generan SIEMPRE dos páginas: 1) contenido, 2) firmas
+      return `
+        <div class="print-page">
+          <!-- Encabezado -->
+          <div class="print-header">
+            <div class="print-logo-cell">
+              <img class="print-logo"
+                   src="${PRINT_LOGO_URL}"
+                   alt="Logo institucional"
+                   onerror="this.onerror=null; this.src='data:image/svg+xml;utf8,<svg xmlns=&quot;http://www.w3.org/2000/svg&quot; width=&quot;280&quot; height=&quot;80&quot;><rect width=&quot;100%&quot; height=&quot;100%&quot; fill=&quot;#ffffff&quot;/><text x=&quot;50%&quot; y=&quot;50%&quot; dominant-baseline=&quot;middle&quot; text-anchor=&quot;middle&quot; font-family=&quot;Arial, sans-serif&quot; font-size=&quot;20&quot; fill=&quot;#374151&quot;>SLEP IQUIQUE</text></svg>';"/>
+            </div>
+            <div class="print-meta-cell">
+              <div>
+                <div style="font-size:1.15rem;font-weight:700;">
+                  ${f(d.establecimiento)} <small style="font-weight:400;opacity:.7;">(${f(d.rbd)})</small>
+                </div>
+                <div class="print-meta">
+                  ${f(d.actaNumber)} <br>
+                  <strong>${fmt(d.fecha || d.createdAt)}</strong> • ${f(d.modalidad)} • ${f(d.horaInicio)||'—'} - ${f(d.horaTermino)||'—'}
+                  
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Cuerpo (solo contenidos) -->
+          <div class="print-section"><strong>Objetivo Estratégico:</strong><div style="white-space:pre-wrap;">${f(d.objetivoEstrategico)}</div></div>
+          
+          <table class="print-meta-table" style="width:100%">
+            <tr>
+              <th>Ciclo de Apoyo Técnico Pedagógica</th>
+              <th>Capacidad Basal Focalizada</th>
+            </tr>
+            <tr>
+              <th><strong>${f(d.cicloApoyo)}</strong></th>
+              <th><strong>${f(d.capacidadBasal)}</strong></th>
+            </tr>
+          </table>
+          <br>          
+          <table class="print-meta-table" style="width:100%">
+            <tr>
+              <th>Nivel de Implementación Capacidad Basal</th>
+              <th>Rol profesional Acompañamiento</th>
+            </tr>
+            <tr>
+              <th><strong>${f(d.nivelImplementacion)}</strong></th>
+              <th><strong>${f(d.rolProfesional)}</strong></th>
+            </tr>
+          </table>
+          <br>
+          <div class="print-section"><strong>Objetivo de la Visita:</strong><div style="white-space:pre-wrap;">${f(d.objetivoVisita)}</div></div>
+          <div class="print-section"><strong>Antecedentes:</strong><div style="white-space:pre-wrap;">${f(d.antecedentes)}</div></div>
+          <div class="print-section"><strong>Instrumentos / Insumos:</strong><div style="white-space:pre-wrap;">${f(d.instrumentos)}</div></div>
+          <div class="print-section"><strong>Práctica Problemática:</strong><div style="white-space:pre-wrap;">${f(d.practicaProblematica)}</div></div>
+          <div class="print-section"><strong>Actividades Realizadas:</strong><div style="white-space:pre-wrap;">${f(d.actividadesRealizadas)}</div></div>
+          <div class="print-section"><strong>Acuerdos:</strong><div style="white-space:pre-wrap;">${f(d.acuerdos)}</div></div>
+          <div class="print-section"><strong>Aspectos Positivos:</strong><div style="white-space:pre-wrap;">${f(d.aspectosPositivos)}</div></div>
+          <div class="print-section"><strong>Áreas de Mejora:</strong><div style="white-space:pre-wrap;">${f(d.areasMejora)}</div></div>
+        </div>
+
+        <!-- Página 2: Firmas (siempre separada) -->
+        <div class="print-page">
+          <!-- Encabezado (repetido para claridad) -->
+          <div class="print-header">
+            <div class="print-logo-cell">
+              <img class="print-logo"
+                   src="${PRINT_LOGO_URL}"
+                   alt="Logo institucional"
+                   onerror="this.onerror=null; this.src='data:image/svg+xml;utf8,<svg xmlns=&quot;http://www.w3.org/2000/svg&quot; width=&quot;280&quot; height=&quot;80&quot;><rect width=&quot;100%&quot; height=&quot;100%&quot; fill=&quot;#ffffff&quot;/><text x=&quot;50%&quot; y=&quot;50%&quot; dominant-baseline=&quot;middle&quot; text-anchor=&quot;middle&quot; font-family=&quot;Arial, sans-serif&quot; font-size=&quot;20&quot; fill=&quot;#374151&quot;>SLEP IQUIQUE</text></svg>';"/>
+            </div>
+            <div class="print-meta-cell">
+              <div>
+                <div style="font-size:1.05rem;font-weight:750;">Firmas y validación</div>
+                <div class="print-meta">
+                  ${f(d.actaNumber)} • <strong>${fmt(d.fecha || d.createdAt)}</strong> • ${f(d.establecimiento)} (${f(d.rbd)})
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Firmas (nunca se parten entre páginas) -->
+          <div class="print-sign-row">
+            <div class="print-sign-box">
+              <div class="print-sign-line"></div>
+              <div class="print-sign-label">Asesor/a Principal: <span class="sign-name">${f(d.asesorPrincipal)}</span></div>
+            </div>
+            <div class="print-sign-box">
+              <div class="print-sign-line"></div>
+              <div class="print-sign-label">Director/a de Establecimiento: <span class="sign-name">${directorName}</span></div>
+            </div>
+            <div class="print-sign-box">
+              <div class="print-sign-line"></div>
+              <div class="print-sign-label">Asesor/a Segundo/a: <span class="sign-name">${f(d.asesorSegundo)}</span></div>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    // Esperar a que carguen las imágenes dentro de un contenedor (máx. timeout)
+    function waitImagesIn(container, timeoutMs = 1500){
+      try{
+        const imgs = Array.from(container.querySelectorAll('img'));
+        if (!imgs.length) return Promise.resolve();
+        const waits = imgs.map(img => new Promise(res => {
+          if (img.complete && img.naturalWidth > 0) return res();
+          const done = ()=>{ img.removeEventListener('load', done); img.removeEventListener('error', done); res(); };
+          img.addEventListener('load', done);
+          img.addEventListener('error', done);
+        }));
+        const t = new Promise(res => setTimeout(res, timeoutMs));
+        return Promise.race([Promise.all(waits), t]);
+      }catch{ return Promise.resolve(); }
+    }
+
+    // Limpia el contenedor tras imprimir
+    window.addEventListener('afterprint', ()=>{
+      const container = document.getElementById('printAll');
+      if (container){ container.innerHTML = ''; container.style.display = 'none'; }
+    });
+
+    // Botón PDF (todos): usa la lista filtrada si existe, si no, todos
+    const btnPrintAll = document.getElementById('btnPrintAll');
+    btnPrintAll?.addEventListener('click', (e)=>{
+      e.preventDefault();
+      const rows = (typeof filtered!=='undefined' && filtered.length) ? filtered : (typeof allDocs!=='undefined' ? allDocs : []);
+      printAll(rows);
+    });
+
+    async function printOne(d){
+      const container = document.getElementById('printAll');
+      if (!container) { console.warn('Contenedor de impresión no encontrado'); return; }
+      container.innerHTML = buildPrintableDoc(d);
+      container.style.display = 'block';
+      const prevTitle = document.title;
+      if (d?.actaNumber) document.title = d.actaNumber; // útil al “Guardar como PDF”
+      await waitImagesIn(container, 1500);
+      window.print();
+      setTimeout(()=>{ document.title = prevTitle; }, 300);
+    }
+
+    async function printAll(list){
+      const container = document.getElementById('printAll');
+      if (!container) { console.warn('Contenedor de impresión no encontrado'); return; }
+      const rows = (list && list.length) ? list : (typeof allDocs!=='undefined' ? allDocs : []);
+      if (!rows.length){ alert('No hay datos para imprimir.'); return; }
+      container.innerHTML = rows.map(buildPrintableDoc).join('');
+      container.style.display = 'block';
+      await waitImagesIn(container, 1800);
+      window.print();
+    }
+  </script>
+</body>
+
+</html>

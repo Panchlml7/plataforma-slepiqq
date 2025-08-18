@@ -1,0 +1,554 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Planilla de Acompañamiento Visita - SLEP IQUIQUE</title>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    .section-card {
+      background: #ffffff; color: #0f172a;
+      border: 1px solid #e5e7eb; border-radius: 14px;
+      padding: 1rem 1.2rem; margin: 1rem 0;
+      box-shadow: 0 8px 18px -12px rgba(15, 23, 42, .15);
+    }
+    .filters { display: grid; gap: .6rem; grid-template-columns: 1fr; }
+    @media (min-width: 900px) { .filters { grid-template-columns: 2fr repeat(3, 1fr) auto auto; align-items: end; } }
+    .filters label { font-size:.8rem; opacity:.8; display:block; margin-bottom:.25rem; }
+    .filters input[type="text"], .filters input[type="date"], .filters select {
+      width:100%; padding:.55rem .7rem; border:1px solid #cbd5e1; border-radius:10px; background:#fff; color:#0f172a;
+    }
+    .btn, .btn-sm {
+      appearance:none; display:inline-flex; align-items:center; justify-content:center; gap:.4rem;
+      padding:.6rem .9rem; border-radius:10px; border:1px solid transparent; font-weight:700; cursor:pointer;
+    }
+    .btn-primary { background:#6366f1; color:#fff; }
+    .btn-secondary { background:#111827; color:#fff; }
+    .btn-outline { background:#fff; color:#111827; border-color:#cbd5e1; }
+    .table-wrap {
+      border:1px solid #e5e7eb; border-radius:12px; box-shadow:0 10px 24px -18px rgba(15,23,42,.25);
+      overflow:auto; max-height:70vh;
+    }
+    table { width:100%; min-width:1200px; border-collapse:collapse; table-layout:auto; }
+    thead th {
+      position:sticky; top:0; background:linear-gradient(180deg,#f8fafc,#eef2ff); z-index:1;
+      color:#334155; text-transform:uppercase; letter-spacing:.3px; font-size:.8rem;
+    }
+    table, th, td { border:1px solid #e5e7eb; }
+    th, td { padding:.55rem .6rem; text-align:left; vertical-align:middle; }
+    tbody tr:nth-child(odd){ background:#f9fafb; }
+    tbody tr:hover{ background:#eef2ff; transition:background .15s ease; }
+    .top-nav { display:flex; gap:.8rem; align-items:center; justify-content:space-between; padding:.6rem 1rem; }
+    .brand { font-weight:800; }
+    .nav-link { margin-right:.6rem; text-decoration:none; }
+    .user-badge .btn { margin-left:.6rem; }
+    @media print {
+      .section-card, .top-nav { box-shadow:none; border:none; }
+      .filters, .actions-bar { display:none !important; }
+      .table-wrap { max-height:none; box-shadow:none; border:none; }
+    }
+    /* NUEVO: resalte de fila enfocada desde parámetros */
+    .row-focus { outline: 2px solid #6366f1; background: #eef2ff !important; }
+    /* NUEVO: modal simple para ver detalles */
+    .modal { position:fixed; inset:0; display:none; align-items:center; justify-content:center; background:rgba(0,0,0,.5); z-index:1000; }
+    .modal.show { display:flex; }
+    .modal-card { width:min(92vw, 860px); max-height:85vh; overflow:auto; background:#fff; color:#0f172a; border:1px solid #e5e7eb; border-radius:14px; box-shadow:0 20px 40px -20px rgba(15,23,42,.45); }
+    .modal-header,.modal-footer { display:flex; align-items:center; justify-content:space-between; gap:.6rem; padding:.9rem 1rem; border-bottom:1px solid #e5e7eb; }
+    .modal-footer { border-top:1px solid #e5e7eb; border-bottom:0; }
+    .modal-content { padding:1rem; }
+  </style>
+</head>
+<body>
+  <nav class="top-nav">
+    <span class="brand">SLEP IQQ</span>
+    <div>
+      <a class="nav-link" href="asistencia.html">Asistencia</a>
+      <a class="nav-link" href="establecimiento.html">Establecimiento</a>
+      <a class="nav-link" href="documentos.html">Documentos</a>
+      <a class="nav-link" href="../plataforma.html">INICIO</a>
+    </div>
+    <span class="user-badge"><span id="userName">...</span><button id="logoutBtn" class="btn btn-outline" type="button">Salir</button></span>
+  </nav>
+
+  <main style="max-width:2500px;margin:0 auto;padding:0 1rem 2rem;">
+    <section class="section-card">
+      <h2 style="margin:.2rem 0 .8rem; font-size: xx-large; text-align: center;">Planilla de Acompañamiento Visita</h2>
+      <div class="filters">
+        <div>
+          <label for="q">Buscar (ACTA, establecimiento, asesor, modalidad, RBD, objetivo...)</label>
+          <input id="q" type="text" placeholder="Escribe para filtrar...">
+        </div>
+        <div>
+          <label for="fromDate">Desde</label>
+          <input id="fromDate" type="date">
+        </div>
+        <div>
+          <label for="toDate">Hasta</label>
+          <input id="toDate" type="date">
+        </div>
+        <div>
+          <label for="mod">Modalidad</label>
+          <select id="mod">
+            <option value="">Todas</option>
+            <option>Presencial</option>
+            <option>Remoto</option>
+            <option>Híbrida</option>
+          </select>
+        </div>
+        <button id="btnExport" class="btn btn-primary" type="button">Exportar Excel</button>
+        <button id="btnPrint" class="btn btn-secondary" type="button">Imprimir</button>
+      </div>
+    </section>
+
+    <section class="section-card">
+      <div class="actions-bar" style="display:flex;gap:.6rem;align-items:center;margin-bottom:.6rem;">
+        <!-- NUEVO: indicador de total -->
+        <span>Total registros: <strong id="countTotal">0</strong></span>
+      </div>
+      <div class="table-wrap">
+        <table id="planillaTable">
+          <thead>
+            <tr>
+              <th>N° ACTA</th>
+              <th>Fecha</th>
+              <th>Establecimiento</th>
+              <th>RBD</th>
+              <th>Modalidad</th>
+              <th>Asesor(es)</th>
+              <th>Horario</th>
+              <th>Objetivo Visita</th>
+              <th>Ciclo Apoyo</th>
+              <th>Ver</th>
+            </tr>
+          </thead>
+          <tbody id="tbodyPlanilla">
+            <!-- filas dinámicas -->
+          </tbody>
+        </table>
+      </div>
+    </section>
+  </main>
+
+  <!-- NUEVO: Modal de detalle -->
+  <div id="detailModal" class="modal" role="dialog" aria-modal="true" aria-labelledby="detailTitle">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3 id="detailTitle" style="margin:0;">Detalle del Documento</h3>
+        <button type="button" id="btnCloseDetail" class="btn btn-outline">Cerrar</button>
+      </div>
+      <div id="detailBody" class="modal-content"><!-- contenido dinámico --></div>
+      <div class="modal-footer">
+        <small style="opacity:.8;">Presiona ESC para cerrar</small>
+        <button type="button" id="btnCloseDetail2" class="btn btn-outline">Cerrar</button>
+      </div>
+    </div>
+  </div>
+
+  <script type="module">
+    import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js';
+    import { getAuth, onAuthStateChanged, signOut } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js';
+  import { getFirestore, collection, query, where, onSnapshot, getDoc, doc } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js';
+
+    const firebaseConfig = { apiKey:"AIzaSyDzUGdJT-eyYjKtej63iThVLgvTHVzvxvA",authDomain:"ia-slep-iqq.firebaseapp.com",projectId:"ia-slep-iqq",storageBucket:"ia-slep-iqq.appspot.com",messagingSenderId:"528895424744",appId:"1:528895424744:web:7144f5e5db1bce5ffb315d" };
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+
+    const userNameEl = document.getElementById('userName');
+    const logoutBtn = document.getElementById('logoutBtn');
+
+    // Mejora: prioriza displayName de Auth; luego Firestore; luego email/uid
+    async function loadProfile(userOrUid, maybeEmail){
+      try {
+        const isUser = typeof userOrUid === 'object' && userOrUid !== null;
+        const uid = isUser ? userOrUid.uid : userOrUid;
+        const email = isUser ? (userOrUid.email || '') : (maybeEmail || '');
+        const displayName = isUser ? (userOrUid.displayName || (userOrUid.providerData?.[0]?.displayName) || '') : '';
+
+        // 1) Si hay displayName del Auth, úsalo de inmediato
+        if (displayName && userNameEl) userNameEl.textContent = displayName;
+
+        // 2) Intenta obtener un nombre más actualizado desde Firestore (si existe permiso)
+        try {
+          const snap = await getDoc(doc(db,'users',uid));
+          if (snap.exists()){
+            const n = snap.data().name || snap.data().displayName || '';
+            if (n && userNameEl) { userNameEl.textContent = n; return; }
+          }
+        } catch {/* ignorar errores de permisos/ausencia */}
+
+        // 3) Fallback estable si no hay datos en Firestore
+        if (userNameEl && (!userNameEl.textContent || userNameEl.textContent === '...')){
+          userNameEl.textContent = email || uid || 'Usuario';
+        }
+      } catch {
+        if (userNameEl) userNameEl.textContent = 'Usuario';
+      }
+    }
+    logoutBtn.addEventListener('click', async ()=>{ try{ await signOut(auth); location.replace('../index.html'); }catch(e){ alert('Error al cerrar sesión'); } });
+
+    const qEl = document.getElementById('q');
+    const fromEl = document.getElementById('fromDate');
+    const toEl = document.getElementById('toDate');
+    const modEl = document.getElementById('mod');
+    const tbody = document.getElementById('tbodyPlanilla');
+    const countTotal = document.getElementById('countTotal');
+    const btnExport = document.getElementById('btnExport');
+    const btnPrint = document.getElementById('btnPrint');
+
+    let allDocs = [];
+    let filtered = [];
+
+    const params = new URLSearchParams(location.search);
+    const focusId = params.get('id') || '';
+    const focusActa = params.get('acta') || '';
+
+    function toInputDate(val){
+      if (!val) return '';
+      const dt = (typeof val === 'object' && 'seconds' in val) ? new Date(val.seconds * 1000) : new Date(val);
+      if (isNaN(dt.getTime())) return '';
+      const p = n => String(n).padStart(2, '0');
+      return `${dt.getFullYear()}-${p(dt.getMonth()+1)}-${p(dt.getDate())}`;
+    }
+    function formatDate(val){
+      const s = toInputDate(val);
+      if (!s) return '';
+      const [y,m,d] = s.split('-');
+      return `${d}-${m}-${y}`;
+    }
+    function getDateObj(val){
+      if (!val) return null;
+      if (typeof val === 'object' && 'seconds' in val) return new Date(val.seconds*1000);
+      const s = typeof val === 'string' ? val : '';
+      return s ? new Date(s) : null;
+    }
+    function truncate(s, n=120){ s = (s ?? '').toString(); return s.length>n ? s.slice(0,n).trim()+'…' : s; }
+
+    const modalEl = document.getElementById('detailModal');
+    const modalBody = document.getElementById('detailBody');
+    const btnCloseDetail = document.getElementById('btnCloseDetail');
+    const btnCloseDetail2 = document.getElementById('btnCloseDetail2');
+    function openDetail(d){
+      const f = v => (v ?? '—');
+      modalBody.innerHTML = `
+        <div style="margin-bottom:.8rem;">
+          <div style="font-size:1.1rem;font-weight:700;">${f(d.establecimiento)} <small style="font-weight:400;opacity:.7;">(${f(d.rbd)})</small></div>
+          <div style="font-size:.85rem;opacity:.8;">${f(d.actaNumber)} • ${f(d.modalidad)} • ${f(d.horaInicio||'—')} - ${f(d.horaTermino||'—')}</div>
+        </div>
+        <div style="margin-bottom:.6rem;"><strong>Objetivo Estratégico:</strong><div style="white-space:pre-wrap;">${f(d.objetivoEstrategico)}</div></div>
+        <div style="margin-bottom:.6rem;"><strong>Objetivo de la Visita:</strong><div style="white-space:pre-wrap;">${f(d.objetivoVisita)}</div></div>
+        <div style="margin-bottom:.6rem;"><strong>Antecedentes:</strong><div style="white-space:pre-wrap;">${f(d.antecedentes)}</div></div>
+        <div style="margin-bottom:.6rem;"><strong>Instrumentos / Insumos:</strong><div style="white-space:pre-wrap;">${f(d.instrumentos)}</div></div>
+        <div style="margin-bottom:.6rem;"><strong>Práctica Problemática:</strong><div style="white-space:pre-wrap;">${f(d.practicaProblematica)}</div></div>
+        <div style="margin-bottom:.6rem;"><strong>Actividades Realizadas:</strong><div style="white-space:pre-wrap;">${f(d.actividadesRealizadas)}</div></div>
+        <div style="margin-bottom:.6rem;"><strong>Acuerdos:</strong><div style="white-space:pre-wrap;">${f(d.acuerdos)}</div></div>
+        <div style="margin-bottom:.6rem;"><strong>Aspectos Positivos:</strong><div style="white-space:pre-wrap;">${f(d.aspectosPositivos)}</div></div>
+        <div><strong>Áreas de Mejora:</strong><div style="white-space:pre-wrap;">${f(d.areasMejora)}</div></div>
+      `;
+      modalEl.classList.add('show');
+    }
+    function closeDetail(){
+      modalEl.classList.remove('show');
+      modalBody.innerHTML = '';
+    }
+    btnCloseDetail.addEventListener('click', closeDetail);
+    btnCloseDetail2.addEventListener('click', closeDetail);
+    window.addEventListener('keydown', (e)=>{ if(e.key==='Escape' && modalEl.classList.contains('show')) closeDetail(); });
+    modalEl.addEventListener('click', (e)=>{ if (e.target===modalEl) closeDetail(); });
+
+    function renderTable(list){
+      tbody.innerHTML = '';
+      list.forEach(d=>{
+        const tr = document.createElement('tr');
+        tr.dataset.id = d._id || '';
+        tr.innerHTML = `
+          <td>${d.actaNumber || ''}</td>
+          <td>${formatDate(d.fecha || d.createdAt) || ''}</td>
+          <td>${d.establecimiento || ''}</td>
+          <td>${d.rbd || ''}</td>
+          <td>${d.modalidad || ''}</td>
+          <td>${[d.asesorPrincipal, d.asesorSegundo].filter(Boolean).join(' / ')}</td>
+          <td>${[d.horaInicio||'—', d.horaTermino||'—'].join(' - ')}</td>
+          <td>${truncate(d.objetivoVisita || d.objetivoEstrategico || '')}</td>
+          <td>${d.cicloApoyo || ''}</td>
+          <td><button type="button" class="btn btn-primary btn-sm" data-act="view">Ver</button></td>
+        `;
+        tr.addEventListener('click', ()=> openDetail(d));
+        tr.querySelector('[data-act="view"]')?.addEventListener('click', (e)=>{
+          e.preventDefault();
+          e.stopPropagation();
+          openDetail(d);
+        });
+        tbody.appendChild(tr);
+      });
+      let focusRow = null;
+      if (focusId){
+        focusRow = [...tbody.querySelectorAll('tr')].find(r=> r.dataset.id===focusId) || null;
+      } else if (focusActa){
+        const idx = list.findIndex(x=> (x.actaNumber||'')===focusActa);
+        if (idx>=0) focusRow = tbody.querySelectorAll('tr')[idx] || null;
+      }
+      if (focusRow){
+        focusRow.classList.add('row-focus');
+        focusRow.scrollIntoView({ behavior:'smooth', block:'center' });
+      }
+      // NUEVO: proteger si el elemento no existe
+      if (countTotal) countTotal.textContent = list.length;
+    }
+
+    function applyFilters(){
+      const q = (qEl.value || '').trim().toLowerCase();
+      const mod = (modEl.value || '').toLowerCase();
+      const from = fromEl.value ? new Date(fromEl.value) : null;
+      const to = toEl.value ? new Date(toEl.value) : null;
+      if (to) { to.setHours(23,59,59,999); }
+
+      let list = [...allDocs];
+
+      // Modalidad
+      if (mod) list = list.filter(x => (x.modalidad || '').toLowerCase() === mod);
+
+      // Rango de fechas (usa campo fecha o createdAt)
+      if (from || to) {
+        list = list.filter(x=>{
+          const d = getDateObj(x.fecha || x.createdAt);
+          if (!d) return false;
+          if (from && d < from) return false;
+          if (to && d > to) return false;
+          return true;
+        });
+      }
+
+      // Texto
+      if (q) {
+        list = list.filter(x=>{
+          const hay = [
+            x.actaNumber, x.establecimiento, x.asesorPrincipal, x.asesorSegundo,
+            x.modalidad, x.rbd, x.objetivoVisita, x.objetivoEstrategico,
+            x.cicloApoyo, x.capacidadBasal, x.nivelImplementacion
+          ].map(v => (v ?? '').toString().toLowerCase());
+          return hay.some(s => s.includes(q));
+        });
+      }
+
+      filtered = list;
+      renderTable(filtered);
+    }
+
+    // Fallback HTML (.xls) si no está disponible la librería XLSX
+    function exportExcelHTML(rows){
+      if (!rows.length){ alert('No hay datos para exportar.'); return; }
+
+      const headers = [
+        'N° ACTA','Fecha','Establecimiento','RBD','Modalidad',
+        'Asesor principal','Asesor segundo','Hora inicio','Hora término',
+        'Objetivo Estratégico','Objetivo Visita','Antecedentes','Instrumentos / Insumos',
+        'Práctica Problemática','Actividades Realizadas','Acuerdos',
+        'Fecha Implementación','Responsables','Aspectos Positivos','Áreas de Mejora',
+        'Ciclo Apoyo','Capacidad Basal','Nivel Implementación','Rol Profesional','Creado'
+      ];
+
+      const escapeHtml = (v) => String(v ?? '')
+        .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
+        .replace(/"/g,'&quot;');
+
+      const fmt = (v) => formatDate(v) || '';
+
+      const body = rows.map(d=>{
+        const line = [
+          d.actaNumber || '',
+          fmt(d.fecha || d.createdAt),
+          d.establecimiento || '',
+          d.rbd || '',
+          d.modalidad || '',
+          d.asesorPrincipal || '',
+          d.asesorSegundo || '',
+          d.horaInicio || '',
+          d.horaTermino || '',
+          d.objetivoEstrategico || '',
+          d.objetivoVisita || '',
+          d.antecedentes || '',
+          d.instrumentos || '',
+          d.practicaProblematica || '',
+          d.actividadesRealizadas || '',
+          d.acuerdos || '',
+          fmt(d.fechaImplementacion),
+          d.responsables || '',
+          d.aspectosPositivos || '',
+          d.areasMejora || '',
+          d.cicloApoyo || '',
+          d.capacidadBasal || '',
+          d.nivelImplementacion || '',
+          d.rolProfesional || '',
+          fmt(d.createdAt)
+        ].map(escapeHtml);
+        return `<tr><td>${line.join('</td><td>')}</td></tr>`;
+      }).join('');
+
+      const table = `
+        <table border="1">
+          <thead><tr>${headers.map(h=>`<th>${escapeHtml(h)}</th>`).join('')}</tr></thead>
+          <tbody>${body}</tbody>
+        </table>`;
+
+      const html = `
+        <html xmlns:o="urn:schemas-microsoft-com:office:office"
+              xmlns:x="urn:schemas-microsoft-com:office:excel"
+              xmlns="http://www.w3.org/TR/REC-html40">
+          <head>
+            <meta charset="utf-8" />
+            <!--[if gte mso 9]><xml>
+              <x:ExcelWorkbook>
+                <x:ExcelWorksheets>
+                  <x:ExcelWorksheet>
+                    <x:Name>Planilla</x:Name>
+                    <x:WorksheetOptions><x:DisplayGridlines/></x:WorksheetOptions>
+                  </x:ExcelWorksheet>
+                </x:ExcelWorksheets>
+              </x:ExcelWorkbook>
+            </xml><![endif]-->
+          </head>
+          <body>${table}</body>
+        </html>`;
+
+      // Evitar secuencia de cierre de script
+      const endScript = '<' + '/script';
+      const safeHtml = html.split(endScript).join('<\\/script>');
+
+      const blob = new Blob(['\ufeff', safeHtml], { type: 'application/vnd.ms-excel;charset=utf-8;' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url; a.download = 'planilla-acompanamiento.xls'; a.click();
+      URL.revokeObjectURL(url);
+    }
+
+    // Exportación a Excel (.xlsx) con import dinámico; fallback a .xls si falla
+    async function exportExcel(rows){
+      if (!rows.length){ alert('No hay datos para exportar.'); return; }
+
+      const headers = [
+        'N° ACTA','Fecha','Establecimiento','RBD','Modalidad',
+        'Asesor principal','Asesor segundo','Hora inicio','Hora término',
+        'Objetivo Estratégico','Objetivo Visita','Antecedentes','Instrumentos / Insumos',
+        'Práctica Problemática','Actividades Realizadas','Acuerdos',
+        'Fecha Implementación','Responsables','Aspectos Positivos','Áreas de Mejora',
+        'Ciclo Apoyo','Capacidad Basal','Nivel Implementación','Rol Profesional','Creado'
+      ];
+
+      const fmtDate = (v) => {
+        const s = toInputDate(v);
+        if (!s) return '';
+        // Mantener formato dd-mm-yyyy para legibilidad
+        const [y,m,d] = s.split('-');
+        return `${d}-${m}-${y}`;
+      };
+
+  // Forzar texto para evitar formatos automáticos (e.g., RBD con ceros a la izquierda)
+  const toCell = (v) => (v === null || v === undefined) ? '' : String(v);
+
+      const data = [headers, ...rows.map(d => ([
+        toCell(d.actaNumber),
+        fmtDate(d.fecha || d.createdAt),
+        toCell(d.establecimiento),
+        toCell(d.rbd),
+        toCell(d.modalidad),
+        toCell(d.asesorPrincipal),
+        toCell(d.asesorSegundo),
+        toCell(d.horaInicio),
+        toCell(d.horaTermino),
+        toCell(d.objetivoEstrategico),
+        toCell(d.objetivoVisita),
+        toCell(d.antecedentes),
+        toCell(d.instrumentos),
+        toCell(d.practicaProblematica),
+        toCell(d.actividadesRealizadas),
+        toCell(d.acuerdos),
+        fmtDate(d.fechaImplementacion),
+        toCell(d.responsables),
+        toCell(d.aspectosPositivos),
+        toCell(d.areasMejora),
+        toCell(d.cicloApoyo),
+        toCell(d.capacidadBasal),
+        toCell(d.nivelImplementacion),
+        toCell(d.rolProfesional),
+        fmtDate(d.createdAt)
+      ]))];
+
+      try {
+        const XLSX = await import('https://cdn.jsdelivr.net/npm/xlsx@0.19.3/+esm');
+        const wb = XLSX.utils.book_new();
+        const ws = XLSX.utils.aoa_to_sheet(data);
+        // Ajustar ancho de columnas básico
+        const colWidths = headers.map(h => ({ wch: Math.max(12, Math.min(40, String(h).length + 2)) }));
+        ws['!cols'] = colWidths;
+        XLSX.utils.book_append_sheet(wb, ws, 'Planilla');
+
+        const out = XLSX.write(wb, { bookType: 'xlsx', type: 'array' });
+        const blob = new Blob([out], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url; a.download = 'planilla-acompanamiento.xlsx'; a.click();
+        URL.revokeObjectURL(url);
+      } catch (e) {
+        console.warn('No se pudo cargar XLSX, usando exportación .xls de respaldo', e);
+        exportExcelHTML(rows);
+      }
+    }
+
+    btnExport.addEventListener('click', async ()=>{
+      try { await exportExcel(filtered.length ? filtered : allDocs); }
+      catch { alert('No se pudo exportar.'); }
+    });
+    btnPrint.addEventListener('click', ()=> window.print());
+    [qEl, fromEl, toEl, modEl].forEach(el => {
+      if (!el) return;
+      el.addEventListener('input', applyFilters);
+      el.addEventListener('change', applyFilters);
+    });
+    applyFilters();
+
+    function subscribeUserDocs(uid){
+      const qRef = query(collection(db,'datosBasicos'), where('ownerUid','==', uid));
+      return onSnapshot(qRef, snap=>{
+        allDocs = snap.docs.map(d=>({_id:d.id, ...d.data()}));
+        const getTime = (x)=> getDateObj(x.fecha || x.createdAt)?.getTime() || 0;
+        const seen = new Map();
+        for (const it of allDocs){
+          const key = (it.actaNumber || it._id || '').toString();
+          const prev = seen.get(key);
+          if (!prev || getTime(it) > getTime(prev)) seen.set(key, it);
+        }
+        allDocs = Array.from(seen.values());
+
+        allDocs.sort((a,b)=>{
+          const da = getDateObj(a.fecha || a.createdAt)?.getTime() || 0;
+          const dbb = getDateObj(b.fecha || b.createdAt)?.getTime() || 0;
+          return dbb - da;
+        });
+
+        if (focusId){
+          filtered = allDocs.filter(x=> x._id===focusId);
+          renderTable(filtered);
+          if (filtered.length===1) openDetail(filtered[0]);
+        } else if (focusActa){
+          filtered = allDocs.filter(x=> (x.actaNumber||'')===focusActa);
+          renderTable(filtered);
+          if (filtered.length===1) openDetail(filtered[0]);
+        } else {
+          filtered = allDocs;
+          applyFilters();
+        }
+      }, err=>{
+        console.error('Error leyendo documentos:', err);
+      });
+    }
+
+    onAuthStateChanged(auth, async (user)=>{
+      if (!user){ location.replace('../index.html'); return; }
+      await loadProfile(user);
+      const unsub = subscribeUserDocs(user.uid);
+      window.addEventListener('unload', ()=>{ try{unsub && unsub();}catch{} });
+    });
+  </script>
+</body>
+</html>

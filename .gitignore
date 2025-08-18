@@ -1,28 +1,74 @@
-# Firebase build and deployment files
-/firebase-debug.log
-/firebase-debug.*.log
-.firebaserc
-
-# Firebase Hosting
-/firebase.json
-*.cache
-hosting/.cache
-
-# Firebase Functions
-/functions/node_modules/
-/functions/.env
-/functions/package-lock.json
-
-# Firebase Emulators
-/firebase-*.zip
-/.firebase/
-/emulator-ui/
+# Dependencias
+node_modules/
 
 # Logs
+logs/
 *.log
+*.log.*
+*.gz
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+pnpm-debug.log*
 
-# Environment files (local configs)
-/.env.*
+# Compilados / builds / salidas
+/dist/
+/build/
+/out/
+/.cache/
+/.tmp/
+/tmp/
+/temp/
+/coverage/
+/.parcel-cache/
+
+# Caches de herramientas
+.eslintcache
+.stylelintcache
+
+# Entornos / secretos
+.env
+.env.*
+!.env.example
+
+# Firebase emuladores / depuración
+.firebase/
+firebase-debug.log
+firestore-debug.log
+ui-debug.log
+storage-debug.log
+emulatorui-debug.log
+
+# IDE / Editor
+.vscode/
+.idea/
+.history/
+*.swp
+
+# SO (Windows / macOS)
+Thumbs.db
+ehthumbs.db
+desktop.ini
+.DS_Store
+.AppleDouble
+.LSOverride
+Icon?
+
+# Hostings / plataformas
+.vercel/
+.netlify/
+ 
+ # Firebase (build, hosting, funciones, emuladores)
+ /firebase-debug.log
+ /firebase-debug.*.log
+ .firebaserc
+ /firebase.json
+ *.cache
+ hosting/.cache
+ /firebase-*.zip
+ /.firebase/
+ /emulator-ui/
+ # Functions (si existiera carpeta functions)
+ /functions/node_modules/
+ /functions/.env
+ /functions/package-lock.json

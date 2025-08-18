@@ -1,0 +1,56 @@
+# UATP SLEP Iquique
+
+Plataforma web para gestionar acompañamientos técnico-pedagógicos:
+- Registro y edición de actas/visitas.
+- Impresión a PDF con cabecera institucional y firmas.
+- Planilla con filtros (texto, fechas, modalidad) y exportación a Excel.
+- Autenticación y perfiles con Firebase; datos en Firestore.
+
+## Módulos
+- Inicio, Asistencia, Establecimiento, Documentos, Planilla.
+
+## Tecnologías
+- HTML/CSS/JS.
+- Firebase (Auth, Firestore).
+- Exportación Excel por HTML-table + Blob; impresión nativa del navegador.
+
+## Requisitos
+- Navegador moderno (recomendado: Chrome/Edge).
+- Servir archivos vía HTTP (evitar file://).
+
+## Ejecución local (Windows)
+Opciones rápidas:
+```powershell
+# Opción 1 (recomendada)
+npx serve .
+
+# Opción 2
+npx http-server -p 5173
+
+# Opción 3 (Python 3)
+py -m http.server 5173
+```
+Abrir: http://localhost:3000 (o el puerto indicado).
+
+## Configuración Firebase (resumen)
+- Crear proyecto en Firebase.
+- Habilitar Authentication (Email/Password) y Firestore.
+- Colocar firebaseConfig en el script de inicialización (o en el archivo que use Firebase).
+- Verificar reglas de Firestore acordes al uso interno.
+
+## Uso básico
+- Iniciar sesión.
+- Documentos: crear/editar, vista previa y PDF.
+- Planilla: buscar/filtrar por fechas y modalidad, exportar Excel.
+
+## Notas de impresión/Excel
+- Espera de carga de imágenes para que el logo aparezca en el PDF.
+- Ancho completo y ajuste de líneas en metadatos para evitar desbordes.
+- Excel se genera con codificación UTF-8 (tildes y ñ).
+
+## Estructura (simplificada)
+- index.html
+- other_pag/
+  - documentos.html
+  - planilla.html
+  -

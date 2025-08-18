@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Plataforma - SLEP IQUIQUE</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <link rel="stylesheet" href="./styles.css">
+  <style>
+    body { display:flex; flex-direction:column; }
+    main { max-width:1100px; margin:1.8rem auto 2.5rem; padding:0 1rem; width:100%; }
+    .welcome {
+      background: linear-gradient(145deg,#243356,#192338 60%);
+      border:1px solid #2c4262;
+      border-radius:14px;
+      padding:1.75rem 1.55rem 2rem;
+      box-shadow: var(--shadow);
+      animation: fadeIn .55s ease;
+    }
+    .top-bar {
+      display:flex;
+      flex-wrap:wrap;
+      gap:.9rem;
+      align-items:center;
+      justify-content:space-between;
+      margin-bottom:1.25rem;
+    }
+    .chip {
+      background:#0f1b2d;
+      padding:.45rem .75rem;
+      border-radius:100px;
+      font-size:.7rem;
+      letter-spacing:.5px;
+      border:1px solid #2a3d58;
+      opacity:.85;
+    }
+    .btn {
+      background: linear-gradient(120deg,var(--accent),#818cf8);
+      color:#fff;
+      border:none;
+      padding:.65rem 1rem;
+      border-radius:8px;
+      font-weight:600;
+      font-size:.8rem;
+      letter-spacing:.4px;
+      cursor:pointer;
+      transition:background .25s, transform .15s;
+    }
+    .btn:hover { background: var(--accent-hover); }
+    .btn:active { transform:scale(.93); }
+    .logout-btn { background:#334155; }
+    .logout-btn:hover { background:#475569; }
+    .top-nav {
+      position:sticky; top:0; z-index:50;
+      display:flex; align-items:center; gap:1.2rem;
+      padding:.85rem 1.2rem;
+      background:rgba(15,23,42,.85);
+      backdrop-filter:blur(6px);
+      border-bottom:1px solid #243556;
+    }
+    .top-nav .brand { font-weight:600; letter-spacing:.5px; }
+    .top-nav a {
+      color:var(--text); text-decoration:none; font-size:.7rem;
+      letter-spacing:.6px; text-transform:uppercase; opacity:.8;
+      padding:.45rem .7rem; border-radius:6px; transition:background .25s,opacity .25s;
+    }
+    .top-nav a:hover { background:#1f2f48; opacity:1; }
+    .top-nav .user-badge {
+      margin-left:auto; display:flex; align-items:center; gap:.6rem;
+      font-size:.7rem; background:#1e293b; padding:.5rem .75rem; border-radius:999px;
+      border:1px solid #2b425f; letter-spacing:.4px;
+    }
+    .cards-container {
+      display:grid; gap:1.2rem; margin-top:1.6rem;
+    }
+    @media(min-width:900px){
+      .cards-container { grid-template-columns: repeat(auto-fill,minmax(250px,1fr)); }
+    }
+    .card-sec {
+      background: linear-gradient(145deg,#243356,#192338 60%);
+      border:1px solid #2c4262;
+      border-radius:14px;
+      padding:1.1rem 1.05rem 1.25rem;
+      display:flex; flex-direction:column; gap:.6rem;
+      box-shadow:var(--shadow);
+      animation: fadeIn .55s ease;
+      min-height:170px;
+    }
+    .card-sec h3 { margin:.1rem 0 .4rem; font-size:.95rem; letter-spacing:.5px; }
+    .card-sec p { font-size:.7rem; opacity:.8; line-height:1.15rem; }
+    .mini-link {
+      margin-top:auto; font-size:.65rem; text-decoration:none;
+      color:var(--accent); display:inline-flex; align-items:center; gap:.25rem;
+    }
+    .mini-link:hover { text-decoration:underline; }
+    /* Modal simple "Próximamente" */
+    .simple-modal.hidden { display: none; }
+    .simple-modal {
+      position: fixed; inset: 0; z-index: 1000;
+      display: grid; place-items: center;
+    }
+    .simple-modal-backdrop {
+      position: absolute; inset: 0; background: rgba(0,0,0,.55);
+      backdrop-filter: blur(2px);
+    }
+    .simple-modal-dialog {
+      position: relative;
+      background: #0f1b2d;
+      color: #f1f5f9;
+      border: 1px solid #2c4262;
+      border-radius: 14px;
+      padding: 1rem 1.1rem 1.15rem;
+      width: min(520px, calc(100% - 2rem));
+      box-shadow: var(--shadow);
+      animation: fadeIn .25s ease;
+    }
+    .simple-modal-dialog h3 { margin: .2rem 0 .4rem; }
+    .simple-modal-dialog p { margin: 0; opacity: .9; line-height: 1.35rem; font-size: .9rem; }
+    .simple-modal-close {
+      position: absolute; right: .5rem; top: .5rem;
+      background: #334155; color: #fff; border: none; border-radius: 8px;
+      width: 32px; height: 32px; cursor: pointer;
+    }
+    .simple-modal-close:hover { background: #475569; }
+  </style>
+</head>
+<body>
+  <!-- Barra de menú -->
+  <nav class="top-nav">
+    <span class="brand">SLEP IQQ</span>    
+    <a href="other_pag/asistencia.html">Asistencia</a>
+    <a href="other_pag/establecimiento.html">Establecimiento</a>
+    <a href="other_pag/documentos.html">Acompañamiento Visita</a>
+    <a href="#habilitacion">Habilitación</a>
+    <a href="#convivencia">Convivencia</a>
+    <div class="user-badge">
+      <span id="navUserName">Usuario...</span>
+      <button id="logoutBtnPlat" class="btn logout-btn" type="button" style="padding:.4rem .65rem;font-size:.6rem;">Salir</button>
+    </div>
+  </nav>
+
+  <main style="max-width:1200px;margin:1.2rem auto 2.5rem;padding:0 1rem;width:100%;">
+    <h2 style="margin:.5rem 0 1rem;">Bienvenido a nuestro SLEP IQUIQUE</h2>
+    <p id="authStateMsg" style="margin:0 0 1.4rem;font-size:.75rem;opacity:.75;">Validando sesión...</p>
+
+    <div class="cards-container">
+      <section id="asistencia" class="card-sec">
+        <h3>ASISTENCIA</h3>
+        <p>Panel para controlar y visualizar métricas de asistencia. Puedes integrar datos en tiempo real más adelante.</p>
+        <a href="../other_pag/asistencia.html" class="mini-link card-txt">Ver detalle →</a>
+      </section>
+      <section id="establecimiento" class="card-sec">
+        <h3>ESTABLECIMIENTO</h3>
+        <p>Información general de establecimientos, perfiles, infraestructura y contactos principales.</p>
+        <a href="../other_pag/establecimiento.html" class="mini-link card-txt">Administrar →</a>
+      </section>
+      <section id="documentos" class="card-sec">
+        <h3>DOCUMENTOS</h3>
+        <p>Repositorio para subir, versionar y compartir documentos internos y oficiales.</p>
+        <a href="../other_pag/documentos.html" class="mini-link card-txt">Abrir repositorio →</a>
+      </section>
+      <section id="habilitacion" class="card-sec">
+        <h3>HABILITACION</h3>
+        <p>Gestión de procesos de habilitación, estados de revisión y seguimiento de cumplimiento.</p>
+        <button href="#" class="mini-link card-txt">Procesos →</button>
+      </section>
+      <section id="convivencia" class="card-sec">
+        <h3>CONVIVENCIA ESCOLAR</h3>
+        <p>Monitoreo de casos, iniciativas de convivencia y reportes de clima escolar.</p>
+        <button href="#" class="mini-link card-txt">Panel convivencia →</button>
+      </section>
+    </div>
+  </main>
+
+  <!-- Modal Próximamente -->
+  <div id="soonModal" class="simple-modal hidden" aria-hidden="true" role="dialog" aria-modal="true">
+    <div class="simple-modal-backdrop" data-close></div>
+    <div class="simple-modal-dialog" role="document">
+      <button class="simple-modal-close" type="button" aria-label="Cerrar" data-close>&times;</button>
+      <h3 style="align-items: center; display: flex; justify-content: center;">🚧 Próximamente 🚧</h3>
+      <p style="align-items: center; display: flex; justify-content: center;" >Esta funcionalidad estará disponible muy pronto. Estamos trabajando para mejorar tu experiencia en el sistema SLEP Iquique</p>
+    </div>
+  </div>
+
+  <footer style="text-align:center;padding:1.2rem 0 2rem;font-size:.7rem;opacity:.65;">&copy; SLEP IQUIQUE</footer>
+  <footer style="text-align:center;padding:1.2rem 0 2rem;font-size:.7rem;opacity:.65;">&copy; Desarrollador: FJRV</footer>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+    import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+    import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyDzUGdJT-eyYjKtej63iThVLgvTHVzvxvA",
+      authDomain: "ia-slep-iqq.firebaseapp.com",
+      projectId: "ia-slep-iqq",
+      storageBucket: "ia-slep-iqq.appspot.com",
+      messagingSenderId: "528895424744",
+      appId: "1:528895424744:web:7144f5e5db1bce5ffb315d"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+
+    const authStateMsg = document.getElementById('authStateMsg');
+    const logoutBtnPlat = document.getElementById('logoutBtnPlat');
+    const navUserName = document.getElementById('navUserName');
+
+    // Gracia: espera rehidratación de sesión antes de volver a index
+    let redirectTimer = setTimeout(() => {
+      // Evita bucle si ya estamos entrando con sesión
+      location.replace('index.html');
+    }, 1200);
+
+    async function loadProfile(uid, fallbackEmail) {
+      try {
+        const snap = await getDoc(doc(db, 'users', uid));
+        const name = snap.exists() && snap.data().name ? snap.data().name : fallbackEmail || uid;
+        navUserName.textContent = name;
+      } catch (e) {
+        console.warn('No se pudo leer perfil:', e);
+        navUserName.textContent = fallbackEmail || uid;
+      }
+    }
+
+    onAuthStateChanged(auth, user => {
+      if (!user) {
+        // No redirigir de inmediato; dejamos que el timer actúe
+        authStateMsg.textContent = 'Validando sesión...';
+        return;
+      }
+      // Hay sesión: cancelar rebote y continuar
+      clearTimeout(redirectTimer);
+      authStateMsg.textContent = 'Sesión activa.';
+      loadProfile(user.uid, user.email);
+    });
+
+    logoutBtnPlat.addEventListener('click', async () => {
+      try {
+        await signOut(auth);
+        sessionStorage.removeItem('redirPlat');
+        location.replace('index.html');
+      } catch (e) {
+        console.error(e);
+        alert('Error al cerrar sesión');
+      }
+    });
+
+    // Abrir modal "Próximamente" para Habilitación y Convivencia (menú y tarjetas)
+    const soonModal = document.getElementById('soonModal');
+    function openSoon() {
+      if (!soonModal) return;
+      soonModal.classList.remove('hidden');
+      soonModal.setAttribute('aria-hidden','false');
+    }
+    function closeSoon() {
+      if (!soonModal) return;
+      soonModal.classList.add('hidden');
+      soonModal.setAttribute('aria-hidden','true');
+    }
+    soonModal?.addEventListener('click', (e) => {
+      if (e.target.matches('[data-close]') || e.target === soonModal) closeSoon();
+    });
+    window.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && !soonModal.classList.contains('hidden')) closeSoon();
+    });
+
+    // Enlaces del menú
+    document.querySelector('nav.top-nav a[href="#habilitacion"]')?.addEventListener('click', (e)=>{ e.preventDefault(); openSoon(); });
+    document.querySelector('nav.top-nav a[href="#convivencia"]')?.addEventListener('click', (e)=>{ e.preventDefault(); openSoon(); });
+
+    // Enlaces en tarjetas
+    document.querySelector('#habilitacion .mini-link')?.addEventListener('click', (e)=>{ e.preventDefault(); openSoon(); });
+    document.querySelector('#convivencia .mini-link')?.addEventListener('click', (e)=>{ e.preventDefault(); openSoon(); });
+  </script>
+</body>
+</html>

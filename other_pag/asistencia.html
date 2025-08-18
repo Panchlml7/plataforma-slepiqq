@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Asistencia - SLEP IQUIQUE</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <nav class="top-nav">
+    <span class="brand">SLEP IQQ</span>
+    <a class="nav-link active" href="asistencia.html">Asistencia</a>
+    <a class="nav-link" href="establecimiento.html">Establecimiento</a>
+    <a class="nav-link" href="documentos.html">Documentos</a>
+    <a class="nav-link" href="../plataforma.html">INICIO</a>
+    <span class="user-badge"><span id="userName">...</span><button id="logoutBtn" class="btn" type="button">Salir</button></span>
+  </nav>
+  <main>
+    <h1>Asistencia</h1>
+    <p class="info">Panel base para métricas de asistencia. <span class="badge">Placeholder</span></p>
+    <section class="section-card">
+      <h2>Resumen rápido</h2>
+      <div class="placeholder-box">
+        Agrega aquí gráficas (ej. porcentaje asistencia, ausencias justificadas, tardanzas).
+      </div>
+    </section>
+    <section class="section-card">
+      <h2>Detalle por curso</h2>
+      <div class="placeholder-box">
+        Tabla dinámica futura: curso, matrícula, presentes, porcentaje.
+      </div>
+    </section>
+  </main>
+  <footer>&copy; SLEP IQUIQUE</footer>
+  <script type="module">
+    import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js';
+    import { getAuth, onAuthStateChanged, signOut } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js';
+    import { getFirestore, doc, getDoc } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js';
+
+    const firebaseConfig = { apiKey:"AIzaSyDzUGdJT-eyYjKtej63iThVLgvTHVzvxvA",authDomain:"ia-slep-iqq.firebaseapp.com",projectId:"ia-slep-iqq",storageBucket:"ia-slep-iqq.appspot.com",messagingSenderId:"528895424744",appId:"1:528895424744:web:7144f5e5db1bce5ffb315d" };
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+
+    const userNameEl = document.getElementById('userName');
+    const logoutBtn = document.getElementById('logoutBtn');
+
+    async function loadProfile(uid, email){
+      try {
+        const snap = await getDoc(doc(db,'users',uid));
+        userNameEl.textContent = snap.exists() && snap.data().name ? snap.data().name : (email||uid);
+      } catch {
+        userNameEl.textContent = email || uid;
+      }
+    }
+
+    onAuthStateChanged(auth, user=>{
+      if(!user){
+        location.replace('../index.html');
+        return;
+      }
+      loadProfile(user.uid, user.email);
+    });
+
+    logoutBtn.addEventListener('click', async ()=>{
+      try{ await signOut(auth); location.replace('../index.html'); }catch(e){ console.error(e); alert('Error al cerrar sesión'); }
+    });
+  </script>
+</body>
+</html>

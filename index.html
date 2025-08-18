@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>LOGIN UATP</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <link rel="stylesheet" href="./styles.css">
+  <!-- Nota: ahora app.js se sirve tras build (npm run dev) usando imports de 'firebase' -->
+</head>
+<body>
+  <div id="authCenterWrap">
+    <section id="authSection" class="card">
+      <div id="authLoggedOut">
+        <form id="loginForm">
+          <input id="loginEmail" type="email" placeholder="Email" required>
+            <input id="loginPassword" type="password" placeholder="Contraseña" required>
+          <button type="submit">Ingresar</button>
+          <p class="register-link">¿No tienes cuenta?
+            <button
+              type="button"
+              id="openRegisterModalLink"
+              aria-controls="registerModal"
+              style="background:none;border:0;padding:0;color:#2563eb;cursor:pointer;text-decoration:underline;">
+              Regístrate
+            </button>
+          </p>
+          <!-- El enlace abre el modal (listener en app.js) -->
+        </form>
+      </div>
+      <div id="authLoggedIn" style="display:none;">
+        <span id="userEmail"></span>
+        <button id="logoutBtn" type="button">Cerrar sesión</button>
+      </div>
+      <div id="statusMsg" style="margin-top:.5rem;font-size:.8rem;opacity:.85; text-align: center;"></div>
+    </section>
+  </div>
+
+  <!-- App (se muestra tras login) -->
+  <main id="appMain" style="display:none;">
+    <section class="card">
+      <h2>Nueva nota</h2>
+      <form id="noteForm">
+        <input id="title" placeholder="Título" required>
+        <textarea id="content" placeholder="Contenido" required></textarea>
+        <button type="submit" disabled>Guardar</button>
+      </form>
+    </section>
+    <section class="card">
+      <h2>Mis notas</h2>
+      <ul id="notesList"></ul>
+    </section>
+  </main>
+
+  <footer><small><i>Servicio Local de Educación Publica en IQUIQUE</i></small></footer>
+
+  <!-- Modal Registro -->
+  <div id="registerModal" class="modal hidden" aria-hidden="true" role="dialog" aria-modal="true">
+    <div class="modal-backdrop" data-close-modal></div>
+    <div class="modal-dialog" role="document">
+      <button class="modal-close" type="button" aria-label="Cerrar" data-close-modal>&times;</button>
+      <h3 style="margin-top:0;">Crear cuenta</h3>
+      <form id="registerForm">
+        <div class="mb">
+          <input id="regName" type="text" placeholder="Nombre completo" required>
+        </div>
+        <div class="mb">
+          <input id="regBirth" type="date" required>
+        </div>
+        <div class="mb">
+          <input id="regEmail" type="email" placeholder="Correo" required>
+        </div>
+        <div class="mb">
+          <input id="regEst" type="text" placeholder="Establecimiento" required>
+        </div>
+        <div class="mb">
+          <input id="regPassword" type="password" placeholder="Contraseña (mín 6)" minlength="6" required>
+        </div>
+        <div class="mb">
+          <button type="submit" style="width:100%;margin-top:.4rem;">Crear cuenta</button>
+        </div>
+      </form>
+      <small style="display:block;margin-top:.75rem;opacity:.7; text-align: center;">Los datos quedarán registrados en tu perfil seguro.</small>
+    </div>
+  </div>
+
+  <!-- Instrucción si se abre con file:// -->
+  <script>
+    if (location.protocol === 'file:') {
+      document.body.innerHTML = `
+        <div style="font-family:system-ui,Arial,sans-serif;max-width:750px;margin:40px auto;padding:28px 32px;background:#0f172a;color:#f1f5f9;border:1px solid #243556;border-radius:14px;line-height:1.4;">
+          <h2 style="margin-top:0;">Necesitas un servidor local (no file://)</h2>
+          <p>Estás abriendo el archivo directamente con <code>file://</code>. Los módulos ES y CORS de Firebase requieren <strong>http://</strong>.</p>
+          <p>Usa uno de estos comandos en la carpeta del proyecto (<code>c:\\nosql\\plataform-slepiqq-main</code>):</p>
+          <pre style="background:#18263d;padding:14px;border-radius:8px;overflow:auto;font-size:.85rem;">
+# Node (rápido)
+npx serve .
+
+# Alternativa
+npx http-server -p 5173
+
+# Python 3
+python -m http.server 5173
+
+# PowerShell simple
+powershell -Command "Start-Process powershell -ArgumentList 'npm i -g serve; serve .'"
+          </pre>
+          <p>Luego abre: <code>http://localhost:3000</code> (o el puerto mostrado) en tu navegador.</p>
+          <p style="opacity:.8;font-size:.8rem;">Detectado protocolo: ${location.protocol}</p>
+        </div>`;
+    }
+  </script>
+
+  <!-- Solo cargar app.js si no es file:// -->
+  <script>
+    if (location.protocol !== 'file:') {
+      const s = document.createElement('script');
+      s.type = 'module';
+      s.src = './app.js';
+      document.body.appendChild(s);
+    }
+  </script>
+
+  <!-- Fallback: abrir/cerrar modal de registro si app.js no adjunta el listener -->
+  <script>
+    (function () {
+      const openBtn = document.getElementById('openRegisterModalLink');
+      const modal = document.getElementById('registerModal');
+      if (!openBtn || !modal) return;
+
+      const open = (e) => {
+        e?.preventDefault?.();
+        modal.classList.remove('hidden');
+        modal.setAttribute('aria-hidden', 'false');
+        document.body.style.overflow = 'hidden';
+      };
+      const close = () => {
+        modal.classList.add('hidden');
+        modal.setAttribute('aria-hidden', 'true');
+        document.body.style.overflow = '';
+      };
+
+      openBtn.addEventListener('click', open);
+      modal.addEventListener('click', (e) => {
+        if (e.target.matches('[data-close-modal], .modal-backdrop')) close();
+      });
+      window.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && !modal.classList.contains('hidden')) close();
+      });
+    })();
+  </script>
+</body>
+</html>
