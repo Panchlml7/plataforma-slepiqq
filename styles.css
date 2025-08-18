@@ -50,6 +50,8 @@ main {
 }
 
 h1, h2 { margin: 0 0 .9rem; letter-spacing: .5px; }
+h1 { font-size: clamp(1.1rem, 1.5vw + 0.9rem, 1.75rem); }
+h2 { font-size: clamp(1rem, 1.2vw + 0.7rem, 1.3rem); }
 
 form {
   display: flex;
@@ -107,6 +109,16 @@ li {
   flex-direction: column;
   gap: .45rem;
   animation: popIn .4s ease;
+}
+@media (max-width: 640px) {
+  body { overflow-x: hidden; }
+  main { gap: 1rem; padding: 0 .8rem 1.4rem; margin-bottom: 1.4rem; }
+  .card { padding: 1rem 1rem 1.2rem; }
+  input, textarea, button { font-size: .95rem; }
+}
+@media (min-width: 641px) and (max-width: 1024px) {
+  main { gap: 1.2rem; padding: 0 1rem 1.6rem; }
+  .card { padding: 1.1rem 1.1rem 1.35rem; }
 }
 
 .note-header {

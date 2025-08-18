@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <title>Bootstrap: Asignar rol admin</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="robots" content="noindex, nofollow" />
+  <!-- Estilos compartidos y overrides locales -->
+  <link rel="stylesheet" href="../style.css" />
+  <link rel="stylesheet" href="admin.css" />
+  <style>
+    body { font-family: ui-sans-serif, system-ui, Arial, sans-serif; width: 50% ; margin: 2rem auto; padding: 0 1rem; }
+    h1 { font-size: 1.2rem; }
+    .card { border: 1px solid #e5e7eb; border-radius: 12px; padding: 1rem; }
+    .row { display: grid; gap: .6rem; margin: .8rem 0; }
+    label { font-size: .9rem; color: #111827; }
+    input, select { width: 100%; padding: .55rem .6rem; border: 1px solid #cbd5e1; border-radius: 8px; font-size: .95rem; }
+    .actions { display: flex; gap: .6rem; }
+    button { padding: .55rem .9rem; border: 1px solid #e5e7eb; border-radius: 8px; background: #111827; color: #fff; cursor: pointer; }
+    .muted { color: #6b7280; font-size: .9rem; }
+    .ok { color: #065f46; }
+    .err { color: #991b1b; }
+    .notice { background: #f9fafb; border: 1px dashed #e5e7eb; padding: .75rem; border-radius: 10px; margin: 1rem 0; }
+  </style>
+</head>
+<body>
+  <!-- Barra de menú consistente -->
+  <nav class="top-nav" style="width:100%;margin:0 auto 1rem;">
+    <span class="brand">SLEP IQQ</span>
+    <a class="nav-link" href="../asistencia.html">Asistencia</a>
+    <a class="nav-link" href="../establecimiento.html">Establecimiento</a>
+    <a class="nav-link" href="../documentos.html">Documentos</a>
+    <a class="nav-link" href="../../plataforma.html">INICIO</a>
+    <span class="user-badge"><span id="navUserName">Usuario</span><button id="logoutBtnTop" class="btn" type="button">Salir</button></span>
+  </nav>
+
+  <h1>Bootstrap: Asignar rol admin (temporal)</h1>
+  <p class="muted">Usa esta página solo para elevar un usuario a administrador por primera vez. Luego elimínala del servidor.</p>
+
+  <div class="card" id="authCard" style="margin-bottom: 1rem;">
+    <div class="row">
+      <strong>Autenticación</strong>
+      <p id="authState" class="muted">No autenticado.</p>
+      <div class="actions">
+        <button id="loginGoogle">Iniciar con Google</button>
+        <button id="logoutBtn" style="background:#6b7280">Cerrar sesión</button>
+      </div>
+      <div class="row">
+        <label for="loginEmail">Email (alternativa)</label>
+        <input id="loginEmail" type="email" placeholder="tu@correo.com" />
+      </div>
+      <div class="row">
+        <label for="loginPass">Contraseña</label>
+        <input id="loginPass" type="password" placeholder="••••••••" />
+      </div>
+      <div class="actions">
+        <button id="loginEmailBtn" style="background:#2563eb">Iniciar con Email</button>
+      </div>
+      <div class="notice">
+        Si aparece "permission-denied" al guardar, primero inicia sesión con una cuenta permitida por tus reglas de Firestore.
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="row">
+      <label for="uid">UID</label>
+      <input id="uid" value="a5ZUyc84QDSdQeCkwvrZLoHx8bB2" />
+    </div>
+    <div class="row">
+      <label for="email">Email</label>
+      <input id="email" type="email" value="francisco.ramos@slepiquique.cl" />
+    </div>
+    <div class="row">
+      <label for="name">Nombre (opcional)</label>
+      <input id="name" placeholder="Nombre visible" />
+    </div>
+    <div class="row">
+      <label for="role">Rol</label>
+      <select id="role">
+        <option value="admin" selected>admin</option>
+        <option value="editor">editor</option>
+        <option value="lector">lector</option>
+      </select>
+    </div>
+    <div class="row">
+      <label><input id="disabled" type="checkbox" /> Deshabilitado</label>
+    </div>
+    <div class="actions">
+      <button id="applyBtn">Aplicar</button>
+      <button id="readBtn" style="background:#374151">Probar lectura</button>
+    </div>
+    <p id="msg" class="muted"></p>
+  </div>
+
+  <script type="module">
+    import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js';
+    import { getFirestore, doc, setDoc, getDoc, serverTimestamp } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js';
+  import { getAuth, onAuthStateChanged, GoogleAuthProvider, signInWithPopup, signOut, signInWithEmailAndPassword } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js';
+
+    // Config del proyecto (solo Firestore es necesario aquí)
+    const firebaseConfig = { apiKey: 'AIzaSyDzUGdJT-eyYjKtej63iThVLgvTHVzvxvA', authDomain: 'ia-slep-iqq.firebaseapp.com', projectId: 'ia-slep-iqq' };
+  const app = initializeApp(firebaseConfig);
+  const db = getFirestore(app);
+  const auth = getAuth(app);
+  const provider = new GoogleAuthProvider();
+
+    const $ = (id)=> document.getElementById(id);
+    const uidEl = $('uid');
+    const emailEl = $('email');
+    const nameEl = $('name');
+    const roleEl = $('role');
+    const disabledEl = $('disabled');
+    const msgEl = $('msg');
+  const authStateEl = $('authState');
+  const navUserNameEl = $('navUserName');
+    const loginGoogleBtn = $('loginGoogle');
+    const logoutBtn = $('logoutBtn');
+  const logoutBtnTop = $('logoutBtnTop');
+  const loginEmailEl = $('loginEmail');
+  const loginPassEl = $('loginPass');
+  const loginEmailBtn = $('loginEmailBtn');
+
+    function setMsg(t, cls='muted'){ msgEl.className = cls; msgEl.textContent = t; }
+
+  onAuthStateChanged(auth, async (user)=>{
+      if (user) {
+        const name = user.displayName || user.email || user.uid;
+        authStateEl.textContent = `Autenticado como ${name}`;
+    if (navUserNameEl) navUserNameEl.textContent = name;
+        // Verificar rol admin
+        try {
+          const snap = await getDoc(doc(db, 'users', user.uid));
+          const role = (snap.exists() ? (snap.data().role||'') : '').toString().toLowerCase();
+          if (role !== 'admin') {
+            setMsg('Acceso restringido: solo administradores pueden otorgar permisos.', 'err');
+            // Deshabilitar controles de edición
+            document.getElementById('applyBtn')?.setAttribute('disabled', 'true');
+          } else {
+            document.getElementById('applyBtn')?.removeAttribute('disabled');
+          }
+        } catch (e) { /* si falla, no bloquear; las reglas decidirán */ }
+      } else {
+        authStateEl.textContent = 'No autenticado.';
+    if (navUserNameEl) navUserNameEl.textContent = '—';
+        document.getElementById('applyBtn')?.setAttribute('disabled', 'true');
+      }
+    });
+
+    loginGoogleBtn.addEventListener('click', async ()=>{
+      try {
+        await signInWithPopup(auth, provider);
+        setMsg('Sesión iniciada.', 'ok');
+      } catch (e) {
+        console.error(e);
+        setMsg('No se pudo iniciar sesión. Revisa la consola.', 'err');
+      }
+    });
+
+    logoutBtn.addEventListener('click', async ()=>{
+      try { await signOut(auth); setMsg('Sesión cerrada.', 'ok'); } catch(e){ console.error(e); setMsg('Error al cerrar sesión.', 'err'); }
+    });
+
+    logoutBtnTop?.addEventListener('click', async ()=>{
+      try { await signOut(auth); location.replace('../../index.html'); } catch(e){ console.error(e); alert('Error al cerrar sesión'); }
+    });
+
+    loginEmailBtn.addEventListener('click', async ()=>{
+      const email = loginEmailEl.value.trim();
+      const pass = loginPassEl.value;
+      if (!email || !pass) { setMsg('Email y contraseña requeridos.', 'err'); return; }
+      try {
+        await signInWithEmailAndPassword(auth, email, pass);
+        setMsg('Sesión iniciada con email.', 'ok');
+      } catch(e){
+        console.error(e);
+        setMsg('No se pudo iniciar con email. ¿Habilitado en Firebase Auth?', 'err');
+      }
+    });
+
+    $('applyBtn').addEventListener('click', async ()=>{
+      if (!auth.currentUser) { setMsg('Debes iniciar sesión antes de aplicar cambios.', 'err'); return; }
+      const uid = uidEl.value.trim();
+      const email = emailEl.value.trim();
+      const name = nameEl.value.trim();
+      const role = roleEl.value.trim();
+      const disabled = !!disabledEl.checked;
+      if (!uid || !email) { setMsg('UID y email son obligatorios.', 'err'); return; }
+      try {
+        await setDoc(doc(db, 'users', uid), {
+          email, name: name || null, role, disabled, updatedAt: serverTimestamp()
+        }, { merge: true });
+        setMsg('Guardado: rol aplicado correctamente.', 'ok');
+      } catch (e) {
+        console.error(e);
+        if (e && e.code === 'permission-denied') {
+          setMsg('Permiso denegado. Inicia sesión con una cuenta autorizada o ajusta reglas temporalmente.', 'err');
+        } else {
+          setMsg('Error al guardar en Firestore. Revisa permisos/reglas.', 'err');
+        }
+      }
+    });
+
+    $('readBtn').addEventListener('click', async ()=>{
+      const uid = uidEl.value.trim();
+      if (!uid) { setMsg('UID requerido para leer.', 'err'); return; }
+      try {
+        const snap = await getDoc(doc(db, 'users', uid));
+        if (snap.exists()) {
+          const d = snap.data();
+          setMsg('Doc leído: ' + JSON.stringify(d), 'ok');
+        } else {
+          setMsg('No existe documento para ese UID.', 'muted');
+        }
+      } catch(e){
+        console.error(e);
+        setMsg('Error al leer documento (¿reglas?).', 'err');
+      }
+    });
+  </script>
+</body>
+</html>

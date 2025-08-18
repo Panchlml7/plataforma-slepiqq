@@ -1,0 +1,23 @@
+/* Tema verde coherente con plataforma.html */
+body {
+	background: radial-gradient(circle at 30% 30%, #0f2f24, #071a12);
+}
+.top-nav {
+	background: rgba(10, 25, 20, .85);
+	border-bottom-color: #1c4d3a;
+}
+.top-nav a.nav-link:hover { background: #163e2e; }
+.user-badge { border-color: #22624a; }
+
+/* Tarjetas/containers claros sobre fondo verde */
+.card {
+	background: #ffffff;
+	color: #0f172a;
+	border: 1px solid #e5e7eb;
+}
+
+/* Responsive: que la barra se adapte en móvil */
+@media (max-width: 1080px){
+	.top-nav { flex-wrap: wrap; gap:.6rem; }
+	.top-nav .user-badge { order:2; width:100%; justify-content: space-between; }
+}
