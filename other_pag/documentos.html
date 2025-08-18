@@ -1044,6 +1044,16 @@
           <button id="btnSearch" class="btn-sm" style="background:#7c3aed;color:#fff;">Buscar</button>
           <button id="btnClear" class="btn-sm" style="background:#374151;color:#fff;">Limpiar</button>
         </div>
+        <!-- Nuevo: Alcance de visibilidad (propios o del equipo) -->
+        <div class="search-row" style="margin-top:.5rem; gap:1rem; color:#111827;">
+          <span style="font-size:.85rem;">Visibilidad:</span>
+          <label style="display:flex; align-items:center; gap:.35rem;">
+            <input type="radio" name="scope" id="scopeMine"> Mis documentos
+          </label>
+          <label id="scopeTeamWrap" style="display:flex; align-items:center; gap:.35rem;">
+            <input type="radio" name="scope" id="scopeTeam" checked> Equipo (todos)
+          </label>
+        </div>
         <small style="display:block;opacity:.75;margin-top:.5rem; color: #000;">Busca por cualquier campo. Consejo: para N° ACTA exacto, escribe el código completo (ej: ACT-20240809-123).</small>
         <hr style="border:none;border-top:1px solid #e5e7eb; margin:.8rem 0;">
         <div class="chips">
@@ -1104,15 +1114,28 @@
     const auth = getAuth(app);
     const db = getFirestore(app);
 
-    const userNameEl = document.getElementById('userName');
-    const logoutBtn = document.getElementById('logoutBtn');
+  const userNameEl = document.getElementById('userName');
+  const logoutBtn = document.getElementById('logoutBtn');
+  let currentUser = null; // para permisos de edición/borrado
 
-    // Cargar nombre usuario
+    // Cargar perfil usuario (nombre y rol)
+    let currentUserRole = 'user';
     async function loadProfile(uid, email) {
+      let role = 'user';
       try {
         const snap = await getDoc(doc(db, 'users', uid));
-        userNameEl.textContent = snap.exists() && snap.data().name ? snap.data().name : (email || uid);
-      } catch { userNameEl.textContent = email || uid; }
+        if (snap.exists()) {
+          const data = snap.data();
+          userNameEl.textContent = data.name ? data.name : (email || uid);
+          role = (data.role || 'user').toString().toLowerCase();
+        } else {
+          userNameEl.textContent = email || uid;
+        }
+      } catch {
+        userNameEl.textContent = email || uid;
+      }
+      currentUserRole = role;
+      return role;
     }
 
     // Generar N° Acta
@@ -1224,7 +1247,8 @@
     }
 
     // Guardar en Firestore (ahora crea o actualiza)
-    async function saveForm(uid) {
+  let currentUserName = null; // se define al cargar perfil
+  async function saveForm(user) {
       if (!validateTimes()) return;
       const payload = {
         // Paso 1
@@ -1254,9 +1278,11 @@
   fechaImplementacion: document.getElementById('fechaImplementacion')?.value || null,
   responsables: document.getElementById('responsables')?.value?.trim() || null,
         aspectosPositivos: document.getElementById('aspectosPositivos').value.trim() || null,
-        areasMejora: document.getElementById('areasMejora').value.trim() || null,
-        // Metadatos base
-        ownerUid: uid
+  areasMejora: document.getElementById('areasMejora').value.trim() || null,
+  // Metadatos base de propiedad
+  ownerUid: user?.uid || null,
+  ownerEmail: user?.email || null,
+  ownerName: currentUserName || user?.displayName || user?.email || null
       };
       if (!payload.objetivoVisita) { alert('El objetivo de la visita es obligatorio.'); return; }
 
@@ -1266,7 +1292,7 @@
         alert('Documento actualizado.');
       } else {
         // Crear
-        await addDoc(collection(db, 'datosBasicos'), { ...payload, createdAt: serverTimestamp() });
+  await addDoc(collection(db, 'datosBasicos'), { ...payload, createdAt: serverTimestamp() });
         alert('Datos guardados correctamente.');
       }
 
@@ -1432,7 +1458,7 @@
     const resultsEl = document.getElementById('results');
 
     // Render resultados (ajuste: usar modal en "view" y corregir style inválido del header)
-    function renderList(list){
+  function renderList(list){
       resultsEl.innerHTML = '';
       if (!list.length){
         resultsEl.innerHTML = '<div class="doc-card"><em>No hay resultados.</em></div>';
@@ -1441,6 +1467,13 @@
       list.forEach(d=>{
         const el = document.createElement('div');
         el.className = 'doc-card';
+        // Edición abierta a todos; eliminación solo autor o admin
+        const canEdit = true;
+        const canDelete = ((d.ownerUid && currentUser && d.ownerUid === currentUser.uid) || currentUserRole === 'admin');
+        const editBtn = '<button type="button" class="btn-sm btn-edit" data-act="edit">Editar</button>';
+        const delBtn = canDelete
+          ? '<button type="button" class="btn-sm btn-del" data-act="del">Eliminar</button>'
+          : '<button type="button" class="btn-sm btn-del" data-act="del" disabled title="Solo autor o admin">Eliminar</button>';
         el.innerHTML = `
           <div class="doc-header" style="margin: 1rem;">
             <span class="badge">${d.actaNumber || 'SIN-ACTA'}</span>
@@ -1452,12 +1485,13 @@
             <span>⏰ ${d.horaInicio || '—'} - ${d.horaTermino || '—'}</span>
             <span>👤 ${d.asesorPrincipal || '—'}</span>
             <span>📍 ${d.modalidad || '—'}</span>
+      <span title="Creado por">🧑 ${d.ownerName || d.ownerEmail || (d.ownerUid ? ('UID •••' + String(d.ownerUid).slice(-4)) : '—')}</span>
           </div>
           <div class="obj-preview" style="margin: 1rem;"><strong>Objetivo:</strong> ${truncate(d.objetivoEstrategico || d.objetivoVisita || '')}</div>
           <div class="card-actions">
             <button type="button" class="btn-sm btn-view" data-act="view">Ver Completo</button>
-            <button type="button" class="btn-sm btn-edit" data-act="edit">Editar</button>
-            <button type="button" class="btn-sm btn-del" data-act="del">Eliminar</button>
+            ${editBtn}
+            ${delBtn}
             <button type="button" class="btn-sm btn-pdf" data-act="pdf">PDF</button>
           </div>
         `;
@@ -1467,6 +1501,7 @@
             e.stopPropagation();
             const act = b.getAttribute('data-act');
             if (act==='del'){
+              if (!canDelete) { alert('Solo autor o admin puede eliminar.'); return; }
               if (confirm('¿Eliminar este documento?')) {
                 try { await import('https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js').then(m=>m.deleteDoc(m.doc(db,'datosBasicos', d._id))); }
                 catch (e) { console.error(e); alert('No se pudo eliminar'); }
@@ -1622,42 +1657,113 @@
       applyFilters();
     });
 
-    // NUEVO: suscripción a documentos del usuario
+    // Suscripciones: propios o todos
     function subscribeUserDocs(uid){
       const qRef = query(collection(db,'datosBasicos'), where('ownerUid','==', uid));
       return onSnapshot(qRef, (snap)=>{
         allDocs = snap.docs.map(d=> ({ _id:d.id, ...d.data() }));
         allDocs.sort((a,b)=>(b.createdAt?.seconds||0)-(a.createdAt?.seconds||0));
         applyFilters();
-      }, (err)=>{
-        console.error('Error leyendo documentos:', err);
-        getDocs(qRef).then(s=>{
+      }, async (err)=>{
+        console.error('Error leyendo documentos propios:', err);
+        try {
+          const s = await getDocs(qRef);
           allDocs = s.docs.map(d=> ({ _id:d.id, ...d.data() }));
           applyFilters();
-        });
+        } catch {}
       });
+    }
+
+    // NUEVO: suscripción combinada: propios + compartidos por un usuario específico
+    function subscribeUserDocsWithShared(uid){
+      const SHARED_OWNER_EMAIL = 'francisco.ramos@slepiquique.cl';
+      const myRef = query(collection(db,'datosBasicos'), where('ownerUid','==', uid));
+      const sharedRef = query(collection(db,'datosBasicos'), where('ownerEmail','==', SHARED_OWNER_EMAIL));
+      let myDocs = [];
+      let sharedDocs = [];
+      const mergeAndRender = ()=>{
+        const map = new Map();
+        [...myDocs, ...sharedDocs].forEach(doc=>{ map.set(doc._id, doc); });
+        allDocs = Array.from(map.values());
+        allDocs.sort((a,b)=>(b.createdAt?.seconds||0)-(a.createdAt?.seconds||0));
+        applyFilters();
+      };
+      const unsubMy = onSnapshot(myRef, (snap)=>{
+        myDocs = snap.docs.map(d=> ({ _id:d.id, ...d.data() }));
+        mergeAndRender();
+      }, async (_err)=>{
+        try { const s = await getDocs(myRef); myDocs = s.docs.map(d=> ({ _id:d.id, ...d.data() })); mergeAndRender(); } catch {}
+      });
+      const unsubShared = onSnapshot(sharedRef, (snap)=>{
+        sharedDocs = snap.docs.map(d=> ({ _id:d.id, ...d.data() }));
+        mergeAndRender();
+      }, async (_err)=>{
+        try { const s = await getDocs(sharedRef); sharedDocs = s.docs.map(d=> ({ _id:d.id, ...d.data() })); mergeAndRender(); } catch {}
+      });
+      return ()=>{ try{unsubMy();}catch{} try{unsubShared();}catch{} };
+    }
+    function subscribeAllDocs(){
+      const cRef = collection(db,'datosBasicos');
+      return onSnapshot(cRef, (snap)=>{
+        allDocs = snap.docs.map(d=> ({ _id:d.id, ...d.data() }));
+        allDocs.sort((a,b)=>(b.createdAt?.seconds||0)-(a.createdAt?.seconds||0));
+        applyFilters();
+      }, async (err)=>{
+        console.error('Error leyendo documentos del equipo:', err);
+        try {
+          const s = await getDocs(cRef);
+          allDocs = s.docs.map(d=> ({ _id:d.id, ...d.data() }));
+          applyFilters();
+        } catch {}
+      });
+    }
+
+    // Visibilidad: habilitar "Equipo (todos)" para todos
+    function updateScopeVisibility(){
+      const wrap = document.getElementById('scopeTeamWrap');
+      if (wrap) wrap.style.display = '';
     }
 
     // NUEVO: restaurar onAuthStateChanged para cargar y suscribirse
     onAuthStateChanged(auth, async (user) => {
       if (!user) { location.replace('../index.html'); return; }
+      currentUser = user;
       await loadProfile(user.uid, user.email);
+      // guardar nombre usado en guardado
+      try {
+        currentUserName = userNameEl?.textContent || user.displayName || user.email || null;
+      } catch {}
       await loadEstablecimientos();
+      updateScopeVisibility();
 
       document.getElementById('datosBasicosForm').addEventListener('submit', async (e) => {
         e.preventDefault();
         try {
-          await saveForm(user.uid);
+          await saveForm(user);
         } catch (err) {
           console.error('Error al guardar:', err);
           alert('No se pudieron guardar los datos. Revisa consola.');
         }
       });
 
-  const unsubDocs = subscribeUserDocs(user.uid);
-  const cleanup = ()=>{ try{unsubDocs&&unsubDocs();}catch{} };
-  window.addEventListener('pagehide', cleanup);
-  document.addEventListener('visibilitychange', ()=>{ if (document.visibilityState === 'hidden') cleanup(); });
+      // Suscripción dinámica según el alcance seleccionado
+      let unsubDocs = null;
+      const rMine = document.getElementById('scopeMine');
+      const rTeam = document.getElementById('scopeTeam');
+  function resub(){
+        try { unsubDocs && unsubDocs(); } catch {}
+        if (rTeam?.checked) unsubDocs = subscribeAllDocs();
+        else unsubDocs = subscribeUserDocs(user.uid);
+      }
+      rMine?.addEventListener('change', resub);
+      rTeam?.addEventListener('change', resub);
+  // Inicial: equipo (todos) por defecto
+  if (rTeam) rTeam.checked = true;
+  if (rMine) rMine.checked = false;
+  resub();
+      const cleanup = ()=>{ try{unsubDocs&&unsubDocs();}catch{} };
+      window.addEventListener('pagehide', cleanup);
+      document.addEventListener('visibilitychange', ()=>{ if (document.visibilityState === 'hidden') cleanup(); });
     });
 
     // NUEVO: vista previa (ya existente arriba)
