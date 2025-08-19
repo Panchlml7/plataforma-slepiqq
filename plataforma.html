@@ -159,15 +159,42 @@
       color: #111827;
       border-color: #e5e7eb;
     }
+    /* Dropdown estilo ligero (inspirado en Bootstrap) */
+    .dropdown { position: relative; }
+    .dropdown-toggle {
+      background: transparent; border: none; color: #111827; cursor: pointer;
+      padding: .45rem .7rem; border-radius: 6px; font-size:.7rem; letter-spacing:.6px; text-transform:uppercase;
+      display:inline-flex; align-items:center; gap:.35rem; font-weight: 400;
+      box-shadow: none;
+    }
+    .dropdown-toggle:hover { background:#f3f4f6; box-shadow:none; }
+    .dropdown-toggle:active, .dropdown-toggle:focus { box-shadow:none; }
+    .dropdown-toggle .caret { font-size:.8em; opacity:.8; color:#004add; }
+    .dropdown-menu {
+      position: absolute; top: calc(100% + .35rem); left: 0; min-width: 220px; z-index: 100;
+      background: #ffffff; color:#111827; border: none; border-radius: 0; padding:.35rem 0;
+      box-shadow: none; display: none;
+    }
+    .dropdown.open .dropdown-menu { display:block; }
+    .dropdown-item { display:block; padding:.55rem .9rem; color:#111827; text-decoration:none; font-size:.75rem; font-weight:400; border-radius: 2%;}
+    .dropdown-item:hover { background:#24365a; }
   </style>
 </head>
 <body>
   <!-- Barra de menú -->
   <nav class="top-nav">
-    <span class="brand">SLEP IQQ</span>    
-    <a href="other_pag/asistencia.html">Asistencia</a>
+    <span class="brand">SLEPIQQ</span>    
+    <a href="#asistencia">Asistencia</a>
     <a href="other_pag/establecimiento.html">Establecimiento</a>
-    <a href="other_pag/documentos.html">Acompañamiento Visita</a>
+    <div class="dropdown nav-acomp-dropdown" aria-label="Acompañamiento Visita">
+      <button class="dropdown-toggle" type="button" aria-haspopup="true" aria-expanded="false">
+        Acompañamiento <span class="caret">▾</span>
+      </button>
+      <div class="dropdown-menu" role="menu" aria-label="Acompañamiento Visita">
+        <a class="dropdown-item" role="menuitem" href="other_pag/documentos.html" title="Documento de Acompañamiento">DOCUMENTO</a>
+        <a class="dropdown-item" role="menuitem" href="other_pag/planilla.html" title="Planilla de Acompañamiento">PLANILLA</a>
+      </div>
+    </div>
   <a id="adminLink" href="other_pag/tools/grant-admin.html" style="display:none;">Admin usuarios</a>
     <a href="#habilitacion">Habilitación</a>
     <a href="#convivencia">Convivencia</a>
@@ -185,7 +212,7 @@
       <section id="asistencia" class="card-sec">
         <h3>ASISTENCIA</h3>
         <p>Panel para controlar y visualizar métricas de asistencia. Puedes integrar datos en tiempo real más adelante.</p>
-  <a href="other_pag/asistencia.html" class="mini-link card-txt">Ver detalle →</a>
+  <a href="#asistencia" class="mini-link card-txt">Ver detalle →</a>
       </section>
       <section id="establecimiento" class="card-sec">
         <h3>ESTABLECIMIENTO</h3>
@@ -320,12 +347,29 @@
     });
 
     // Enlaces del menú
+    document.querySelector('nav.top-nav a[href="#asistencia"]')?.addEventListener('click', (e)=>{ e.preventDefault(); openSoon(); });
     document.querySelector('nav.top-nav a[href="#habilitacion"]')?.addEventListener('click', (e)=>{ e.preventDefault(); openSoon(); });
     document.querySelector('nav.top-nav a[href="#convivencia"]')?.addEventListener('click', (e)=>{ e.preventDefault(); openSoon(); });
 
   // Enlaces en tarjetas (mismo comportamiento que el menú)
+  document.querySelector('#asistencia a.mini-link')?.addEventListener('click', (e)=>{ e.preventDefault(); openSoon(); });
   document.querySelector('#habilitacion a.mini-link')?.addEventListener('click', (e)=>{ e.preventDefault(); openSoon(); });
   document.querySelector('#convivencia a.mini-link')?.addEventListener('click', (e)=>{ e.preventDefault(); openSoon(); });
+
+  // Dropdown Acompañamiento (ligero)
+  const dd = document.querySelector('.nav-acomp-dropdown');
+  const ddBtn = dd?.querySelector('.dropdown-toggle');
+  const ddMenu = dd?.querySelector('.dropdown-menu');
+  function closeDropdown(){ if(!dd) return; dd.classList.remove('open'); ddBtn?.setAttribute('aria-expanded','false'); }
+  function toggleDropdown(){ if(!dd) return; const isOpen = dd.classList.toggle('open'); ddBtn?.setAttribute('aria-expanded', isOpen ? 'true' : 'false'); }
+  ddBtn?.addEventListener('click', (e)=>{ e.stopPropagation(); toggleDropdown(); });
+  // Cerrar al click fuera
+  document.addEventListener('click', (e)=>{
+    if(!dd) return;
+    if(!dd.contains(e.target)) closeDropdown();
+  });
+  // Cerrar con Escape
+  window.addEventListener('keydown', (e)=>{ if(e.key === 'Escape') closeDropdown(); });
   </script>
 </body>
 </html>

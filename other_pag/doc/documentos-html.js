@@ -1455,7 +1455,8 @@ class DocumentManagerHTML {
                 <meta charset="UTF-8">
                 <title>Documento ${doc.acta} - SLEP IQUIQUE</title>
                 <style>
-                    body { font-family: Arial, sans-serif; margin: 20px; line-height: 1.4; }
+                    /* Unificar tipografía con plataforma.html */
+                    body { font-family: system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, sans-serif; margin: 20px; line-height: 1.4; }
                     .header { text-align: center; border-bottom: 3px solid #667eea; padding-bottom: 20px; margin-bottom: 30px; }
                     .document { padding: 20px; border: 2px solid #667eea; border-radius: 10px; }
                     .doc-title { background: #667eea; color: white; padding: 20px; text-align: center; font-size: 1.5em; font-weight: bold; margin: -20px -20px 30px -20px; border-radius: 8px 8px 0 0; }

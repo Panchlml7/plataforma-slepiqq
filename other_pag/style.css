@@ -8,7 +8,8 @@
   --border:#243556;
   --radius:14px;
   --shadow:0 10px 28px -10px rgba(0,0,0,.55);
-  font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;
+  /* Unificar tipografía con plataforma.html */
+  font-family:system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,sans-serif;
 }
 *{box-sizing:border-box;}
 body {

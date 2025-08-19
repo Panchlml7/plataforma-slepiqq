@@ -5,34 +5,110 @@
   <title>Asistencia - SLEP IQUIQUE</title>
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <link rel="stylesheet" href="style.css">
+  <style>
+    /* Solo para la sección "Resumen rápido" */
+    .summary-light { background:#ffffff !important; height: 1222px; color:#111827 !important; border:1px solid #e5e7eb; }
+    .summary-light h2 { color:#111827; }
+  </style>
+  <!-- Overrides: top-nav blanca y dropdown ligero -->
+  <style>
+    .top-nav { background:#ffffff; border-bottom:1px solid #e5e7eb; color:#111827; }
+    .top-nav .brand { font-weight:600; }
+    .top-nav a { color:#111827; opacity:1; text-decoration:none; padding:.45rem .7rem; border-radius:6px; }
+    .top-nav a:hover { background:#f3f4f6; }
+    .top-nav .user-badge { background:#ffffff; color:#111827; border:1px solid #e5e7eb; border-radius:999px; padding:.4rem .6rem; }
+    /* Dropdown estilo ligero */
+    .dropdown { position: relative; }
+    .dropdown-toggle { background:transparent; border:none; color:#111827; cursor:pointer; padding:.45rem .7rem; border-radius:6px; font-size:.8rem; font-weight:400; box-shadow:none; }
+    .dropdown-toggle:hover, .dropdown-toggle:focus { background:#f3f4f6; box-shadow:none; }
+    .dropdown-toggle .caret { font-size:.9em; opacity:.8; }
+    .dropdown-menu { position:absolute; top:calc(100% + .35rem); left:0; min-width:220px; z-index:100; background:#ffffff; color:#111827; border:none; border-radius:0; padding:.35rem 0; box-shadow:none; display:none; }
+    .dropdown.open .dropdown-menu { display:block; }
+    .dropdown-item { display:block; padding:.55rem .9rem; color:#111827; text-decoration:none; font-size:.85rem; font-weight:400; border-radius:2%; }
+    .dropdown-item:hover { background:#f3f4f6; }
+  /* UI asistencia cursos */
+  .filters-row { display:flex; flex-wrap:wrap; gap:.6rem; align-items:center; justify-content:space-between; margin-bottom:.6rem; }
+  .filters-row .group { display:flex; gap:.6rem; align-items:center; }
+  .stat-grid { display:grid; grid-template-columns: repeat(1,1fr); gap:.6rem; }
+  @media(min-width: 900px){ .stat-grid { grid-template-columns: repeat(3,1fr); } }
+  .mini-card { background:#ffffff; color:#111827; border:1px solid #e5e7eb; border-radius:12px; padding:.8rem 1rem; }
+  .mini-card h3 { margin:.1rem 0; font-size:1rem; }
+  .mini-card p { margin:0; opacity:.8; font-size:.8rem; }
+  .stat-value { font-size: 2rem; font-weight: 700; }
+  select, .btn-min { padding:.5rem .7rem; border:1px solid #cbd5e1; border-radius:8px; background:#fff; color:#111827; }
+  .btn-min { cursor:pointer; }
+  /* Modal simple de detalle */
+  .modal { position:fixed; inset:0; display:none; align-items:center; justify-content:center; background:rgba(0,0,0,.5); z-index:1000; }
+  .modal.show { display:flex; }
+  .modal-card { width:min(92vw, 520px); background:#fff; color:#0f172a; border:1px solid #e5e7eb; border-radius:14px; box-shadow:0 20px 40px -20px rgba(15,23,42,.45); }
+  .modal-header,.modal-footer { display:flex; align-items:center; justify-content:space-between; gap:.6rem; padding:.9rem 1rem; border-bottom:1px solid #e5e7eb; }
+  .modal-footer { border-top:1px solid #e5e7eb; border-bottom:0; }
+  .modal-body { padding:1rem; }
+  .progress { width:100%; height:12px; background:#e5e7eb; border-radius:999px; overflow:hidden; }
+  .progress .bar { height:100%; background:#111827; }
+  .bar-asistencia { background:#16a34a; }
+  .bar-inasistencia { background:#ef4444; }
+  </style>
 </head>
 <body>
   <nav class="top-nav">
-    <span class="brand">SLEP IQQ</span>
+    <span class="brand">SLEPIQQ</span>
     <a class="nav-link active" href="asistencia.html">Asistencia</a>
     <a class="nav-link" href="establecimiento.html">Establecimiento</a>
-    <a class="nav-link" href="documentos.html">Documentos</a>
+    <div class="dropdown nav-acomp-dropdown" aria-label="Acompañamiento Visita">
+      <button class="dropdown-toggle" type="button" aria-haspopup="true" aria-expanded="false">
+        Acompañamiento <span class="caret">▾</span>
+      </button>
+      <div class="dropdown-menu" role="menu" aria-label="Acompañamiento Visita">
+        <a class="dropdown-item" role="menuitem" href="documentos.html" title="Documento de Acompañamiento">DOCUMENTO</a>
+        <a class="dropdown-item" role="menuitem" href="planilla.html" title="Planilla de Acompañamiento">PLANILLA</a>
+      </div>
+    </div>
     <a class="nav-link" href="../plataforma.html">INICIO</a>
     <span class="user-badge"><span id="userName">...</span><button id="logoutBtn" class="btn" type="button">Salir</button></span>
   </nav>
   <main>
-    <h1>Asistencia</h1>
-    <p class="info">Panel base para métricas de asistencia. <span class="badge">Placeholder</span></p>
-    <section class="section-card">
-      <h2>Resumen rápido</h2>
-      <div class="placeholder-box">
-        Agrega aquí gráficas (ej. porcentaje asistencia, ausencias justificadas, tardanzas).
+  <h1>Asistencia por establecimiento</h1>
+    <section class="section-card summary-light">
+      <div class="filters-row">
+        <div>
+          <h2 style="margin:.2rem 0 .2rem;">Gráfico</h2>
+          <p style="margin:0;opacity:.75;font-size:.85rem;">Barras = % de asistencia por establecimiento. Haz clic para ver cursos.</p>
+        </div>
+        <div class="group">
+          <label for="areaSelect" style="font-size:.85rem;opacity:.85;">Área</label>
+          <select id="areaSelect"></select>
+          <label for="mesesSelect" style="font-size:.85rem;opacity:.85;">Meses</label>
+          <select id="mesesSelect"></select>
+          <button id="btnClearFiltro" class="btn-min" type="button">Limpiar filtro</button>
+        </div>
       </div>
-    </section>
-    <section class="section-card">
-      <h2>Detalle por curso</h2>
-      <div class="placeholder-box">
-        Tabla dinámica futura: curso, matrícula, presentes, porcentaje.
+
+      <div class="stat-grid" style="margin:.6rem 0 .8rem;">
+        <div class="mini-card">
+          <h3>Promedio asistencia</h3>
+          <p>En cursos filtrados</p>
+          <div id="statPromedio" class="stat-value">0%</div>
+        </div>
+        <div class="mini-card">
+          <h3>Total establecimientos</h3>
+          <p>Con el filtro actual</p>
+          <div id="statEst" class="stat-value">0</div>
+        </div>
+        <div class="mini-card">
+          <h3>Tip</h3>
+          <p style="display:flex;gap:.4rem;align-items:center;">Haz clic en una barra para abrir el modal.</p>
+        </div>
       </div>
+
+  <div id="chartCursos" style="width:1191px; height:1000px;"></div>
     </section>
+
   </main>
   <footer>&copy; SLEP IQUIQUE</footer>
   <script type="module">
+  import * as echarts from 'https://cdn.jsdelivr.net/npm/echarts@5.5.0/dist/echarts.esm.min.js';
+
     import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js';
     import { getAuth, onAuthStateChanged, signOut } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js';
     import { getFirestore, doc, getDoc } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js';
@@ -60,11 +136,216 @@
         return;
       }
       loadProfile(user.uid, user.email);
+      // ====== Nueva UI: Establecimientos con cursos (filtro/estadísticas y modal) ======
+      try {
+        // Establecimientos provistos + porcentajes históricos usados antes
+        const NOMBRES = [
+          'CENTRO DE CAPACITACION LABORAL',
+          'COLEGIO DEPORTIVO TEC. PROF. ELENA DUVAUCHELLE CABEZON',
+          'COLEGIO ESPANA',
+          'COLEGIO REPUBLICA DE CROACIA',
+          'COLEGIO REPUBLICA DE ITALIA',
+          'COLEGIO SIMON BOLIVAR',
+          'ESC ESP DE LENGUAJE OASIS DEL SABER',
+          'ESC.EDUC.ESPECIAL FLOR DEL INCA',
+          'ESC.EDUC.GRAL.BAS.Y DES.ART.VIOLETA PARRA',
+          'ESCUELA ALMIRANTE PATRICIO LYNCH',
+          'ESCUELA CALETA CHANAVAYITA',
+          'ESCUELA CALETA SAN MARCOS',
+          'ESCUELA CENTENARIO',
+          'ESCUELA CHIPANA',
+          'ESCUELA EDUARDO LLANOS',
+          'ESCUELA GABRIELA MISTRAL',
+          'ESCUELA PAULA JARAQUEMADA ALQUIZAR',
+          'ESCUELA PLACIDO VILLARROEL',
+          'ESCUELA PROFESOR MANUEL CASTRO RAMOS',
+          'ESCUELA THILDA PORTILLO OLIVARES',
+          'INST. COM. DE IQUIQUE BALDOMERO WOLNITZKY',
+          'LICEO BICENTENARIO DOMINGO SANTA MARIA DE IQQ.',
+          'LICEO C.E.I.A. JOSE ALEJANDRO SORIA VARAS',
+          'LICEO LIBERT. GRAL.BERNARDO O´HIGGINS',
+          'LICEO LUIS CRUZ MARTINEZ',
+          'LICEO POLITEC. JOSE GUTIERREZ DE LA FUEN',
+          'LICEO S.S JUAN PABLO SEGUNDO',
+          'LICEO TECNICO PROFESIONAL DE ADULTOS'
+        ];
+        const ASIS = [68,82,87,86,82,75,81,75,78,79,82,87,86,82,90,84,82,93,69,80,79,83,44,81,83,80,91,60];
+        const DATA = NOMBRES.map((est, i) => ({
+          establecimiento: est,
+          curso: 'GENERAL',
+          asistencia: ASIS[i] ?? 0,
+          inasistencia: Math.max(0, 100 - (ASIS[i] ?? 0)),
+          area: '—',
+          alumnos: 0
+        }));
+
+  const selEl = document.getElementById('areaSelect');
+  const mesesEl = document.getElementById('mesesSelect');
+        const btnClear = document.getElementById('btnClearFiltro');
+        const statProm = document.getElementById('statPromedio');
+  const statEst = document.getElementById('statEst');
+        const chartDom = document.getElementById('chartCursos');
+        const modal = document.getElementById('cursosModal');
+        const modalBody = document.getElementById('cursosModalBody');
+        const modalTitle = document.getElementById('cursosModalTitle');
+
+        // Poblar select de áreas
+        const areas = Array.from(new Set(DATA.map(d=>d.area)));
+        selEl.innerHTML = ['<option value="todas">Todas las áreas</option>', ...areas.map(a=>`<option value="${a}">${a}</option>`)].join('');
+        let filtroArea = 'todas';
+        // Meses: solo Marzo a Diciembre + opción "Todos"
+        const MESES = [
+          { v: 'all', t: 'Todos' },
+          { v: '03', t: 'Marzo' },
+          { v: '04', t: 'Abril' },
+          { v: '05', t: 'Mayo' },
+          { v: '06', t: 'Junio' },
+          { v: '07', t: 'Julio' },
+          { v: '08', t: 'Agosto' },
+          { v: '09', t: 'Septiembre' },
+          { v: '10', t: 'Octubre' },
+          { v: '11', t: 'Noviembre' },
+          { v: '12', t: 'Diciembre' }
+        ];
+        let filtroMes = 'all';
+        if (mesesEl) {
+          mesesEl.innerHTML = MESES.map(m => `<option value="${m.v}">${m.t}</option>`).join('');
+          mesesEl.value = 'all';
+        }
+
+        const chart = echarts.init(chartDom);
+        function compute(agregados){
+          const prom = agregados.length ? Math.round(agregados.reduce((acc,d)=>acc + d.asistencia, 0) / agregados.length) : 0;
+          statProm.textContent = prom + '%';
+          statEst.textContent = agregados.length.toString();
+        }
+        function setChart(agregados, detallePorEst){
+          const option = {
+            backgroundColor:'#ffffff',
+            textStyle:{ color:'#111827' },
+            color:['#2563eb', '#ef4444'],
+            tooltip:{
+              trigger:'axis',
+              axisPointer:{ type:'shadow' },
+              formatter: (p)=>{
+                const name = p?.[0]?.name || '';
+                const a = p.find(s=>s.seriesName==='Asistencia')?.value ?? 0;
+                const i = p.find(s=>s.seriesName==='Inasistencia')?.value ?? 0;
+                return `${name}<br/>Asistencia: ${a}%<br/>Inasistencia: ${i}%`;
+              }
+            },
+            grid:{ left: 240, right: 20, top: 20, bottom: 20 },
+            xAxis:{ type:'value', min:0, max:100, axisLabel:{ formatter:'{value}%', color:'#111827' }, splitLine:{ lineStyle:{ color:'#e5e7eb' } } },
+            yAxis:{ type:'category', data: agregados.map(d=>d.establecimiento), axisLabel:{ color:'#111827' }, axisLine:{ lineStyle:{ color:'#e5e7eb' } } },
+            series:[
+              {
+                name:'Asistencia', type:'bar', stack:'total',
+                data: agregados.map(d=>d.asistencia),
+                label:{ show:true, position:'insideRight', color:'#ffffff', formatter:'{c}%' }
+              },
+              {
+                name:'Inasistencia', type:'bar', stack:'total',
+                data: agregados.map(d=>d.inasistencia),
+                label:{ show:true, position:'insideRight', color:'#ffffff', formatter:'{c}%' }
+              }
+            ]
+          };
+          chart.setOption(option);
+          chart.off('click');
+          chart.on('click', params => {
+            const idx = params.dataIndex;
+            const d = agregados[idx];
+            if (!d) return;
+            const cursos = detallePorEst.get(d.establecimiento) || [];
+            modalTitle.textContent = `Cursos de ${d.establecimiento}`;
+            const list = cursos.map(c=>`
+              <li style="margin:.35rem 0;">
+                <strong>${c.curso}</strong> — Área: ${c.area} — Matrícula: ${c.alumnos}<br/>
+                <small>Asistencia: ${c.asistencia}% • Inasistencia: ${c.inasistencia}%</small>
+              </li>
+            `).join('');
+            modalBody.innerHTML = `
+              <div style="margin-bottom:.6rem;opacity:.85;">Total cursos: <strong>${cursos.length}</strong></div>
+              <ul style="padding-left:1rem;">${list}</ul>
+            `;
+            modal.classList.add('show');
+          });
+        }
+        function apply(){
+          const list = filtroArea === 'todas' ? DATA : DATA.filter(d=>d.area === filtroArea);
+          // Filtro por mes (si existiera d.mes con formato 'MM')
+          let listMes = list;
+          if (filtroMes !== 'all') {
+            listMes = list.filter(d => {
+              const m = (d.mes || '').toString().padStart(2, '0');
+              return m === filtroMes;
+            });
+          }
+          // Agrupar por establecimiento y promediar asistencia
+          const byEst = new Map(); // est -> { sum, count }
+          const detallePorEst = new Map(); // est -> cursos[]
+          for (const it of listMes){
+            const e = it.establecimiento;
+            if (!byEst.has(e)) byEst.set(e, { sum:0, count:0 });
+            const agg = byEst.get(e); agg.sum += it.asistencia; agg.count += 1;
+            if (!detallePorEst.has(e)) detallePorEst.set(e, []);
+            detallePorEst.get(e).push(it);
+          }
+          const agregados = Array.from(byEst.entries()).map(([establecimiento, v])=>{
+            const asis = Math.round(v.sum / v.count);
+            return { establecimiento, asistencia: asis, inasistencia: Math.max(0, 100 - asis) };
+          });
+          // Ordenar desc por asistencia
+          agregados.sort((a,b)=> b.asistencia - a.asistencia);
+          compute(agregados);
+          setChart(agregados, detallePorEst);
+        }
+  selEl.addEventListener('change', ()=>{ filtroArea = selEl.value; apply(); });
+  mesesEl?.addEventListener('change', ()=>{ filtroMes = mesesEl.value; apply(); });
+  btnClear.addEventListener('click', ()=>{ filtroArea = 'todas'; selEl.value = 'todas'; filtroMes = 'all'; if(mesesEl) mesesEl.value = 'all'; apply(); });
+        apply();
+        window.addEventListener('resize', ()=> chart.resize());
+      } catch (e) {
+        console.error('Error inicializando UI cursos:', e);
+      }
     });
 
     logoutBtn.addEventListener('click', async ()=>{
       try{ await signOut(auth); location.replace('../index.html'); }catch(e){ console.error(e); alert('Error al cerrar sesión'); }
     });
+  </script>
+  <!-- Modal de detalle de curso -->
+  <div id="cursosModal" class="modal" role="dialog" aria-modal="true" aria-labelledby="cursosModalTitle">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3 id="cursosModalTitle" style="margin:0;">Detalle</h3>
+        <button type="button" id="cursosModalClose" class="btn-min">Cerrar</button>
+      </div>
+      <div id="cursosModalBody" class="modal-body"></div>
+      <div class="modal-footer" style="justify-content:flex-end;">
+        <button type="button" id="cursosModalClose2" class="btn-min">Cerrar</button>
+      </div>
+    </div>
+  </div>
+  <script>
+    // Dropdown ligero: toggle, click fuera y ESC
+    (function(){
+      const dd = document.querySelector('.nav-acomp-dropdown');
+      const btn = dd?.querySelector('.dropdown-toggle');
+      function close(){ if(!dd) return; dd.classList.remove('open'); btn?.setAttribute('aria-expanded','false'); }
+      function toggle(){ if(!dd) return; const open = dd.classList.toggle('open'); btn?.setAttribute('aria-expanded', open ? 'true' : 'false'); }
+      btn?.addEventListener('click', (e)=>{ e.stopPropagation(); toggle(); });
+      document.addEventListener('click', (e)=>{ if(!dd) return; if(!dd.contains(e.target)) close(); });
+      window.addEventListener('keydown', (e)=>{ if(e.key==='Escape') close(); });
+    })();
+    // Modal listeners
+    (function(){
+      const modal = document.getElementById('cursosModal');
+      const closeBtns = [document.getElementById('cursosModalClose'), document.getElementById('cursosModalClose2')];
+      closeBtns.forEach(b=> b?.addEventListener('click', ()=> modal.classList.remove('show')));
+      modal?.addEventListener('click', (e)=>{ if (e.target === modal) modal.classList.remove('show'); });
+      window.addEventListener('keydown', (e)=>{ if(e.key==='Escape' && modal?.classList.contains('show')) modal.classList.remove('show'); });
+    })();
   </script>
 </body>
 </html>
