@@ -1142,6 +1142,20 @@
   const logoutBtn = document.getElementById('logoutBtn');
   let currentUser = null; // para permisos de edición/borrado
 
+  // Cerrar sesión (Salir)
+  logoutBtn?.addEventListener('click', async (e) => {
+    e.preventDefault();
+    try {
+      await signOut(auth);
+    } catch (err) {
+      console.error(err);
+      alert('Error al cerrar sesión');
+    } finally {
+      // Redirigir siempre al login
+      location.replace('../index.html');
+    }
+  });
+
     // Cargar perfil usuario (nombre y rol)
     let currentUserRole = 'user';
     async function loadProfile(uid, email) {
