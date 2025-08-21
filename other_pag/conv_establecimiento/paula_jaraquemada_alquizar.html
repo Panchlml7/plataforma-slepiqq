@@ -6,23 +6,96 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Escuela Paula Jaraquemada Alquizar - SLEP IQUIQUE</title>
     <link rel="stylesheet" href="../style.css">
-        <style>
-            .est-table-wrap{margin-top:.8rem;border:1px solid #e5e7eb;border-radius:10px;overflow:auto}
-            table.est{width:100%;border-collapse:collapse}
-            table.est th,table.est td{border:1px solid #e5e7eb;padding:.5rem .6rem;text-align:left}
-            table.est thead th{background:linear-gradient(180deg,#f8fafc,#eef2ff);font-size:.85rem;color:#334155;position:sticky;top:0}
-            .muted{opacity:.7;font-size:.9rem}
-            /* Encabezado con logo a la derecha */
-            .est-header{display:flex;justify-content:space-between;align-items:flex-start;gap:1rem}
-            .est-header .titles{flex:1;min-width:0}
-            .est-logo{width:120px;height:120px;object-fit:contain;display:block}
-            /* Filtros */
-            .filters-row{display:flex;flex-wrap:wrap;gap:.6rem;align-items:flex-end;margin-top:.8rem}
-            .filters-row .group{display:flex;flex-direction:column;gap:.25rem}
-            .filters-row label{font-size:.85rem;opacity:.85}
-            .filters-row select{padding:.45rem .6rem;border:1px solid #cbd5e1;border-radius:8px;background:#fff;color:#0f172a}
-            .filters-row button{padding:.45rem .8rem;border:1px solid #e5e7eb;border-radius:8px;background:#111827;color:#fff;cursor:pointer}
-        </style>
+    <style>
+        .est-table-wrap {
+            margin-top: .8rem;
+            border: 1px solid #e5e7eb;
+            border-radius: 10px;
+            overflow: auto
+        }
+
+        table.est {
+            width: 100%;
+            border-collapse: collapse
+        }
+
+        table.est th,
+        table.est td {
+            border: 1px solid #e5e7eb;
+            padding: .5rem .6rem;
+            text-align: left
+        }
+
+        table.est thead th {
+            background: linear-gradient(180deg, #f8fafc, #eef2ff);
+            font-size: .85rem;
+            color: #334155;
+            position: sticky;
+            top: 0
+        }
+
+        .muted {
+            opacity: .7;
+            font-size: .9rem
+        }
+
+        /* Encabezado con logo a la derecha */
+        .est-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 1rem
+        }
+
+        .est-header .titles {
+            flex: 1;
+            min-width: 0
+        }
+
+        .est-logo {
+            width: 120px;
+            height: 120px;
+            object-fit: contain;
+            display: block
+        }
+
+        /* Filtros */
+        .filters-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: .6rem;
+            align-items: flex-end;
+            margin-top: .8rem
+        }
+
+        .filters-row .group {
+            display: flex;
+            flex-direction: column;
+            gap: .25rem
+        }
+
+        .filters-row label {
+            font-size: .85rem;
+            opacity: .85
+        }
+
+        .filters-row select {
+            padding: .45rem .6rem;
+            border: 1px solid #cbd5e1;
+            border-radius: 8px;
+            background: #fff;
+            color: #0f172a
+        }
+
+        .filters-row button {
+            padding: .45rem .8rem;
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            background: #111827;
+            color: #fff;
+            cursor: pointer
+        }
+    </style>
 </head>
 
 <body>
@@ -34,182 +107,185 @@
                     <h2 class="Th1">Convivencia Escolar</h2>
                     <h1 class="Th2EE" style="margin:.2rem 0 .6rem;">ESCUELA PAULA JARAQUEMADA ALQUIZAR</h1>
                 </div>
-                <img class="est-logo" src="../img_establecimiento/Paula Jaraquemada.png" alt="Logo Escuela Paula Jaraquemada Alquizar" onerror="this.style.display='none'">
+                <img class="est-logo" src="../img_establecimiento/Paula Jaraquemada.png"
+                    alt="Logo Escuela Paula Jaraquemada Alquizar" onerror="this.style.display='none'">
             </div>
-                        <div class="filters-row">
-                                <div class="group">
-                                        <label for="mesSelect">Mes</label>
-                                        <select id="mesSelect">
-                                                <option value="">Todos</option>
-                                                <option value="01">Enero</option>
-                                                <option value="02">Febrero</option>
-                                                <option value="03">Marzo</option>
-                                                <option value="04">Abril</option>
-                                                <option value="05">Mayo</option>
-                                                <option value="06">Junio</option>
-                                                <option value="07">Julio</option>
-                                                <option value="08">Agosto</option>
-                                                <option value="09">Septiembre</option>
-                                                <option value="10">Octubre</option>
-                                                <option value="11">Noviembre</option>
-                                                <option value="12">Diciembre</option>
-                                        </select>
-                                </div>
-                                <div class="group">
-                                        <label for="anioSelect">Año</label>
-                                        <select id="anioSelect">
-                                                <option value="">Todos</option>
-                                                <option value="2025">2025</option>
-                                                <option value="2024">2024</option>
-                                        </select>
-                                </div>
+            <div class="filters-row">
+                <div class="group">
+                    <label for="mesSelect">Mes</label>
+                    <select id="mesSelect">
+                        <option value="">Todos</option>
+                        <option value="01">Enero</option>
+                        <option value="02">Febrero</option>
+                        <option value="03">Marzo</option>
+                        <option value="04">Abril</option>
+                        <option value="05">Mayo</option>
+                        <option value="06">Junio</option>
+                        <option value="07">Julio</option>
+                        <option value="08">Agosto</option>
+                        <option value="09">Septiembre</option>
+                        <option value="10">Octubre</option>
+                        <option value="11">Noviembre</option>
+                        <option value="12">Diciembre</option>
+                    </select>
+                </div>
+                <div class="group">
+                    <label for="anioSelect">Año</label>
+                    <select id="anioSelect">
+                        <option value="">Todos</option>
+                        <option value="2025">2025</option>
+                        <option value="2024">2024</option>
+                    </select>
+                </div>
                 <div class="group">
                     <label for="cursoSelect">Curso</label>
                     <select id="cursoSelect">
                         <option value="">Todos</option>
                     </select>
                 </div>
-                                <div class="group" style="gap:.4rem;">
-                                        <button id="btnClearFiltros" type="button">Limpiar filtro</button>
-                                </div>
-                        </div>
+                <div class="group" style="gap:.4rem;">
+                    <button id="btnClearFiltros" type="button">Limpiar filtro</button>
+                </div>
+            </div>
             <div class="est-table-wrap">
                 <table class="est">
                     <thead>
                         <tr>
-                                        <th>NOMBRE COMPLETO</th>
-                                        <th>MES</th>
-                                        <th>RBD</th>
-                                        <th>CURSO</th>
-                                        <th>TOTAL AUSENCIAS</th>
-                                        <th>DÍAS AUSENTES</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="rows">
-                                    <tr><td colspan="6" class="muted">Sin registros</td></tr>
-                                </tbody>
-                            </table>
-                        </div>
+                            <th>NOMBRE COMPLETO</th>
+                            <th>MES</th>
+                            <th>RBD</th>
+                            <th>CURSO</th>
+                            <th>TOTAL AUSENCIAS</th>
+                            <th>DÍAS AUSENTES</th>
+                        </tr>
+                    </thead>
+                    <tbody id="rows">
+                        <tr>
+                            <td colspan="6" class="muted">Sin registros</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
             <div style="margin-top:1rem;"><a href="../convivencia_escolar.html">← Galería</a></div>
         </section>
     </main>
-        <script>
-            // Filtro por Mes/Año sobre las filas existentes
-            (function(){
-                const rowsTbody = document.getElementById('rows');
-                const mesSel = document.getElementById('mesSelect');
-                const anioSel = document.getElementById('anioSelect');
-                const cursoSel = document.getElementById('cursoSelect');
-                const btnClear = document.getElementById('btnClearFiltros');
-                if (!rowsTbody) return;
+    <script>
+        // Filtro por Mes/Año sobre las filas existentes
+        (function () {
+            const rowsTbody = document.getElementById('rows');
+            const mesSel = document.getElementById('mesSelect');
+            const anioSel = document.getElementById('anioSelect');
+            const cursoSel = document.getElementById('cursoSelect');
+            const btnClear = document.getElementById('btnClearFiltros');
+            if (!rowsTbody) return;
 
-                // Detectar filas de datos (excluye la fila "Sin registros")
-                function getDataRows(){
-                    return Array.from(rowsTbody.querySelectorAll('tr')).filter(tr => !tr.querySelector('.muted'));
-                }
+            // Detectar filas de datos (excluye la fila "Sin registros")
+            function getDataRows() {
+                return Array.from(rowsTbody.querySelectorAll('tr')).filter(tr => !tr.querySelector('.muted'));
+            }
 
-                // Extraer Mes (MM) y Año (YYYY) desde el texto de la celda MES (2ª columna)
-                const MONTHS = {
-                    'enero':'01','febrero':'02','marzo':'03','abril':'04','mayo':'05','junio':'06',
-                    'julio':'07','agosto':'08','septiembre':'09','setiembre':'09','octubre':'10','noviembre':'11','diciembre':'12'
-                };
-                function parseMesAnio(text){
-                    const t = (text||'').toString().trim();
-                    if (!t) return { mm:'', yyyy:'' };
-                    // 1) Formatos numéricos comunes: MM-YYYY, MM/YYYY, YYYY-MM
-                    let m = t.match(/^(\d{1,2})[\/-](\d{4})$/); // MM-YYYY o MM/YYYY
-                    if (m){ const mm = m[1].padStart(2,'0'); const yyyy = m[2]; return { mm, yyyy }; }
-                    m = t.match(/^(\d{4})[\/-](\d{1,2})$/); // YYYY-MM o YYYY/MM
-                    if (m){ const yyyy = m[1]; const mm = m[2].padStart(2,'0'); return { mm, yyyy }; }
-                    // 2) Nombre de mes en español + año: "Agosto 2025", "Ago 2025"
-                    const low = t.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'');
-                    for (const name in MONTHS){
-                        if (low.includes(name)){
-                            const mm = MONTHS[name];
-                            const y = low.match(/(19|20)\d{2}/)?.[0] || '';
-                            return { mm, yyyy: y };
-                        }
+            // Extraer Mes (MM) y Año (YYYY) desde el texto de la celda MES (2ª columna)
+            const MONTHS = {
+                'enero': '01', 'febrero': '02', 'marzo': '03', 'abril': '04', 'mayo': '05', 'junio': '06',
+                'julio': '07', 'agosto': '08', 'septiembre': '09', 'setiembre': '09', 'octubre': '10', 'noviembre': '11', 'diciembre': '12'
+            };
+            function parseMesAnio(text) {
+                const t = (text || '').toString().trim();
+                if (!t) return { mm: '', yyyy: '' };
+                // 1) Formatos numéricos comunes: MM-YYYY, MM/YYYY, YYYY-MM
+                let m = t.match(/^(\d{1,2})[\/-](\d{4})$/); // MM-YYYY o MM/YYYY
+                if (m) { const mm = m[1].padStart(2, '0'); const yyyy = m[2]; return { mm, yyyy }; }
+                m = t.match(/^(\d{4})[\/-](\d{1,2})$/); // YYYY-MM o YYYY/MM
+                if (m) { const yyyy = m[1]; const mm = m[2].padStart(2, '0'); return { mm, yyyy }; }
+                // 2) Nombre de mes en español + año: "Agosto 2025", "Ago 2025"
+                const low = t.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+                for (const name in MONTHS) {
+                    if (low.includes(name)) {
+                        const mm = MONTHS[name];
+                        const y = low.match(/(19|20)\d{2}/)?.[0] || '';
+                        return { mm, yyyy: y };
                     }
-                    // 3) Solo año
-                    const yonly = t.match(/(19|20)\d{2}/)?.[0] || '';
-                    return { mm:'', yyyy: yonly };
+                }
+                // 3) Solo año
+                const yonly = t.match(/(19|20)\d{2}/)?.[0] || '';
+                return { mm: '', yyyy: yonly };
+            }
+
+            // Poblar selector de años: respeta opciones existentes; si no hay, crea un rango por defecto
+            function populateYears() {
+                if (!anioSel) return;
+                const optsCount = anioSel.options?.length || 0;
+                // Si ya hay opciones (además de "Todos"), respetarlas y asegurar que no esté deshabilitado
+                if (optsCount > 1) { anioSel.disabled = false; return; }
+
+                // Intentar derivar desde las filas de la tabla
+                const years = new Set();
+                for (const tr of getDataRows()) {
+                    const mesCell = tr.children?.[1]?.textContent || '';
+                    const { yyyy } = parseMesAnio(mesCell);
+                    if (yyyy) years.add(String(yyyy));
                 }
 
-                // Poblar selector de años: respeta opciones existentes; si no hay, crea un rango por defecto
-                function populateYears(){
-                    if (!anioSel) return;
-                    const optsCount = anioSel.options?.length || 0;
-                    // Si ya hay opciones (además de "Todos"), respetarlas y asegurar que no esté deshabilitado
-                    if (optsCount > 1) { anioSel.disabled = false; return; }
-
-                    // Intentar derivar desde las filas de la tabla
-                    const years = new Set();
-                    for (const tr of getDataRows()){
-                        const mesCell = tr.children?.[1]?.textContent || '';
-                        const { yyyy } = parseMesAnio(mesCell);
-                        if (yyyy) years.add(String(yyyy));
-                    }
-
-                    let arr = Array.from(years).sort((a,b)=> b.localeCompare(a));
-                    if (arr.length === 0){
-                        const cur = new Date().getFullYear();
-                        arr = [String(cur), String(cur-1), String(cur-2)];
-                    }
-                    const html = ['<option value="">Todos</option>']
-                        .concat(arr.map(y => `<option value="${y}">${y}</option>`))
-                        .join('');
-                    anioSel.innerHTML = html;
-                    anioSel.disabled = false;
+                let arr = Array.from(years).sort((a, b) => b.localeCompare(a));
+                if (arr.length === 0) {
+                    const cur = new Date().getFullYear();
+                    arr = [String(cur), String(cur - 1), String(cur - 2)];
                 }
+                const html = ['<option value="">Todos</option>']
+                    .concat(arr.map(y => `<option value="${y}">${y}</option>`))
+                    .join('');
+                anioSel.innerHTML = html;
+                anioSel.disabled = false;
+            }
 
-                function applyFilters(){
-                    const fmm = mesSel.value; // "" o MM
-                    const fy = anioSel.value; // "" o YYYY
-                    const fcurso = (cursoSel?.value || '').toString().trim().toLowerCase();
-                    let visible = 0;
-                    for (const tr of getDataRows()){
-                        const mesCell = tr.children?.[1]?.textContent || '';
-                        const cursoCell = (tr.children?.[3]?.textContent || '').toString().trim().toLowerCase();
-                        const { mm, yyyy } = parseMesAnio(mesCell);
-                        const okMes = !fmm || (mm === fmm);
-                        const okAnio = !fy || (yyyy === fy);
-                        const okCurso = !fcurso || (cursoCell === fcurso);
-                        const show = okMes && okAnio && okCurso;
-                        tr.style.display = show ? '' : 'none';
-                        if (show) visible++;
-                    }
-                    // Mostrar/ocultar fila "Sin registros"
-                    const emptyRow = rowsTbody.querySelector('tr .muted')?.parentElement || null;
-                    if (emptyRow){ emptyRow.style.display = visible ? 'none' : ''; }
+            function applyFilters() {
+                const fmm = mesSel.value; // "" o MM
+                const fy = anioSel.value; // "" o YYYY
+                const fcurso = (cursoSel?.value || '').toString().trim().toLowerCase();
+                let visible = 0;
+                for (const tr of getDataRows()) {
+                    const mesCell = tr.children?.[1]?.textContent || '';
+                    const cursoCell = (tr.children?.[3]?.textContent || '').toString().trim().toLowerCase();
+                    const { mm, yyyy } = parseMesAnio(mesCell);
+                    const okMes = !fmm || (mm === fmm);
+                    const okAnio = !fy || (yyyy === fy);
+                    const okCurso = !fcurso || (cursoCell === fcurso);
+                    const show = okMes && okAnio && okCurso;
+                    tr.style.display = show ? '' : 'none';
+                    if (show) visible++;
                 }
+                // Mostrar/ocultar fila "Sin registros"
+                const emptyRow = rowsTbody.querySelector('tr .muted')?.parentElement || null;
+                if (emptyRow) { emptyRow.style.display = visible ? 'none' : ''; }
+            }
 
-                function bind(){
-                    mesSel?.addEventListener('change', applyFilters);
-                    anioSel?.addEventListener('change', applyFilters);
-                    cursoSel?.addEventListener('change', applyFilters);
-                    btnClear?.addEventListener('click', ()=>{ mesSel.value=''; anioSel.value=''; cursoSel.value=''; applyFilters(); });
+            function bind() {
+                mesSel?.addEventListener('change', applyFilters);
+                anioSel?.addEventListener('change', applyFilters);
+                cursoSel?.addEventListener('change', applyFilters);
+                btnClear?.addEventListener('click', () => { mesSel.value = ''; anioSel.value = ''; cursoSel.value = ''; applyFilters(); });
+            }
+
+            // Poblar selector de cursos desde la columna 4 (CURSO)
+            function populateCourses() {
+                if (!cursoSel) return;
+                const set = new Set();
+                for (const tr of getDataRows()) {
+                    const c = (tr.children?.[3]?.textContent || '').toString().trim();
+                    if (c) set.add(c);
                 }
+                const arr = Array.from(set).sort((a, b) => a.localeCompare(b, 'es', { numeric: true, sensitivity: 'base' }));
+                const html = ['<option value="">Todos</option>'].concat(arr.map(v => `<option value="${v}">${v}</option>`)).join('');
+                cursoSel.innerHTML = html;
+                cursoSel.disabled = arr.length === 0;
+            }
 
-                // Poblar selector de cursos desde la columna 4 (CURSO)
-                function populateCourses(){
-                    if (!cursoSel) return;
-                    const set = new Set();
-                    for (const tr of getDataRows()){
-                        const c = (tr.children?.[3]?.textContent || '').toString().trim();
-                        if (c) set.add(c);
-                    }
-                    const arr = Array.from(set).sort((a,b)=> a.localeCompare(b,'es',{numeric:true,sensitivity:'base'}));
-                    const html = ['<option value="">Todos</option>'].concat(arr.map(v=>`<option value="${v}">${v}</option>`)).join('');
-                    cursoSel.innerHTML = html;
-                    cursoSel.disabled = arr.length === 0;
-                }
-
-                populateYears();
-                populateCourses();
-                bind();
-                applyFilters();
-            })();
-        </script>
+            populateYears();
+            populateCourses();
+            bind();
+            applyFilters();
+        })();
+    </script>
 </body>
 
 </html>
