@@ -127,6 +127,7 @@
       <div class="actions-bar" style="display:flex;gap:.6rem;align-items:center;margin-bottom:.6rem;">
         <!-- NUEVO: indicador de total -->
         <span>Total registros: <strong id="countTotal">0</strong></span>
+  <span id="listInfo" style="margin-left:1rem;font-size:.85rem;color:#374151;"></span>
       </div>
       <div class="table-wrap">
         <table id="planillaTable">
@@ -170,7 +171,7 @@
   <script type="module">
     import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js';
     import { getAuth, onAuthStateChanged, signOut } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js';
-  import { getFirestore, collection, query, where, onSnapshot, getDoc, doc } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js';
+  import { getFirestore, collection, query, where, onSnapshot, getDoc, getDocs, doc } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js';
 
     const firebaseConfig = { apiKey:"AIzaSyDzUGdJT-eyYjKtej63iThVLgvTHVzvxvA",authDomain:"ia-slep-iqq.firebaseapp.com",projectId:"ia-slep-iqq",storageBucket:"ia-slep-iqq.appspot.com",messagingSenderId:"528895424744",appId:"1:528895424744:web:7144f5e5db1bce5ffb315d" };
     const app = initializeApp(firebaseConfig);
@@ -217,6 +218,13 @@
     const tbody = document.getElementById('tbodyPlanilla');
     const countTotal = document.getElementById('countTotal');
     const btnExport = document.getElementById('btnExport');
+    const listInfo = document.getElementById('listInfo');
+    function showInfo(msg, type='info'){
+      if (!listInfo) return;
+      const colors = { info: '#374151', warn: '#92400e', err: '#991b1b', ok: '#065f46' };
+      listInfo.textContent = msg || '';
+      listInfo.style.color = colors[type] || colors.info;
+    }
     const btnPrint = document.getElementById('btnPrint');
 
     let allDocs = [];
@@ -358,220 +366,9 @@
       renderTable(filtered);
     }
 
-    // Fallback HTML (.xls) si no está disponible la librería XLSX
-    function exportExcelHTML(rows){
-      if (!rows.length){ alert('No hay datos para exportar.'); return; }
+  // Eliminadas funciones de exportación a Excel y listeners asociados a solicitud del usuario.
 
-      const headers = [
-        'N° ACTA','Fecha','Establecimiento','RBD','Modalidad',
-        'Asesor principal','Asesor segundo','Hora inicio','Hora término',
-        'Objetivo Estratégico','Objetivo Visita','Antecedentes','Instrumentos / Insumos',
-        'Práctica Problemática','Actividades Realizadas','Acuerdos',
-        'Fecha Implementación','Responsables','Aspectos Positivos','Áreas de Mejora',
-        'Ciclo Apoyo','Capacidad Basal','Nivel Implementación','Rol Profesional','Creado'
-      ];
-
-      const escapeHtml = (v) => String(v ?? '')
-        .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
-        .replace(/"/g,'&quot;');
-
-      const fmt = (v) => formatDate(v) || '';
-
-      const body = rows.map(d=>{
-        const line = [
-          d.actaNumber || '',
-          fmt(d.fecha || d.createdAt),
-          d.establecimiento || '',
-          d.rbd || '',
-          d.modalidad || '',
-          d.asesorPrincipal || '',
-          d.asesorSegundo || '',
-          d.horaInicio || '',
-          d.horaTermino || '',
-          d.objetivoEstrategico || '',
-          d.objetivoVisita || '',
-          d.antecedentes || '',
-          d.instrumentos || '',
-          d.practicaProblematica || '',
-          d.actividadesRealizadas || '',
-          d.acuerdos || '',
-          fmt(d.fechaImplementacion),
-          d.responsables || '',
-          d.aspectosPositivos || '',
-          d.areasMejora || '',
-          d.cicloApoyo || '',
-          d.capacidadBasal || '',
-          d.nivelImplementacion || '',
-          d.rolProfesional || '',
-          fmt(d.createdAt)
-        ].map(escapeHtml);
-        return `<tr><td>${line.join('</td><td>')}</td></tr>`;
-      }).join('');
-
-      const table = `
-        <table border="1">
-          <thead><tr>${headers.map(h=>`<th>${escapeHtml(h)}</th>`).join('')}</tr></thead>
-          <tbody>${body}</tbody>
-        </table>`;
-
-      const html = `
-        <html xmlns:o="urn:schemas-microsoft-com:office:office"
-              xmlns:x="urn:schemas-microsoft-com:office:excel"
-              xmlns="http://www.w3.org/TR/REC-html40">
-          <head>
-            <meta charset="utf-8" />
-            <!--[if gte mso 9]><xml>
-              <x:ExcelWorkbook>
-                <x:ExcelWorksheets>
-                  <x:ExcelWorksheet>
-                    <x:Name>Planilla</x:Name>
-                    <x:WorksheetOptions><x:DisplayGridlines/></x:WorksheetOptions>
-                  </x:ExcelWorksheet>
-                </x:ExcelWorksheets>
-              </x:ExcelWorkbook>
-            </xml><![endif]-->
-          </head>
-          <body>${table}</body>
-        </html>`;
-
-      // Evitar secuencia de cierre de script
-      const endScript = '<' + '/script';
-      const safeHtml = html.split(endScript).join('<\\/script>');
-
-      const blob = new Blob(['\ufeff', safeHtml], { type: 'application/vnd.ms-excel;charset=utf-8;' });
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url; a.download = 'planilla-acompanamiento.xls'; a.click();
-      URL.revokeObjectURL(url);
-    }
-
-    // Exportación a Excel (.xlsx) con import dinámico; fallback a .xls si falla
-    async function exportExcel(rows){
-      if (!rows.length){ alert('No hay datos para exportar.'); return; }
-
-      const headers = [
-        'N° ACTA','Fecha','Establecimiento','RBD','Modalidad',
-        'Asesor principal','Asesor segundo','Hora inicio','Hora término',
-        'Objetivo Estratégico','Objetivo Visita','Antecedentes','Instrumentos / Insumos',
-        'Práctica Problemática','Actividades Realizadas','Acuerdos',
-        'Fecha Implementación','Responsables','Aspectos Positivos','Áreas de Mejora',
-        'Ciclo Apoyo','Capacidad Basal','Nivel Implementación','Rol Profesional','Creado'
-      ];
-
-      const fmtDate = (v) => {
-        const s = toInputDate(v);
-        if (!s) return '';
-        // Mantener formato dd-mm-yyyy para legibilidad
-        const [y,m,d] = s.split('-');
-        return `${d}-${m}-${y}`;
-      };
-
-  // Forzar texto para evitar formatos automáticos (e.g., RBD con ceros a la izquierda)
-  const toCell = (v) => (v === null || v === undefined) ? '' : String(v);
-
-      const data = [headers, ...rows.map(d => ([
-        toCell(d.actaNumber),
-        fmtDate(d.fecha || d.createdAt),
-        toCell(d.establecimiento),
-        toCell(d.rbd),
-        toCell(d.modalidad),
-        toCell(d.asesorPrincipal),
-        toCell(d.asesorSegundo),
-        toCell(d.horaInicio),
-        toCell(d.horaTermino),
-        toCell(d.objetivoEstrategico),
-        toCell(d.objetivoVisita),
-        toCell(d.antecedentes),
-        toCell(d.instrumentos),
-        toCell(d.practicaProblematica),
-        toCell(d.actividadesRealizadas),
-        toCell(d.acuerdos),
-        fmtDate(d.fechaImplementacion),
-        toCell(d.responsables),
-        toCell(d.aspectosPositivos),
-        toCell(d.areasMejora),
-        toCell(d.cicloApoyo),
-        toCell(d.capacidadBasal),
-        toCell(d.nivelImplementacion),
-        toCell(d.rolProfesional),
-        fmtDate(d.createdAt)
-      ]))];
-
-      try {
-        const XLSX = await import('https://cdn.jsdelivr.net/npm/xlsx@0.19.3/+esm');
-        const wb = XLSX.utils.book_new();
-        const ws = XLSX.utils.aoa_to_sheet(data);
-        // Ajustar ancho de columnas básico
-        const colWidths = headers.map(h => ({ wch: Math.max(12, Math.min(40, String(h).length + 2)) }));
-        ws['!cols'] = colWidths;
-        XLSX.utils.book_append_sheet(wb, ws, 'Planilla');
-
-        const out = XLSX.write(wb, { bookType: 'xlsx', type: 'array' });
-        const blob = new Blob([out], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url; a.download = 'planilla-acompanamiento.xlsx'; a.click();
-        URL.revokeObjectURL(url);
-      } catch (e) {
-        console.warn('No se pudo cargar XLSX, usando exportación .xls de respaldo', e);
-        exportExcelHTML(rows);
-      }
-    }
-
-    btnExport.addEventListener('click', async ()=>{
-      try { await exportExcel(filtered.length ? filtered : allDocs); }
-      catch { alert('No se pudo exportar.'); }
-    });
-    btnPrint.addEventListener('click', ()=> window.print());
-    [qEl, fromEl, toEl, modEl].forEach(el => {
-      if (!el) return;
-      el.addEventListener('input', applyFilters);
-      el.addEventListener('change', applyFilters);
-    });
-    applyFilters();
-
-    function subscribeUserDocs(uid){
-      const qRef = query(collection(db,'datosBasicos'), where('ownerUid','==', uid));
-      return onSnapshot(qRef, snap=>{
-        allDocs = snap.docs.map(d=>({_id:d.id, ...d.data()}));
-        const getTime = (x)=> getDateObj(x.fecha || x.createdAt)?.getTime() || 0;
-        const seen = new Map();
-        for (const it of allDocs){
-          const key = (it.actaNumber || it._id || '').toString();
-          const prev = seen.get(key);
-          if (!prev || getTime(it) > getTime(prev)) seen.set(key, it);
-        }
-        allDocs = Array.from(seen.values());
-
-        allDocs.sort((a,b)=>{
-          const da = getDateObj(a.fecha || a.createdAt)?.getTime() || 0;
-          const dbb = getDateObj(b.fecha || b.createdAt)?.getTime() || 0;
-          return dbb - da;
-        });
-
-        if (focusId){
-          filtered = allDocs.filter(x=> x._id===focusId);
-          renderTable(filtered);
-          if (filtered.length===1) openDetail(filtered[0]);
-        } else if (focusActa){
-          filtered = allDocs.filter(x=> (x.actaNumber||'')===focusActa);
-          renderTable(filtered);
-          if (filtered.length===1) openDetail(filtered[0]);
-        } else {
-          filtered = allDocs;
-          applyFilters();
-        }
-      }, err=>{
-        console.error('Error leyendo documentos:', err);
-      });
-    }
-
-    onAuthStateChanged(auth, async (user)=>{
-      if (!user){ location.replace('../index.html'); return; }
-      await loadProfile(user);
-      const unsub = subscribeUserDocs(user.uid);
-      window.addEventListener('unload', ()=>{ try{unsub && unsub();}catch{} });
-    });
+  // Eliminado subscribeUserDocs y la suscripción con onAuthStateChanged a solicitud del usuario.
   </script>
   <script>
     // Dropdown ligero: toggle, click fuera y ESC

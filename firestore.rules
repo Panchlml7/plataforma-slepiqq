@@ -1,0 +1,29 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Lectura pública autenticada de establecimientos (solo lectura)
+    match /establecimientos/{docId} {
+      allow read: if request.auth != null;
+      allow write: if false;
+    }
+
+    // Perfil básico del usuario (opcional): el usuario puede leer/escribir su propio documento de perfil
+    match /users/{uid} {
+      allow read, write: if request.auth != null && request.auth.uid == uid;
+    }
+
+    // Subcolección privada de documentos del usuario: lectura/escritura solo por el dueño autenticado
+    match /users/{uid}/datosBasicos/{docId} {
+      allow read, write, update, delete: if request.auth != null && request.auth.uid == uid;
+    }
+
+    // Colección global compartida: lectura/creación/edición para cualquier usuario autenticado;
+    // borrado solo por el dueño (ownerUid)
+    match /datosBasicos/{docId} {
+      allow read: if request.auth != null;
+      allow create: if request.auth != null;
+      allow update: if request.auth != null;
+      allow delete: if request.auth != null && resource.data.ownerUid == request.auth.uid;
+    }
+  }
+}

@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Convivencia Escolar - SLEP IQUIQUE</title>
+	<link rel="stylesheet" href="style.css">
+	<style>
+		.section-card {
+			background:#ffffff; color:#0f172a;
+			border:1px solid #e5e7eb; border-radius:14px;
+			padding:1rem 1.2rem; margin:1rem 0;
+			box-shadow:0 8px 18px -12px rgba(15,23,42,.15);
+		}
+		.btn, .btn-sm {
+			appearance:none; display:inline-flex; align-items:center; justify-content:center; gap:.4rem;
+			padding:.6rem .9rem; border-radius:10px; border:1px solid transparent; font-weight:700; cursor:pointer;
+		}
+		.btn-outline { background:#fff; color:#111827; border-color:#cbd5e1; }
+		/* Top-nav blanca y dropdown ligero (igual a planilla) */
+		.top-nav { display:flex; gap:.8rem; align-items:center; justify-content:space-between; padding:.6rem 1rem; background:#ffffff; border-bottom:1px solid #e5e7eb; color:#111827; }
+		.top-nav .brand { font-weight:600; }
+		.top-nav a { color:#111827; opacity:1; text-decoration:none; padding:.45rem .7rem; border-radius:6px; }
+		.top-nav a:hover { background:#f3f4f6; }
+		.top-nav .user-badge { background:#ffffff; color:#111827; border:1px solid #e5e7eb; border-radius:999px; padding:.4rem .6rem; }
+		.dropdown { position: relative; }
+		.dropdown-toggle { background:transparent; border:none; color:#111827; cursor:pointer; padding:.45rem .7rem; border-radius:6px; font-size:.8rem; font-weight:400; box-shadow:none; }
+		.dropdown-toggle:hover, .dropdown-toggle:focus { background:#f3f4f6; box-shadow:none; }
+		.dropdown-toggle .caret { font-size:.9em; opacity:.8; }
+		.dropdown-menu { position:absolute; top:calc(100% + .35rem); left:0; min-width:220px; z-index:100; background:#ffffff; color:#111827; border:none; border-radius:0; padding:.35rem 0; box-shadow:none; display:none; }
+		.dropdown.open .dropdown-menu { display:block; }
+		.dropdown-item { display:block; padding:.55rem .9rem; color:#111827; text-decoration:none; font-size:.85rem; font-weight:400; border-radius:2%; }
+		.dropdown-item:hover { background:#f3f4f6; }
+
+		/* Galería de imágenes de establecimientos */
+		.img-grid { display:grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap:12px; }
+		.img-item { background:#ffffff; border:1px solid #e5e7eb; border-radius:12px; padding:.6rem; display:flex; flex-direction:column; align-items:center; gap:.5rem; overflow:hidden; }
+		.img-item img { width:100%; height:120px; object-fit:contain; display:block; will-change: transform; transition: transform .25s ease, opacity .4s ease; opacity:0; }
+		.img-item img.is-loaded { opacity:1; }
+		.img-item:hover img { transform: scale(1.05); }
+		@media (prefers-reduced-motion: reduce){
+			.img-item img { transition: none; }
+			.img-item:hover img { transform: none; }
+		}
+		.img-item figcaption { font-size:.85rem; color:#111827; text-align:center; }
+	</style>
+</head>
+<body>
+	<nav class="top-nav">
+		<span class="brand">SLEPIQQ</span>
+		<a class="nav-link" href="asistencia.html">Asistencia</a>
+		<a class="nav-link" href="establecimiento.html">Establecimiento</a>
+		<div class="dropdown nav-acomp-dropdown" aria-label="Acompañamiento Visita">
+			<button class="dropdown-toggle" type="button" aria-haspopup="true" aria-expanded="false">
+				Acompañamiento <span class="caret">▾</span>
+			</button>
+			<div class="dropdown-menu" role="menu" aria-label="Acompañamiento Visita">
+				<a class="dropdown-item" role="menuitem" href="documentos.html" title="Documento de Acompañamiento">DOCUMENTO</a>
+				<a class="dropdown-item" role="menuitem" href="planilla.html" title="Planilla de Acompañamiento">PLANILLA</a>
+			</div>
+		</div>
+		<a class="nav-link" href="../plataforma.html">INICIO</a>
+		<span class="user-badge"><span id="userName">...</span><button id="logoutBtn" class="btn btn-outline" type="button">Salir</button></span>
+	</nav>
+
+	<main style="max-width:1200px;margin:0 auto;padding:0 1rem 2rem;">
+		<section class="section-card">
+			<h1 style="margin:.2rem 0 .8rem; font-size: x-large; text-align: center;">Convivencia Escolar</h1>
+			
+			<div id="gallery" class="img-grid" aria-live="polite"></div>
+		</section>
+	</main>
+
+	<footer>&copy; SLEP IQUIQUE</footer>
+
+	<script type="module">
+		import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js';
+		import { getAuth, onAuthStateChanged, signOut } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js';
+		import { getFirestore, getDoc, doc } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js';
+
+		const firebaseConfig = { apiKey:"AIzaSyDzUGdJT-eyYjKtej63iThVLgvTHVzvxvA",authDomain:"ia-slep-iqq.firebaseapp.com",projectId:"ia-slep-iqq",storageBucket:"ia-slep-iqq.appspot.com",messagingSenderId:"528895424744",appId:"1:528895424744:web:7144f5e5db1bce5ffb315d" };
+		const app = initializeApp(firebaseConfig);
+		const auth = getAuth(app);
+		const db = getFirestore(app);
+
+		const userNameEl = document.getElementById('userName');
+		const logoutBtn = document.getElementById('logoutBtn');
+		const galleryEl = document.getElementById('gallery');
+
+		async function loadProfile(uid, email){
+			try {
+				const snap = await getDoc(doc(db,'users',uid));
+				userNameEl.textContent = snap.exists() && snap.data().name ? snap.data().name : (email||uid);
+			} catch {
+				userNameEl.textContent = email || uid;
+			}
+		}
+
+		logoutBtn?.addEventListener('click', async ()=>{
+			try { await signOut(auth); }
+			catch(e){ console.error(e); alert('Error al cerrar sesión'); }
+			finally { location.replace('../index.html'); }
+		});
+
+		onAuthStateChanged(auth, user => {
+			if (!user){ location.replace('../index.html'); return; }
+			loadProfile(user.uid, user.email);
+
+			// Renderizar galería de imágenes de /other_pag/img_establecimiento
+			const IMAGES = [
+				"CCL.png",
+				"Chipana.jpg",
+				"CODE .png",
+				"Colegio Eduardo LLanos Nava.png",
+				"Colegio España.png",
+				"Colegio Lynch.png",
+				"Colegio República de Croacia.png",
+				"Colegio Simon Bolivar.png",
+				"Escuela Centenario.png",
+				"Escuela Chanavayita.png",
+				"Escuela Gabriela Mistral.png",
+				"Escuela Placido Villarroel V2.png",
+				"Escuela San Marcos.png",
+				"Escuela Thilda Portillo.png",
+				"Escuela Violeta Parra.png",
+				"Instituto Comercial.png",
+				"Italia.jpg",
+				"Liceo CEIA.png",
+				"Liceo Juan Pablo II.png",
+				"Liceo Luis Cruz Martinez.png",
+				"Liceo Santa Maria.png",
+				"Liceo Tp de Adultos.png",
+				"logo_castro_ramos.jpg",
+				"logo_flor_inca.jpg",
+				"Oasis del Saber.png",
+				"Ohiggins.jpg",
+				"Paula Jaraquemada.png",
+				"Politecnico.png"
+			];
+
+			// Nombres amigables por archivo
+			const CAPTIONS = {
+				"CCL.png": "Centro de Capacitación Laboral",
+				"Chipana.jpg": "Escuela Chipana",
+				"CODE .png": "Colegio Deportivo TP Elena Duvauchelle Cabezón",
+				"Colegio Eduardo LLanos Nava.png": "Colegio Eduardo Llanos Nava",
+				"Colegio España.png": "Colegio España",
+				"Colegio Lynch.png": "Escuela Almirante Patricio Lynch",
+				"Colegio República de Croacia.png": "Colegio República de Croacia",
+				"Colegio Simon Bolivar.png": "Colegio Simón Bolívar",
+				"Escuela Centenario.png": "Escuela Centenario",
+				"Escuela Chanavayita.png": "Escuela Caleta Chanavayita",
+				"Escuela Gabriela Mistral.png": "Escuela Gabriela Mistral",
+				"Escuela Placido Villarroel V2.png": "Escuela Plácido Villarroel",
+				"Escuela San Marcos.png": "Escuela Caleta San Marcos",
+				"Escuela Thilda Portillo.png": "Escuela Thilda Portillo Olivares",
+				"Escuela Violeta Parra.png": "Escuela Violeta Parra",
+				"Instituto Comercial.png": "Instituto Comercial Baldomero Wolnitzky",
+				"Italia.jpg": "Colegio República de Italia",
+				"Liceo CEIA.png": "Liceo CEIA",
+				"Liceo Juan Pablo II.png": "Liceo Bicentenario Minero SS Juan Pablo II",
+				"Liceo Luis Cruz Martinez.png": "Liceo Luis Cruz Martínez",
+				"Liceo Santa Maria.png": "Liceo Bicentenario Domingo Santa María",
+				"Liceo Tp de Adultos.png": "Liceo Técnico Profesional de Adultos",
+				"logo_castro_ramos.jpg": "Escuela Profesor Manuel Castro Ramos",
+				"logo_flor_inca.jpg": "Escuela de Educación Especial Flor del Inca",
+				"Oasis del Saber.png": "Escuela Especial de Lenguaje Oasis del Saber",
+				"Ohiggins.jpg": "Liceo Libertador General Bernardo O'Higgins",
+				"Paula Jaraquemada.png": "Escuela Paula Jaraquemada Alquizar",
+				"Politecnico.png": "Liceo Politécnico José Gutiérrez de la Fuente"
+			};
+
+			function fileToCaption(name){
+				return CAPTIONS[name] || name.replace(/\.[^.]+$/, '').trim();
+			}
+
+			function toSlug(s){
+				return s
+					.normalize('NFD').replace(/[\u0300-\u036f]/g,'') // quitar acentos
+					.replace(/[^a-zA-Z0-9\s]/g, ' ') // quitar signos
+					.trim().toLowerCase()
+					.replace(/\s+/g,'_');
+			}
+
+			function renderGallery(){
+				if (!galleryEl) return;
+				galleryEl.innerHTML = '';
+				IMAGES.forEach((fname)=>{
+					const src = `img_establecimiento/${encodeURI(fname)}`;
+					const fig = document.createElement('figure');
+					fig.className = 'img-item';
+					const img = document.createElement('img');
+					img.loading = 'lazy';
+					img.decoding = 'async';
+					img.alt = fileToCaption(fname);
+					img.src = src;
+					img.addEventListener('load', ()=>{ img.classList.add('is-loaded'); });
+					img.addEventListener('error', ()=>{ fig.style.display='none'; });
+					img.style.cursor = 'pointer';
+					img.addEventListener('click', ()=>{
+						const cap = fileToCaption(fname);
+						const slug = toSlug(cap);
+						window.location.href = `conv_establecimiento/${slug}.html`;
+					});
+					const cap = document.createElement('figcaption');
+					cap.textContent = fileToCaption(fname);
+					fig.appendChild(img);
+					fig.appendChild(cap);
+					galleryEl.appendChild(fig);
+				});
+			}
+
+			renderGallery();
+		});
+	</script>
+	<script>
+		// Dropdown ligero: toggle, click fuera y ESC
+		(function(){
+			const dd = document.querySelector('.nav-acomp-dropdown');
+			const btn = dd?.querySelector('.dropdown-toggle');
+			function close(){ if(!dd) return; dd.classList.remove('open'); btn?.setAttribute('aria-expanded','false'); }
+			function toggle(){ if(!dd) return; const open = dd.classList.toggle('open'); btn?.setAttribute('aria-expanded', open ? 'true' : 'false'); }
+			btn?.addEventListener('click', (e)=>{ e.stopPropagation(); toggle(); });
+			document.addEventListener('click', (e)=>{ if(!dd) return; if(!dd.contains(e.target)) close(); });
+			window.addEventListener('keydown', (e)=>{ if(e.key==='Escape') close(); });
+		})();
+	</script>
+</body>
+</html>
