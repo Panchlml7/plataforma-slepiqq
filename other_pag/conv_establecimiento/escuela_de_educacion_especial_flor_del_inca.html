@@ -1,3 +1,235 @@
 <!DOCTYPE html>
-<html lang="es"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Escuela de Educación Especial Flor del Inca - SLEP IQUIQUE</title><link rel="stylesheet" href="../style.css"><style>.est-table-wrap{margin-top:.8rem;border:1px solid #e5e7eb;border-radius:10px;overflow:auto}table.est{width:100%;border-collapse:collapse}table.est th,table.est td{border:1px solid #e5e7eb;padding:.5rem .6rem;text-align:left}table.est thead th{background:linear-gradient(180deg,#f8fafc,#eef2ff);font-size:.85rem;color:#334155;position:sticky;top:0}.muted{opacity:.7;font-size:.9rem}</style></head><body><main style="max-width:900px;margin:0 auto;padding:1rem;"><section style="background:#fff;border:1px solid #e5e7eb;border-radius:14px;padding:1rem 1.2rem;box-shadow:0 8px 18px -12px rgba(15,23,42,.15);"><h1>Convivencia Escolar</h1><h2 style="margin:.2rem 0 .6rem;">Escuela de Educación Especial Flor del Inca</h2><p style="opacity:.8;">Sección en construcción.</p><div class="est-table-wrap"><table class="est"><thead><tr><th>NOMBRE COMPLETO</th><th>MES</th><th>RBD</th><th>CURSO</th><th>TOTAL AUSENCIAS</th><th>DÍAS AUSENTES</th></tr></thead><tbody id="rows"><tr><td colspan="6" class="muted">Sin registros</td></tr></tbody></table></div><div style="margin-top:1rem;"><a href="../convivencia_escolar.html">← Galería</a></div></section></main></body></html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Escuela de Educación Especial Flor del Inca - SLEP IQUIQUE</title>
+    <link rel="stylesheet" href="../style.css">
+    <style>
+        .est-table-wrap {
+            margin-top: .8rem;
+            border: 1px solid #e5e7eb;
+            border-radius: 10px;
+            overflow: auto
+        }
+
+        table.est {
+            width: 100%;
+            border-collapse: collapse
+        }
+
+        table.est th,
+        table.est td {
+            border: 1px solid #e5e7eb;
+            padding: .5rem .6rem;
+            text-align: left
+        }
+
+        table.est thead th {
+            background: linear-gradient(180deg, #f8fafc, #eef2ff);
+            font-size: .85rem;
+            color: #334155;
+            position: sticky;
+            top: 0
+        }
+
+        .muted {
+            opacity: .7;
+            font-size: .9rem
+        }
+    </style>
+</head>
+
+<body>
+    <main style="max-width:900px;margin:0 auto;padding:1rem;">
+                <section
+                        style="background:#fff;border:1px solid #e5e7eb;border-radius:14px;padding:1rem 1.2rem;box-shadow:0 8px 18px -12px rgba(15,23,42,.15);">
+                        <!-- Filtros: Mes, Año, Curso -->
+                        <div id="filters" style="display:flex;flex-wrap:wrap;gap:.6rem 1rem;align-items:end;margin:.2rem 0 .6rem 0;">
+                                <div>
+                                        <label for="filter-mes" style="display:block;font-size:.8rem;color:#334155;margin-bottom:.25rem;">Mes</label>
+                                        <select id="filter-mes" style="padding:.4rem .5rem;border:1px solid #cbd5e1;border-radius:8px;min-width:140px;">
+                                                <option value="">Todos</option>
+                                                <option>Enero</option>
+                                                <option>Febrero</option>
+                                                <option>Marzo</option>
+                                                <option>Abril</option>
+                                                <option>Mayo</option>
+                                                <option>Junio</option>
+                                                <option>Julio</option>
+                                                <option>Agosto</option>
+                                                <option>Septiembre</option>
+                                                <option>Octubre</option>
+                                                <option>Noviembre</option>
+                                                <option>Diciembre</option>
+                                        </select>
+                                </div>
+                                <div>
+                                        <label for="filter-anio" style="display:block;font-size:.8rem;color:#334155;margin-bottom:.25rem;">Año</label>
+                                        <select id="filter-anio" style="padding:.4rem .5rem;border:1px solid #cbd5e1;border-radius:8px;min-width:110px;">
+                                                <option value="">Todos</option>
+                                        </select>
+                                </div>
+                                <div>
+                                        <label for="filter-curso" style="display:block;font-size:.8rem;color:#334155;margin-bottom:.25rem;">Curso</label>
+                                        <select id="filter-curso" style="padding:.4rem .5rem;border:1px solid #cbd5e1;border-radius:8px;min-width:160px;">
+                                                <option value="">Todos</option>
+                                        </select>
+                                </div>
+                                <button id="btn-clear" style="padding:.5rem .8rem;border:1px solid #94a3b8;border-radius:8px;background:#f8fafc;color:#0f172a;">Limpiar</button>
+                        </div>
+            <div class="est-table-wrap">
+                <table class="est">
+                    <thead>
+                        <tr>
+                            <th>NOMBRE COMPLETO</th>
+                            <th>MES</th>
+                            <th>RBD</th>
+                            <th>CURSO</th>
+                            <th>TOTAL AUSENCIAS</th>
+                            <th>DÍAS AUSENTES</th>
+                        </tr>
+                    </thead>
+                    <tbody id="rows">
+                                                <tr id="noData">
+                            <td colspan="6" class="muted">Sin registros</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div style="margin-top:1rem;"><a href="../convivencia_escolar.html">← Galería</a></div>
+        </section>
+    </main>
+</body>
+
+<script>
+// Filtrado por Mes/Año/Curso con detección dinámica de columnas y meses en español
+(function(){
+    const $ = (s, r=document) => r.querySelector(s);
+    const $$ = (s, r=document) => Array.from(r.querySelectorAll(s));
+
+    const tbody = $('#rows');
+    const noDataRow = $('#noData');
+    const rows = $$('#rows tr').filter(tr => tr !== noDataRow);
+    const theadCells = $$('thead th');
+    const colIndex = (name) => {
+        const idx = theadCells.findIndex(th => th.textContent.trim().toLowerCase() === name);
+        return idx; // -1 si no está
+    };
+    const idxMes = colIndex('mes');
+    const idxCurso = colIndex('curso');
+
+    // Mapa de meses en español (sin/ con acentos) → número (1-12)
+    const MESES = {
+        'enero':1,'febrero':2,'marzo':3,'abril':4,'mayo':5,'junio':6,
+        'julio':7,'agosto':8,'septiembre':9,'setiembre':9,'octubre':10,
+        'noviembre':11,'diciembre':12
+    };
+    const norm = (t) => t?.toString().toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').trim() || '';
+    const parseMes = (text) => {
+        const t = norm(text);
+        // Busca nombre del mes
+        for (const k of Object.keys(MESES)) {
+            if (t.includes(k)) return MESES[k];
+        }
+        // Busca formato numerico (mm o m)
+        const m = t.match(/\b(1[0-2]|0?[1-9])\b/);
+        if (m) return parseInt(m[1],10);
+        return null;
+    };
+    const parseAnio = (text) => {
+        const m = (text||'').match(/\b(19|20)\d{2}\b/);
+        return m ? m[0] : '';
+    };
+
+    // Construir listas únicas de Año y Curso desde las filas
+    const anios = new Set();
+    const cursos = new Set();
+    rows.forEach(tr => {
+        const tds = $$('td', tr);
+        if (idxCurso >= 0) {
+            const c = tds[idxCurso]?.textContent?.trim();
+            if (c) cursos.add(c);
+        }
+        // Año preferentemente desde la celda MES; si no, desde toda la fila
+        let fuenteAnio = '';
+        if (idxMes >= 0) fuenteAnio = tds[idxMes]?.textContent || '';
+        if (!/\b(19|20)\d{2}\b/.test(fuenteAnio)) {
+            fuenteAnio = tds.map(td => td.textContent).join(' ');
+        }
+        const y = parseAnio(fuenteAnio);
+        if (y) anios.add(y);
+    });
+
+    // Poblar selects
+    const selMes = $('#filter-mes');
+    const selAnio = $('#filter-anio');
+    const selCurso = $('#filter-curso');
+    const btnClear = $('#btn-clear');
+
+    // Años ordenados desc
+    Array.from(anios).sort((a,b)=>b.localeCompare(a)).forEach(y => {
+        const opt = document.createElement('option');
+        opt.value = y; opt.textContent = y; selAnio.appendChild(opt);
+    });
+    // Cursos ordenados asc natural
+    Array.from(cursos).sort((a,b)=>a.localeCompare(b, 'es', {numeric:true,sensitivity:'base'})).forEach(c => {
+        const opt = document.createElement('option');
+        opt.value = c; opt.textContent = c; selCurso.appendChild(opt);
+    });
+
+    function aplicaFiltros(){
+        const fMes = norm(selMes.value);
+        const fAnio = selAnio.value;
+        const fCurso = selCurso.value;
+        let visibles = 0;
+
+        rows.forEach(tr => {
+            const tds = $$('td', tr);
+            const celMes = idxMes >= 0 ? (tds[idxMes]?.textContent || '') : '';
+            const celCurso = idxCurso >= 0 ? (tds[idxCurso]?.textContent || '') : '';
+            const rowText = tds.map(td => td.textContent).join(' ');
+
+            // Mes
+            let okMes = true;
+            if (fMes) {
+                const mesNumSel = MESES[fMes] || null; // fMes ya normalizado coincide con key
+                const mesRow = parseMes(celMes);
+                okMes = mesNumSel ? (mesRow === mesNumSel) : true;
+            }
+
+            // Año
+            let okAnio = true;
+            if (fAnio) {
+                const anioRow = parseAnio(idxMes>=0 ? celMes : rowText);
+                okAnio = (anioRow === fAnio);
+            }
+
+            // Curso (match exacto)
+            let okCurso = true;
+            if (fCurso) okCurso = (celCurso.trim() === fCurso);
+
+            const show = okMes && okAnio && okCurso;
+            tr.style.display = show ? '' : 'none';
+            if (show) visibles++;
+        });
+
+        if (noDataRow) noDataRow.style.display = visibles === 0 ? '' : 'none';
+    }
+
+    [selMes, selAnio, selCurso].forEach(el => el && el.addEventListener('change', aplicaFiltros));
+    btnClear?.addEventListener('click', () => {
+        if (selMes) selMes.value = '';
+        if (selAnio) selAnio.value = '';
+        if (selCurso) selCurso.value = '';
+        aplicaFiltros();
+    });
+
+    // Si no hay filas de datos, mantener "Sin registros" visible
+    aplicaFiltros();
+})();
+</script>
+
+</html>
 <script src="./est-header-logo.js"></script>
