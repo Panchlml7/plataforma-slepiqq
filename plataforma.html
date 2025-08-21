@@ -186,6 +186,7 @@
     <span class="brand">SLEPIQQ</span>    
     <a href="#asistencia">Asistencia</a>
     <a href="other_pag/establecimiento.html">Establecimiento</a>
+    <a href="other_pag/convivencia_escolar.html">Convivencia</a>
     <div class="dropdown nav-acomp-dropdown" aria-label="Acompañamiento Visita">
       <button class="dropdown-toggle" type="button" aria-haspopup="true" aria-expanded="false">
         Acompañamiento <span class="caret">▾</span>
@@ -195,9 +196,8 @@
         <a class="dropdown-item" role="menuitem" href="other_pag/planilla.html" title="Planilla de Acompañamiento">PLANILLA</a>
       </div>
     </div>
-  <a id="adminLink" href="other_pag/tools/grant-admin.html" style="display:none;">Admin usuarios</a>
     <a href="#habilitacion">Habilitación</a>
-    <a href="#convivencia">Convivencia</a>
+  <a id="adminLink" href="other_pag/tools/grant-admin.html" style="display:none;">Admin usuarios</a>
     <div class="user-badge">
       <span id="navUserName">Usuario...</span>
       <button id="logoutBtnPlat" class="btn logout-btn" type="button" style="padding:.4rem .65rem;font-size:.6rem;">Salir</button>
@@ -232,7 +232,7 @@
       <section id="convivencia" class="card-sec">
         <h3>CONVIVENCIA ESCOLAR</h3>
         <p>Monitoreo de casos, iniciativas de convivencia y reportes de clima escolar.</p>
-  <a href="#convivencia" class="mini-link card-txt">Panel convivencia →</a>
+  <a href="other_pag/convivencia_escolar.html" class="mini-link card-txt">Panel convivencia →</a>
       </section>
     </div>
   </main>
@@ -347,14 +347,12 @@
     });
 
     // Enlaces del menú
-    document.querySelector('nav.top-nav a[href="#asistencia"]')?.addEventListener('click', (e)=>{ e.preventDefault(); openSoon(); });
-    document.querySelector('nav.top-nav a[href="#habilitacion"]')?.addEventListener('click', (e)=>{ e.preventDefault(); openSoon(); });
-    document.querySelector('nav.top-nav a[href="#convivencia"]')?.addEventListener('click', (e)=>{ e.preventDefault(); openSoon(); });
+  document.querySelector('nav.top-nav a[href="#asistencia"]')?.addEventListener('click', (e)=>{ e.preventDefault(); openSoon(); });
+  document.querySelector('nav.top-nav a[href="#habilitacion"]')?.addEventListener('click', (e)=>{ e.preventDefault(); openSoon(); });
 
   // Enlaces en tarjetas (mismo comportamiento que el menú)
   document.querySelector('#asistencia a.mini-link')?.addEventListener('click', (e)=>{ e.preventDefault(); openSoon(); });
   document.querySelector('#habilitacion a.mini-link')?.addEventListener('click', (e)=>{ e.preventDefault(); openSoon(); });
-  document.querySelector('#convivencia a.mini-link')?.addEventListener('click', (e)=>{ e.preventDefault(); openSoon(); });
 
   // Dropdown Acompañamiento (ligero)
   const dd = document.querySelector('.nav-acomp-dropdown');

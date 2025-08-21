@@ -6,15 +6,31 @@
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <link rel="stylesheet" href="./styles.css">
   <!-- Nota: ahora app.js se sirve tras build (npm run dev) usando imports de 'firebase' -->
+  <script>
+    // Config compartida de Firebase (coincide con app.js)
+    window.firebaseConfig = {
+      apiKey: "AIzaSyDzUGdJT-eyYjKtej63iThVLgvTHVzvxvA",
+      authDomain: "ia-slep-iqq.firebaseapp.com",
+      projectId: "ia-slep-iqq",
+      storageBucket: "ia-slep-iqq.appspot.com",
+      messagingSenderId: "528895424744",
+      appId: "1:528895424744:web:7144f5e5db1bce5ffb315d"
+    };
+  </script>
 </head>
 <body>
   <div id="authCenterWrap">
+    <!-- Texto de bienvenida arriba -->
+    <div class="welcome-inline">
+      <h1 class="welcome-title">¡Hola! Bienvenido a nuestra plataforma</h1>
+    </div>
+    <!-- Login centrado -->
     <section id="authSection" class="card">
       <div id="authLoggedOut">
         <form id="loginForm">
-          <input id="loginEmail" type="email" placeholder="Email" required>
-            <input id="loginPassword" type="password" placeholder="Contraseña" required>
-          <button type="submit">Ingresar</button>
+          <input id="loginEmail" type="email" placeholder="Email" required style="border-radius: 20px;">
+          <input id="loginPassword" type="password" placeholder="Contraseña" required style="border-radius: 20px;">
+          <button type="submit" class="bttnIngresar" style="border-radius: 20px;">Ingresar</button>
           <p class="register-link">¿No tienes cuenta?
             <button
               type="button"
@@ -24,7 +40,9 @@
               Regístrate
             </button>
           </p>
-          <!-- El enlace abre el modal (listener en app.js) -->
+          <p class="register-link" style="margin-top:.5rem;">
+            <a href="#" id="btnForgot" aria-controls="forgotModal">¿Olvidaste tu contraseña?</a>
+          </p>
         </form>
       </div>
       <div id="authLoggedIn" style="display:none;">
@@ -33,6 +51,12 @@
       </div>
       <div id="statusMsg" style="margin-top:.5rem;font-size:.8rem;opacity:.85; text-align: center;"></div>
     </section>
+    <!-- Logo debajo (sin fondo) -->
+    <section class="logo-card" aria-hidden="true">
+      <img src="./other_pag/Imagen/slepiqq2.png" alt="Logo SLEP Iquique" />
+    </section>
+    <!-- Divisor mitad azul/rojo -->
+    <div class="brand-divider" aria-hidden="true"></div>
   </div>
 
   <!-- App (se muestra tras login) -->
@@ -51,7 +75,6 @@
     </section>
   </main>
 
-  <footer><small><i>Servicio Local de Educación Publica en IQUIQUE</i></small></footer>
 
   <!-- Modal Registro -->
   <div id="registerModal" class="modal hidden" aria-hidden="true" role="dialog" aria-modal="true">
@@ -61,19 +84,19 @@
       <h3 style="margin-top:0;">Crear cuenta</h3>
       <form id="registerForm">
         <div class="mb">
-          <input id="regName" type="text" placeholder="Nombre completo" required>
+          <input id="regName" class="ttregistral" type="text" placeholder="Nombre completo" required>
         </div>
         <div class="mb">
-          <input id="regBirth" type="date" required>
+          <input id="regBirth" class="ttregistral" type="date" required>
         </div>
         <div class="mb">
-          <input id="regEmail" type="email" placeholder="Correo" required>
+          <input id="regEmail" class="ttregistral" type="email" placeholder="Correo" required>
         </div>
         <div class="mb">
-          <input id="regEst" type="text" placeholder="Establecimiento" required>
+          <input id="regEst" class="ttregistral" type="text" placeholder="Establecimiento" required>
         </div>
         <div class="mb">
-          <input id="regPassword" type="password" placeholder="Contraseña (mín 6)" minlength="6" required>
+          <input id="regPassword" class="ttregistral" type="password" placeholder="Contraseña (mín 6)" minlength="6" required>
         </div>
         <div class="mb">
           <button type="submit" style="width:100%;margin-top:.4rem;">Crear cuenta</button>
@@ -82,6 +105,117 @@
       <small style="display:block;margin-top:.75rem;opacity:.7; text-align: center;">Los datos quedarán registrados en tu perfil seguro.</small>
     </div>
   </div>
+
+  <!-- Modal Olvidé mi contraseña -->
+  <div id="forgotModal" class="forgot-modal" style="display:none;">
+    <div class="forgot-backdrop" data-close="1"></div>
+    <div class="forgot-card">
+      <h3>Restablecer contraseña</h3>
+      <p>Ingresa tu correo. Te enviaremos un enlace para definir una nueva contraseña.</p>
+      <label for="forgotEmail">Correo</label>
+      <input id="forgotEmail" type="email" placeholder="tu@correo.cl" autocomplete="email" />
+      <div class="forgot-actions">
+        <button id="forgotCancel" type="button">Cancelar</button>
+        <button id="forgotSend" type="button">Enviar enlace</button>
+      </div>
+      <div id="forgotMsg" class="forgot-msg"></div>
+    </div>
+  </div>
+
+  <style>
+    /* Estilos mínimos del modal (no interfiere con tus CSS) */
+    .forgot-modal { position: fixed; inset: 0; z-index: 1000; }
+    .forgot-backdrop { position: absolute; inset: 0; background: rgba(0,0,0,.5); }
+    .forgot-card {
+      position: relative; margin: 8vh auto 0; width: min(92vw, 420px);
+      background: #fff; color:#0f172a; border:1px solid #e5e7eb; border-radius: 12px; padding: 16px;
+      box-shadow: 0 20px 40px -20px rgba(15,23,42,.45);
+    }
+    .forgot-card h3 { margin: 0 0 .5rem; }
+    .forgot-card p { margin: 0 0 .75rem; font-size: .95rem; }
+    #forgotEmail { width: 100%; padding: .6rem .7rem; margin: .25rem 0 .75rem; border:1px solid #cbd5e1; border-radius: 10px; }
+    .forgot-actions { display:flex; justify-content:flex-end; gap:.5rem; }
+    .forgot-msg { margin-top:.5rem; font-size:.9rem; }
+    .link-like { background:none; border:none; color:#2563eb; text-decoration:underline; cursor:pointer; padding:0; }
+    .is-wait { opacity:.7; pointer-events:none; }
+    .ok { color:#16a34a; } .warn { color:#dc2626; }
+  </style>
+
+  <script type="module">
+    // Importa Firebase (usa tu config ya existente si la tienes)
+    import { initializeApp, getApps } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js';
+    import { getAuth, sendPasswordResetEmail } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js';
+
+    // Si ya inicializaste antes, respeta esa instancia.
+    const firebaseConfig = window.firebaseConfig || {
+      apiKey: "TU_API_KEY",
+      authDomain: "ia-slep-iqq.firebaseapp.com",
+      projectId: "ia-slep-iqq",
+      // opcional: storageBucket, messagingSenderId, appId
+    };
+    const app = getApps().length ? getApps()[0] : initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    auth.languageCode = 'es';
+
+    // Elementos
+    const $ = (s)=>document.querySelector(s);
+    const btnForgot = $('#btnForgot');
+    const modal = $('#forgotModal');
+    const emailInput = $('#forgotEmail');
+    const btnSend = $('#forgotSend');
+    const btnCancel = $('#forgotCancel');
+    const msg = $('#forgotMsg');
+
+    // Si tienes un input de email en el login, precarga su valor en el modal
+    const loginEmail = document.querySelector('input[type="email"]');
+
+    function openModal() {
+      msg.textContent = '';
+      msg.className = 'forgot-msg';
+      emailInput.value = (loginEmail && loginEmail.value) || auth.currentUser?.email || '';
+      modal.style.display = 'block';
+      setTimeout(()=> emailInput.focus(), 0);
+    }
+    function closeModal() {
+      modal.style.display = 'none';
+    }
+    function showMsg(text, cls='') {
+      msg.textContent = text;
+      msg.className = 'forgot-msg ' + cls;
+    }
+
+    btnForgot?.addEventListener('click', openModal);
+    btnCancel?.addEventListener('click', closeModal);
+    modal?.addEventListener('click', (e)=>{ if (e.target.dataset.close) closeModal(); });
+
+    btnSend?.addEventListener('click', async ()=>{
+      const email = (emailInput.value || '').trim();
+      if (!email) { showMsg('Ingresa tu correo.', 'warn'); emailInput.focus(); return; }
+      btnSend.classList.add('is-wait');
+      showMsg('Enviando correo…');
+
+      try {
+        // URL de continuación opcional (vuelve al login después de completar el enlace)
+        const actionSettings = { url: location.origin + '/index.html', handleCodeInApp: false };
+        await sendPasswordResetEmail(auth, email, actionSettings);
+        showMsg('Te enviamos un correo para restablecer tu contraseña. Revisa tu bandeja (y spam).', 'ok');
+        setTimeout(closeModal, 3000);
+      } catch (e) {
+        // Mensajes amigables por código
+        const map = {
+          'auth/invalid-email': 'Correo no válido.',
+          'auth/user-not-found': 'No existe una cuenta con ese correo.',
+          'auth/too-many-requests': 'Demasiados intentos. Inténtalo más tarde.',
+          'auth/network-request-failed': 'Problema de red. Verifica tu conexión.',
+        };
+        const code = (e.code || '').toLowerCase();
+        showMsg(map[code] || 'No se pudo enviar el correo. Inténtalo de nuevo.', 'warn');
+        console.warn('Reset password error:', e);
+      } finally {
+        btnSend.classList.remove('is-wait');
+      }
+    });
+  </script>
 
   <!-- Instrucción si se abre con file:// -->
   <script>

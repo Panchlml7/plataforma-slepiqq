@@ -12,8 +12,8 @@
       padding: 1rem 1.2rem; margin: 1rem 0;
       box-shadow: 0 8px 18px -12px rgba(15, 23, 42, .15);
     }
-    .filters { display: grid; gap: .6rem; grid-template-columns: 1fr; }
-    @media (min-width: 900px) { .filters { grid-template-columns: 2fr repeat(3, 1fr) auto auto; align-items: end; } }
+  .filters { display: grid; gap: .6rem; grid-template-columns: 1fr; }
+  @media (min-width: 900px) { .filters { grid-template-columns: 2fr repeat(5, 1fr) auto auto; align-items: end; } }
     .filters label { font-size:.8rem; opacity:.8; display:block; margin-bottom:.25rem; }
     .filters input[type="text"], .filters input[type="date"], .filters select {
       width:100%; padding:.55rem .7rem; border:1px solid #cbd5e1; border-radius:10px; background:#fff; color:#0f172a;
@@ -43,9 +43,20 @@
     .nav-link { margin-right:.6rem; text-decoration:none; }
     .user-badge .btn { margin-left:.6rem; }
     @media print {
-      .section-card, .top-nav { box-shadow:none; border:none; }
-      .filters, .actions-bar { display:none !important; }
-      .table-wrap { max-height:none; box-shadow:none; border:none; }
+  /* Página horizontal y márgenes razonables */
+  @page { size: A4 landscape; margin: 10mm; }
+  .section-card, .top-nav { box-shadow:none; border:none; }
+  .filters, .actions-bar { display:none !important; }
+  .table-wrap { max-height:none; box-shadow:none; border:none; }
+  /* Repetir encabezado de tabla en saltos de página */
+  thead { display: table-header-group; }
+  tfoot { display: table-footer-group; }
+  /* Modo "solo tabla": ocultar todo excepto la tabla */
+  body.print-table-only * { visibility: hidden !important; }
+  body.print-table-only #planillaTable,
+  body.print-table-only #planillaTable * { visibility: visible !important; }
+  body.print-table-only #planillaTable { width: 100% !important; min-width: auto !important; }
+  body.print-table-only .table-wrap { overflow: visible !important; }
     }
     /* NUEVO: resalte de fila enfocada desde parámetros */
     .row-focus { outline: 2px solid #6366f1; background: #eef2ff !important; }
@@ -78,8 +89,9 @@
 <body>
   <nav class="top-nav">
     <span class="brand">SLEPIQQ</span>
-    <a class="nav-link" href="#asistencia">Asistencia</a>
+  <a class="nav-link" href="asistencia.html">Asistencia</a>
     <a class="nav-link" href="establecimiento.html">Establecimiento</a>
+  <a class="nav-link" href="convivencia_escolar.html">Convivencia</a>
     <div class="dropdown nav-acomp-dropdown" aria-label="Acompañamiento Visita">
       <button class="dropdown-toggle" type="button" aria-haspopup="true" aria-expanded="false">
         Acompañamiento <span class="caret">▾</span>
@@ -116,6 +128,30 @@
             <option>Presencial</option>
             <option>Remoto</option>
             <option>Híbrida</option>
+          </select>
+        </div>
+        <div>
+          <label for="mesSel">Mes</label>
+          <select id="mesSel">
+            <option value="">Todos</option>
+            <option value="01">Enero</option>
+            <option value="02">Febrero</option>
+            <option value="03">Marzo</option>
+            <option value="04">Abril</option>
+            <option value="05">Mayo</option>
+            <option value="06">Junio</option>
+            <option value="07">Julio</option>
+            <option value="08">Agosto</option>
+            <option value="09">Septiembre</option>
+            <option value="10">Octubre</option>
+            <option value="11">Noviembre</option>
+            <option value="12">Diciembre</option>
+          </select>
+        </div>
+        <div>
+          <label for="anioSel">Año</label>
+          <select id="anioSel">
+            <option value="">Todos</option>
           </select>
         </div>
         <button id="btnExport" class="btn btn-primary" type="button">Exportar Excel</button>
@@ -215,7 +251,9 @@
     const fromEl = document.getElementById('fromDate');
     const toEl = document.getElementById('toDate');
     const modEl = document.getElementById('mod');
-    const tbody = document.getElementById('tbodyPlanilla');
+  const tbody = document.getElementById('tbodyPlanilla');
+  const mesSel = document.getElementById('mesSel');
+  const anioSel = document.getElementById('anioSel');
     const countTotal = document.getElementById('countTotal');
     const btnExport = document.getElementById('btnExport');
     const listInfo = document.getElementById('listInfo');
@@ -227,8 +265,8 @@
     }
     const btnPrint = document.getElementById('btnPrint');
 
-    let allDocs = [];
-    let filtered = [];
+  let allDocs = [];
+  let filtered = [];
 
     const params = new URLSearchParams(location.search);
     const focusId = params.get('id') || '';
@@ -327,12 +365,14 @@
       if (countTotal) countTotal.textContent = list.length;
     }
 
-    function applyFilters(){
+  function applyFilters(){
       const q = (qEl.value || '').trim().toLowerCase();
       const mod = (modEl.value || '').toLowerCase();
       const from = fromEl.value ? new Date(fromEl.value) : null;
       const to = toEl.value ? new Date(toEl.value) : null;
       if (to) { to.setHours(23,59,59,999); }
+      const fmm = mesSel?.value || '';
+      const fy = anioSel?.value || '';
 
       let list = [...allDocs];
 
@@ -346,6 +386,19 @@
           if (!d) return false;
           if (from && d < from) return false;
           if (to && d > to) return false;
+          return true;
+        });
+      }
+
+      // Filtro por Mes/Año
+      if (fmm || fy) {
+        list = list.filter(x=>{
+          const d = getDateObj(x.fecha || x.createdAt);
+          if (!d) return false;
+          const mm = String(d.getMonth()+1).padStart(2,'0');
+          const yyyy = String(d.getFullYear());
+          if (fmm && mm !== fmm) return false;
+          if (fy && yyyy !== fy) return false;
           return true;
         });
       }
@@ -366,9 +419,91 @@
       renderTable(filtered);
     }
 
-  // Eliminadas funciones de exportación a Excel y listeners asociados a solicitud del usuario.
+    // Suscripción a Firestore: documentos compartidos (datosBasicos)
+    function subscribeAllDocs(){
+      const cRef = collection(db, 'datosBasicos');
+      return onSnapshot(cRef, (snap)=>{
+        allDocs = snap.docs.map(d => ({ _id: d.id, ...d.data() }));
+        // Orden descendente por fecha de creación si existe
+        allDocs.sort((a,b)=> (b.createdAt?.seconds||0) - (a.createdAt?.seconds||0));
+        showInfo('', 'info');
+        populateYearOptions();
+        applyFilters();
+      }, async (err)=>{
+        console.warn('Fallo suscripción datosBasicos:', err);
+        showInfo('No se pudo suscribir en tiempo real. Cargando una vez…', 'warn');
+        try {
+          const s = await getDocs(cRef);
+          allDocs = s.docs.map(d => ({ _id: d.id, ...d.data() }));
+          allDocs.sort((a,b)=> (b.createdAt?.seconds||0) - (a.createdAt?.seconds||0));
+          showInfo('', 'info');
+          populateYearOptions();
+          applyFilters();
+        } catch(e){
+          console.error('Fallo lectura puntual:', e);
+          showInfo('Error leyendo documentos. Revisa permisos o conexión.', 'err');
+        }
+      });
+    }
 
-  // Eliminado subscribeUserDocs y la suscripción con onAuthStateChanged a solicitud del usuario.
+    // Enlazar filtros a applyFilters
+    function bindFilters(){
+      qEl?.addEventListener('input', applyFilters);
+      fromEl?.addEventListener('change', applyFilters);
+      toEl?.addEventListener('change', applyFilters);
+      modEl?.addEventListener('change', applyFilters);
+      mesSel?.addEventListener('change', applyFilters);
+      anioSel?.addEventListener('change', applyFilters);
+    }
+
+    // Llenar opciones de año con base en los datos
+    function populateYearOptions(){
+      if (!anioSel) return;
+      const years = new Set();
+      for (const x of allDocs){
+        const d = getDateObj(x.fecha || x.createdAt);
+        if (!d) continue;
+        years.add(String(d.getFullYear()));
+      }
+      const arr = Array.from(years).sort((a,b)=> b.localeCompare(a));
+      const options = ['<option value="">Todos</option>'].concat(arr.map(y=>`<option value="${y}">${y}</option>`));
+      anioSel.innerHTML = options.join('');
+      anioSel.disabled = arr.length === 0;
+    }
+
+    // Autenticación y arranque
+    onAuthStateChanged(auth, (user)=>{
+      if (!user) { location.replace('../index.html'); return; }
+      loadProfile(user, user.email);
+      bindFilters();
+      // Suscribirse a colección global
+      const unsub = subscribeAllDocs();
+      // Cleanup al salir
+      const cleanup = ()=>{ try{ unsub && unsub(); }catch{} };
+      window.addEventListener('pagehide', cleanup, { once: true });
+      document.addEventListener('visibilitychange', ()=>{ if (document.visibilityState === 'hidden') cleanup(); }, { once: true });
+    });
+
+    // Nota: exportación a Excel permanece deshabilitada a petición previa.
+
+    // Botón Imprimir: imprime solo la tabla (paisaje)
+    btnPrint?.addEventListener('click', (e)=>{
+      e.preventDefault();
+      try {
+        const hasRows = !!tbody && tbody.querySelectorAll('tr').length > 0;
+        if (!hasRows) { alert('No hay datos para imprimir.'); return; }
+        const prevTitle = document.title;
+        document.title = 'Planilla';
+        // Activar modo "solo tabla"
+        document.body.classList.add('print-table-only');
+        // Dar un pequeño tiempo para que el navegador aplique estilos
+        setTimeout(()=>{
+          window.print();
+          // Restaurar estado tras imprimir
+          setTimeout(()=>{ document.title = prevTitle; document.body.classList.remove('print-table-only'); }, 200);
+        }, 50);
+      } catch(err){ console.error('Error al imprimir:', err); }
+    });
   </script>
   <script>
     // Dropdown ligero: toggle, click fuera y ESC

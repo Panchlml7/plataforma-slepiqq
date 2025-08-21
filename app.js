@@ -5,7 +5,7 @@ if (location.protocol === 'file:') {
 }
 
 // Importar módulos desde el CDN (modular v10+)
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { initializeApp, getApps, getApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 import {
   getFirestore, collection, addDoc, onSnapshot, serverTimestamp,
   query, orderBy, deleteDoc, doc, setDoc
@@ -18,14 +18,13 @@ import {
 
 // 1. Configuración (La apiKey de Firebase NO es una credencial secreta; no poner aquí claves privadas)
 // OJO: quitado el espacio que había en apiKey y corregido storageBucket (.appspot.com)
-const firebaseConfig = {
-  apiKey: "AIzaSyDzUGdJT-eyYjKtej63iThVLgvTHVzvxvA", // antes tenía un espacio tras el guion
+const firebaseConfig = (typeof window !== 'undefined' && window.firebaseConfig) ? window.firebaseConfig : {
+  apiKey: "AIzaSyDzUGdJT-eyYjKtej63iThVLgvTHVzvxvA",
   authDomain: "ia-slep-iqq.firebaseapp.com",
   projectId: "ia-slep-iqq",
-  storageBucket: "ia-slep-iqq.appspot.com", // corregido (no usar firebasestorage.app aquí)
+  storageBucket: "ia-slep-iqq.appspot.com",
   messagingSenderId: "528895424744",
   appId: "1:528895424744:web:7144f5e5db1bce5ffb315d"
-  // measurementId: "G-XXXXXXXXXX" // (opcional si añadiste Analytics)
 };
 
 // Validación simple para avisar si falta algo crítico
@@ -38,7 +37,7 @@ const firebaseConfig = {
 })(firebaseConfig);
 
 // Inicializar servicios
-const app = initializeApp(firebaseConfig);
+const app = getApps().length ? getApp() : initializeApp(firebaseConfig);
 const db = getFirestore(app);
 const auth = getAuth(app);
 const provider = new GoogleAuthProvider();

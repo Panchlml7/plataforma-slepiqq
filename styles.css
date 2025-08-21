@@ -1,3 +1,4 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap');
 :root {
   --bg: #0f172a;
   --panel: #1e293b;
@@ -8,7 +9,8 @@
   --danger-hover: #dc2626;
   --radius: 10px;
   --shadow: 0 4px 14px -2px rgba(0,0,0,.4);
-  font-family: system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,sans-serif;
+  --auth-width: 420px; /* ancho consistente para login/logo/divisor */
+  font-family: 'Roboto', system-ui, -apple-system, Segoe UI, Ubuntu, sans-serif;
 }
 
 * { box-sizing: border-box; }
@@ -53,6 +55,16 @@ h1, h2 { margin: 0 0 .9rem; letter-spacing: .5px; }
 h1 { font-size: clamp(1.1rem, 1.5vw + 0.9rem, 1.75rem); }
 h2 { font-size: clamp(1rem, 1.2vw + 0.7rem, 1.3rem); }
 
+.welcome-inline {
+  width: 100%;
+  max-width: var(--auth-width);
+  margin: 0 auto .25rem;
+  text-align: center;
+}
+.welcome-inline .welcome-title {
+  margin: 0 0 .25rem;
+  opacity: .95;
+}
 form {
   display: flex;
   flex-direction: column;
@@ -63,7 +75,7 @@ input, textarea {
   background: #0f1b2d;
   color: var(--text);
   border: 1px solid #2e435f;
-  border-radius: 8px;
+  font-family: 'Roboto', system-ui, -apple-system, Segoe UI, Ubuntu, sans-serif;
   padding: .75rem .9rem;
   font-size: .95rem;
   transition: border .2s, box-shadow .2s;
@@ -236,15 +248,67 @@ p { margin: 0; font-size: .85rem; line-height: 1.25rem; }
 /* Layout login 50% */
 #authSection {
   width: 100% !important;
-  max-width: 420px !important;
+  max-width: var(--auth-width) !important;
   margin: 0 auto !important;
 }
+
+/* Enlaces dentro del login */
+#authSection .register-link { color: inherit; }
+#authSection .register-link a { color: #2563eb; }
+
+/* Campos más claros dentro del login */
+#authSection input,
+#authSection textarea {
+  background: #ffffff; /* input blanco */
+  color: #0f172a;       /* texto oscuro para legibilidad */
+  border: 1px solid #cbd5e1;
+}
+#authSection input::placeholder,
+#authSection textarea::placeholder { color: #64748b; }
+
+/* Botón de Ingresar en azul */
+#authSection button[type="submit"] {
+  background: #2563eb !important; /* azul */
+}
+#authSection button[type="submit"]:hover {
+  background: #1d4ed8 !important; /* azul más oscuro */
+}
 #authCenterWrap {
-  min-height: 100vh;
+  min-height: calc(100vh - 120px);
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
   padding: 2rem 1rem;
+  gap: .75rem;
+}
+
+.brand-divider {
+  width: min(var(--auth-width), 90vw);
+  height: 9px; /* grosor solicitado */
+  background: linear-gradient(90deg, #2563eb 0 50%, #dc2626 50% 100%);
+  border-radius: 9px; /* borde redondeado */
+  margin: 6px 0 2px;
+}
+
+.logo-card {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 5px; /* solicitado margin/padding 5px */
+  width: 100%;
+  max-width: var(--auth-width);
+  margin-top: 5px; /* margen debajo del login */
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+}
+.logo-card img {
+  width: 100%;
+  max-width: 100%;
+  height: auto;
+  display: block;
+  filter: drop-shadow(0 8px 24px rgba(0,0,0,.35));
 }
 
 .register-card {
@@ -284,4 +348,11 @@ p { margin: 0; font-size: .85rem; line-height: 1.25rem; }
   transform: scale(.96);
 }
 
-
+.ttregistral{
+  border-radius: 20px;
+  width: 100%;
+  padding: .6rem .7rem;
+  margin: .25rem 0 .75rem;
+  border:1px solid #ffffff;
+  text-align: center;
+}

@@ -43,6 +43,12 @@
 			.img-item:hover img { transform: none; }
 		}
 		.img-item figcaption { font-size:.85rem; color:#111827; text-align:center; }
+
+		/* Barra de búsqueda */
+		.search-row { display:grid; gap:.4rem; margin:.4rem 0 .8rem; }
+		.search-row label { font-size:.85rem; opacity:.85; }
+		.search-row input[type="text"]{ width:100%; padding:.55rem .7rem; border:1px solid #cbd5e1; border-radius:10px; background:#fff; color:#0f172a; }
+		#searchInfo { font-size:.85rem; color:#374151; }
 	</style>
 </head>
 <body>
@@ -50,6 +56,7 @@
 		<span class="brand">SLEPIQQ</span>
 		<a class="nav-link" href="asistencia.html">Asistencia</a>
 		<a class="nav-link" href="establecimiento.html">Establecimiento</a>
+		<a class="nav-link active" href="convivencia_escolar.html">Convivencia</a>
 		<div class="dropdown nav-acomp-dropdown" aria-label="Acompañamiento Visita">
 			<button class="dropdown-toggle" type="button" aria-haspopup="true" aria-expanded="false">
 				Acompañamiento <span class="caret">▾</span>
@@ -66,6 +73,11 @@
 	<main style="max-width:1200px;margin:0 auto;padding:0 1rem 2rem;">
 		<section class="section-card">
 			<h1 style="margin:.2rem 0 .8rem; font-size: x-large; text-align: center;">Convivencia Escolar</h1>
+			<div class="search-row">
+				<label for="searchEst">Buscar establecimiento</label>
+				<input id="searchEst" type="text" placeholder="Escribe para filtrar...">
+				<small id="searchInfo"></small>
+			</div>
 			
 			<div id="gallery" class="img-grid" aria-live="polite"></div>
 		</section>
@@ -182,10 +194,23 @@
 					.replace(/\s+/g,'_');
 			}
 
-			function renderGallery(){
+			// Mapa de archivos destino para casos especiales (tildes o nombres distintos)
+			const TARGET_FILES_BY_IMAGE = {
+				"Paula Jaraquemada.png": "paula_jaraquemada_alquizar.html",
+				"Politecnico.png": "liceo_politecnico_jose_gutierrez_de_la_fuente.html",
+				"Ohiggins.jpg": "liceo_libertador_general_bernardo_ohiggins.html"
+			};
+
+			function resolveTarget(fname){
+				if (TARGET_FILES_BY_IMAGE[fname]) return TARGET_FILES_BY_IMAGE[fname];
+				const cap = fileToCaption(fname);
+				return `${toSlug(cap)}.html`;
+			}
+
+			function renderGallery(files = IMAGES){
 				if (!galleryEl) return;
 				galleryEl.innerHTML = '';
-				IMAGES.forEach((fname)=>{
+				files.forEach((fname)=>{
 					const src = `img_establecimiento/${encodeURI(fname)}`;
 					const fig = document.createElement('figure');
 					fig.className = 'img-item';
@@ -198,9 +223,8 @@
 					img.addEventListener('error', ()=>{ fig.style.display='none'; });
 					img.style.cursor = 'pointer';
 					img.addEventListener('click', ()=>{
-						const cap = fileToCaption(fname);
-						const slug = toSlug(cap);
-						window.location.href = `conv_establecimiento/${slug}.html`;
+						const target = resolveTarget(fname);
+						window.location.href = `conv_establecimiento/${target}`;
 					});
 					const cap = document.createElement('figcaption');
 					cap.textContent = fileToCaption(fname);
@@ -209,6 +233,19 @@
 					galleryEl.appendChild(fig);
 				});
 			}
+
+			// Búsqueda en vivo (ignorar acentos y mayúsculas)
+			const searchInput = document.getElementById('searchEst');
+			const searchInfo = document.getElementById('searchInfo');
+			const norm = s => (s||'').toString().normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase();
+			function applySearch(){
+				const q = norm(searchInput?.value || '');
+				if (!q){ renderGallery(IMAGES); if (searchInfo) searchInfo.textContent = ''; return; }
+				const filtered = IMAGES.filter(fname => norm(fileToCaption(fname)).includes(q));
+				renderGallery(filtered);
+				if (searchInfo) searchInfo.textContent = filtered.length ? `Coincidencias: ${filtered.length}` : 'No hay resultados';
+			}
+			searchInput?.addEventListener('input', applySearch);
 
 			renderGallery();
 		});
