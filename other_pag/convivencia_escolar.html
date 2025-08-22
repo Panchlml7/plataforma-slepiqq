@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,50 +8,212 @@
 	<link rel="stylesheet" href="style.css">
 	<style>
 		.section-card {
-			background:#ffffff; color:#0f172a;
-			border:1px solid #e5e7eb; border-radius:14px;
-			padding:1rem 1.2rem; margin:1rem 0;
-			box-shadow:0 8px 18px -12px rgba(15,23,42,.15);
+			background: #ffffff;
+			color: #0f172a;
+			border: 1px solid #e5e7eb;
+			border-radius: 14px;
+			padding: 1rem 1.2rem;
+			margin: 1rem 0;
+			box-shadow: 0 8px 18px -12px rgba(15, 23, 42, .15);
 		}
-		.btn, .btn-sm {
-			appearance:none; display:inline-flex; align-items:center; justify-content:center; gap:.4rem;
-			padding:.6rem .9rem; border-radius:10px; border:1px solid transparent; font-weight:700; cursor:pointer;
+
+		.btn,
+		.btn-sm {
+			appearance: none;
+			display: inline-flex;
+			align-items: center;
+			justify-content: center;
+			gap: .4rem;
+			padding: .6rem .9rem;
+			border-radius: 10px;
+			border: 1px solid transparent;
+			font-weight: 700;
+			cursor: pointer;
 		}
-		.btn-outline { background:#fff; color:#111827; border-color:#cbd5e1; }
+
+		.btn-outline {
+			background: #fff;
+			color: #111827;
+			border-color: #cbd5e1;
+		}
+
 		/* Top-nav blanca y dropdown ligero (igual a planilla) */
-		.top-nav { display:flex; gap:.8rem; align-items:center; justify-content:space-between; padding:.6rem 1rem; background:#ffffff; border-bottom:1px solid #e5e7eb; color:#111827; }
-		.top-nav .brand { font-weight:600; }
-		.top-nav a { color:#111827; opacity:1; text-decoration:none; padding:.45rem .7rem; border-radius:6px; }
-		.top-nav a:hover { background:#f3f4f6; }
-		.top-nav .user-badge { background:#ffffff; color:#111827; border:1px solid #e5e7eb; border-radius:999px; padding:.4rem .6rem; }
-		.dropdown { position: relative; }
-		.dropdown-toggle { background:transparent; border:none; color:#111827; cursor:pointer; padding:.45rem .7rem; border-radius:6px; font-size:.8rem; font-weight:400; box-shadow:none; }
-		.dropdown-toggle:hover, .dropdown-toggle:focus { background:#f3f4f6; box-shadow:none; }
-		.dropdown-toggle .caret { font-size:.9em; opacity:.8; }
-		.dropdown-menu { position:absolute; top:calc(100% + .35rem); left:0; min-width:220px; z-index:100; background:#ffffff; color:#111827; border:none; border-radius:0; padding:.35rem 0; box-shadow:none; display:none; }
-		.dropdown.open .dropdown-menu { display:block; }
-		.dropdown-item { display:block; padding:.55rem .9rem; color:#111827; text-decoration:none; font-size:.85rem; font-weight:400; border-radius:2%; }
-		.dropdown-item:hover { background:#f3f4f6; }
+		.top-nav {
+			display: flex;
+			gap: .8rem;
+			align-items: center;
+			justify-content: space-between;
+			padding: .6rem 1rem;
+			background: #ffffff;
+			border-bottom: 1px solid #e5e7eb;
+			color: #111827;
+		}
+
+		.top-nav .brand {
+			font-weight: 600;
+		}
+
+		.top-nav a {
+			color: #111827;
+			opacity: 1;
+			text-decoration: none;
+			padding: .45rem .7rem;
+			border-radius: 6px;
+		}
+
+		.top-nav a:hover {
+			background: #f3f4f6;
+		}
+
+		.top-nav .user-badge {
+			background: #ffffff;
+			color: #111827;
+			border: 1px solid #e5e7eb;
+			border-radius: 999px;
+			padding: .4rem .6rem;
+		}
+
+		.dropdown {
+			position: relative;
+		}
+
+		.dropdown-toggle {
+			background: transparent;
+			border: none;
+			color: #111827;
+			cursor: pointer;
+			padding: .45rem .7rem;
+			border-radius: 6px;
+			font-size: .8rem;
+			font-weight: 400;
+			box-shadow: none;
+		}
+
+		.dropdown-toggle:hover,
+		.dropdown-toggle:focus {
+			background: #f3f4f6;
+			box-shadow: none;
+		}
+
+		.dropdown-toggle .caret {
+			font-size: .9em;
+			opacity: .8;
+		}
+
+		.dropdown-menu {
+			position: absolute;
+			top: calc(100% + .35rem);
+			left: 0;
+			min-width: 220px;
+			z-index: 100;
+			background: #ffffff;
+			color: #111827;
+			border: none;
+			border-radius: 0;
+			padding: .35rem 0;
+			box-shadow: none;
+			display: none;
+		}
+
+		.dropdown.open .dropdown-menu {
+			display: block;
+		}
+
+		.dropdown-item {
+			display: block;
+			padding: .55rem .9rem;
+			color: #111827;
+			text-decoration: none;
+			font-size: .85rem;
+			font-weight: 400;
+			border-radius: 2%;
+		}
+
+		.dropdown-item:hover {
+			background: #f3f4f6;
+		}
 
 		/* Galería de imágenes de establecimientos */
-		.img-grid { display:grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap:12px; }
-		.img-item { background:#ffffff; border:1px solid #e5e7eb; border-radius:12px; padding:.6rem; display:flex; flex-direction:column; align-items:center; gap:.5rem; overflow:hidden; }
-		.img-item img { width:100%; height:120px; object-fit:contain; display:block; will-change: transform; transition: transform .25s ease, opacity .4s ease; opacity:0; }
-		.img-item img.is-loaded { opacity:1; }
-		.img-item:hover img { transform: scale(1.05); }
-		@media (prefers-reduced-motion: reduce){
-			.img-item img { transition: none; }
-			.img-item:hover img { transform: none; }
+		.img-grid {
+			display: grid;
+			grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+			gap: 12px;
 		}
-		.img-item figcaption { font-size:.85rem; color:#111827; text-align:center; }
+
+		.img-item {
+			background: #ffffff;
+			border: 1px solid #e5e7eb;
+			border-radius: 12px;
+			padding: .6rem;
+			display: flex;
+			flex-direction: column;
+			align-items: center;
+			gap: .5rem;
+			overflow: hidden;
+		}
+
+		.img-item img {
+			width: 100%;
+			height: 120px;
+			object-fit: contain;
+			display: block;
+			will-change: transform;
+			transition: transform .25s ease, opacity .4s ease;
+			opacity: 0;
+		}
+
+		.img-item img.is-loaded {
+			opacity: 1;
+		}
+
+		.img-item:hover img {
+			transform: scale(1.05);
+		}
+
+		@media (prefers-reduced-motion: reduce) {
+			.img-item img {
+				transition: none;
+			}
+
+			.img-item:hover img {
+				transform: none;
+			}
+		}
+
+		.img-item figcaption {
+			font-size: .85rem;
+			color: #111827;
+			text-align: center;
+		}
 
 		/* Barra de búsqueda */
-		.search-row { display:grid; gap:.4rem; margin:.4rem 0 .8rem; }
-		.search-row label { font-size:.85rem; opacity:.85; }
-		.search-row input[type="text"]{ width:100%; padding:.55rem .7rem; border:1px solid #cbd5e1; border-radius:10px; background:#fff; color:#0f172a; }
-		#searchInfo { font-size:.85rem; color:#374151; }
+		.search-row {
+			display: grid;
+			gap: .4rem;
+			margin: .4rem 0 .8rem;
+		}
+
+		.search-row label {
+			font-size: .85rem;
+			opacity: .85;
+		}
+
+		.search-row input[type="text"] {
+			width: 100%;
+			padding: .55rem .7rem;
+			border: 1px solid #cbd5e1;
+			border-radius: 10px;
+			background: #fff;
+			color: #0f172a;
+		}
+
+		#searchInfo {
+			font-size: .85rem;
+			color: #374151;
+		}
 	</style>
 </head>
+
 <body>
 	<nav class="top-nav">
 		<span class="brand">SLEPIQQ</span>
@@ -62,12 +225,15 @@
 				Acompañamiento <span class="caret">▾</span>
 			</button>
 			<div class="dropdown-menu" role="menu" aria-label="Acompañamiento Visita">
-				<a class="dropdown-item" role="menuitem" href="documentos.html" title="Documento de Acompañamiento">DOCUMENTO</a>
-				<a class="dropdown-item" role="menuitem" href="planilla.html" title="Planilla de Acompañamiento">PLANILLA</a>
+				<a class="dropdown-item" role="menuitem" href="documentos.html"
+					title="Documento de Acompañamiento">DOCUMENTO</a>
+				<a class="dropdown-item" role="menuitem" href="planilla.html"
+					title="Planilla de Acompañamiento">PLANILLA</a>
 			</div>
 		</div>
 		<a class="nav-link" href="../plataforma.html">INICIO</a>
-		<span class="user-badge"><span id="userName">...</span><button id="logoutBtn" class="btn btn-outline" type="button">Salir</button></span>
+		<span class="user-badge"><span id="userName">...</span><button id="logoutBtn" class="btn btn-outline"
+				type="button">Salir</button></span>
 	</nav>
 
 	<main style="max-width:1200px;margin:0 auto;padding:0 1rem 2rem;">
@@ -78,7 +244,7 @@
 				<input id="searchEst" type="text" placeholder="Escribe para filtrar...">
 				<small id="searchInfo"></small>
 			</div>
-			
+
 			<div id="gallery" class="img-grid" aria-live="polite"></div>
 		</section>
 	</main>
@@ -90,7 +256,7 @@
 		import { getAuth, onAuthStateChanged, signOut } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js';
 		import { getFirestore, getDoc, doc } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js';
 
-		const firebaseConfig = { apiKey:"AIzaSyDzUGdJT-eyYjKtej63iThVLgvTHVzvxvA",authDomain:"ia-slep-iqq.firebaseapp.com",projectId:"ia-slep-iqq",storageBucket:"ia-slep-iqq.appspot.com",messagingSenderId:"528895424744",appId:"1:528895424744:web:7144f5e5db1bce5ffb315d" };
+		const firebaseConfig = { apiKey: "AIzaSyDzUGdJT-eyYjKtej63iThVLgvTHVzvxvA", authDomain: "ia-slep-iqq.firebaseapp.com", projectId: "ia-slep-iqq", storageBucket: "ia-slep-iqq.appspot.com", messagingSenderId: "528895424744", appId: "1:528895424744:web:7144f5e5db1bce5ffb315d" };
 		const app = initializeApp(firebaseConfig);
 		const auth = getAuth(app);
 		const db = getFirestore(app);
@@ -99,23 +265,23 @@
 		const logoutBtn = document.getElementById('logoutBtn');
 		const galleryEl = document.getElementById('gallery');
 
-		async function loadProfile(uid, email){
+		async function loadProfile(uid, email) {
 			try {
-				const snap = await getDoc(doc(db,'users',uid));
-				userNameEl.textContent = snap.exists() && snap.data().name ? snap.data().name : (email||uid);
+				const snap = await getDoc(doc(db, 'users', uid));
+				userNameEl.textContent = snap.exists() && snap.data().name ? snap.data().name : (email || uid);
 			} catch {
 				userNameEl.textContent = email || uid;
 			}
 		}
 
-		logoutBtn?.addEventListener('click', async ()=>{
+		logoutBtn?.addEventListener('click', async () => {
 			try { await signOut(auth); }
-			catch(e){ console.error(e); alert('Error al cerrar sesión'); }
+			catch (e) { console.error(e); alert('Error al cerrar sesión'); }
 			finally { location.replace('../index.html'); }
 		});
 
 		onAuthStateChanged(auth, user => {
-			if (!user){ location.replace('../index.html'); return; }
+			if (!user) { location.replace('../index.html'); return; }
 			loadProfile(user.uid, user.email);
 
 			// Renderizar galería de imágenes de /other_pag/img_establecimiento
@@ -182,16 +348,16 @@
 				"Politecnico.png": "Liceo Politécnico José Gutiérrez de la Fuente"
 			};
 
-			function fileToCaption(name){
+			function fileToCaption(name) {
 				return CAPTIONS[name] || name.replace(/\.[^.]+$/, '').trim();
 			}
 
-			function toSlug(s){
+			function toSlug(s) {
 				return s
-					.normalize('NFD').replace(/[\u0300-\u036f]/g,'') // quitar acentos
+					.normalize('NFD').replace(/[\u0300-\u036f]/g, '') // quitar acentos
 					.replace(/[^a-zA-Z0-9\s]/g, ' ') // quitar signos
 					.trim().toLowerCase()
-					.replace(/\s+/g,'_');
+					.replace(/\s+/g, '_');
 			}
 
 			// Mapa de archivos destino para casos especiales (tildes o nombres distintos)
@@ -201,16 +367,16 @@
 				"Ohiggins.jpg": "liceo_libertador_general_bernardo_ohiggins.html"
 			};
 
-			function resolveTarget(fname){
+			function resolveTarget(fname) {
 				if (TARGET_FILES_BY_IMAGE[fname]) return TARGET_FILES_BY_IMAGE[fname];
 				const cap = fileToCaption(fname);
 				return `${toSlug(cap)}.html`;
 			}
 
-			function renderGallery(files = IMAGES){
+			function renderGallery(files = IMAGES) {
 				if (!galleryEl) return;
 				galleryEl.innerHTML = '';
-				files.forEach((fname)=>{
+				files.forEach((fname) => {
 					const src = `img_establecimiento/${encodeURI(fname)}`;
 					const fig = document.createElement('figure');
 					fig.className = 'img-item';
@@ -219,10 +385,10 @@
 					img.decoding = 'async';
 					img.alt = fileToCaption(fname);
 					img.src = src;
-					img.addEventListener('load', ()=>{ img.classList.add('is-loaded'); });
-					img.addEventListener('error', ()=>{ fig.style.display='none'; });
+					img.addEventListener('load', () => { img.classList.add('is-loaded'); });
+					img.addEventListener('error', () => { fig.style.display = 'none'; });
 					img.style.cursor = 'pointer';
-					img.addEventListener('click', ()=>{
+					img.addEventListener('click', () => {
 						const target = resolveTarget(fname);
 						window.location.href = `conv_establecimiento/${target}`;
 					});
@@ -237,10 +403,10 @@
 			// Búsqueda en vivo (ignorar acentos y mayúsculas)
 			const searchInput = document.getElementById('searchEst');
 			const searchInfo = document.getElementById('searchInfo');
-			const norm = s => (s||'').toString().normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase();
-			function applySearch(){
+			const norm = s => (s || '').toString().normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
+			function applySearch() {
 				const q = norm(searchInput?.value || '');
-				if (!q){ renderGallery(IMAGES); if (searchInfo) searchInfo.textContent = ''; return; }
+				if (!q) { renderGallery(IMAGES); if (searchInfo) searchInfo.textContent = ''; return; }
 				const filtered = IMAGES.filter(fname => norm(fileToCaption(fname)).includes(q));
 				renderGallery(filtered);
 				if (searchInfo) searchInfo.textContent = filtered.length ? `Coincidencias: ${filtered.length}` : 'No hay resultados';
@@ -252,15 +418,16 @@
 	</script>
 	<script>
 		// Dropdown ligero: toggle, click fuera y ESC
-		(function(){
+		(function () {
 			const dd = document.querySelector('.nav-acomp-dropdown');
 			const btn = dd?.querySelector('.dropdown-toggle');
-			function close(){ if(!dd) return; dd.classList.remove('open'); btn?.setAttribute('aria-expanded','false'); }
-			function toggle(){ if(!dd) return; const open = dd.classList.toggle('open'); btn?.setAttribute('aria-expanded', open ? 'true' : 'false'); }
-			btn?.addEventListener('click', (e)=>{ e.stopPropagation(); toggle(); });
-			document.addEventListener('click', (e)=>{ if(!dd) return; if(!dd.contains(e.target)) close(); });
-			window.addEventListener('keydown', (e)=>{ if(e.key==='Escape') close(); });
+			function close() { if (!dd) return; dd.classList.remove('open'); btn?.setAttribute('aria-expanded', 'false'); }
+			function toggle() { if (!dd) return; const open = dd.classList.toggle('open'); btn?.setAttribute('aria-expanded', open ? 'true' : 'false'); }
+			btn?.addEventListener('click', (e) => { e.stopPropagation(); toggle(); });
+			document.addEventListener('click', (e) => { if (!dd) return; if (!dd.contains(e.target)) close(); });
+			window.addEventListener('keydown', (e) => { if (e.key === 'Escape') close(); });
 		})();
 	</script>
 </body>
+
 </html>

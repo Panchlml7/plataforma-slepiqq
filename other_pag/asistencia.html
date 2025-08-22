@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
   <meta charset="UTF-8">
   <title>Asistencia - SLEP IQUIQUE</title>
@@ -7,74 +8,341 @@
   <link rel="stylesheet" href="style.css">
   <style>
     /* Solo para la sección "Resumen rápido" */
-    .summary-light { background:#ffffff !important; height: 1222px; color:#111827 !important; border:1px solid #e5e7eb; }
-    .summary-light h2 { color:#111827; }
+    .summary-light {
+      background: #ffffff !important;
+      color: #111827 !important;
+      border: 1px solid #e5e7eb;
+    }
+
+    .summary-light h2 {
+      color: #111827;
+    }
+
+    /* Contenedor del gráfico responsive */
+    #chartCursos {
+      width: 100%;
+      height: 700px;
+    }
+
+    @media (max-width: 599px) {
+
+      /* móvil */
+      #chartCursos {
+        height: 520px;
+      }
+    }
+
+    @media (min-width: 600px) and (max-width: 1023px) {
+
+      /* tablet */
+      #chartCursos {
+        height: 620px;
+      }
+    }
   </style>
   <!-- Overrides: top-nav blanca y dropdown ligero -->
   <style>
-    .top-nav { background:#ffffff; border-bottom:1px solid #e5e7eb; color:#111827; }
-    .top-nav .brand { font-weight:600; }
-    .top-nav a { color:#111827; opacity:1; text-decoration:none; padding:.45rem .7rem; border-radius:6px; }
-    .top-nav a:hover { background:#f3f4f6; }
-    .top-nav .user-badge { background:#ffffff; color:#111827; border:1px solid #e5e7eb; border-radius:999px; padding:.4rem .6rem; }
+    .top-nav {
+      background: #ffffff;
+      border-bottom: 1px solid #e5e7eb;
+      color: #111827;
+    }
+
+    .top-nav .brand {
+      font-weight: 600;
+    }
+
+    .top-nav a {
+      color: #111827;
+      opacity: 1;
+      text-decoration: none;
+      padding: .45rem .7rem;
+      border-radius: 6px;
+    }
+
+    .top-nav a:hover {
+      background: #f3f4f6;
+    }
+
+    .top-nav .user-badge {
+      background: #ffffff;
+      color: #111827;
+      border: 1px solid #e5e7eb;
+      border-radius: 999px;
+      padding: .4rem .6rem;
+    }
+
     /* Dropdown estilo ligero */
-    .dropdown { position: relative; }
-    .dropdown-toggle { background:transparent; border:none; color:#111827; cursor:pointer; padding:.45rem .7rem; border-radius:6px; font-size:.8rem; font-weight:400; box-shadow:none; }
-    .dropdown-toggle:hover, .dropdown-toggle:focus { background:#f3f4f6; box-shadow:none; }
-    .dropdown-toggle .caret { font-size:.9em; opacity:.8; }
-    .dropdown-menu { position:absolute; top:calc(100% + .35rem); left:0; min-width:220px; z-index:100; background:#ffffff; color:#111827; border:none; border-radius:0; padding:.35rem 0; box-shadow:none; display:none; }
-    .dropdown.open .dropdown-menu { display:block; }
-    .dropdown-item { display:block; padding:.55rem .9rem; color:#111827; text-decoration:none; font-size:.85rem; font-weight:400; border-radius:2%; }
-    .dropdown-item:hover { background:#f3f4f6; }
-  /* UI asistencia cursos */
-  .filters-row { display:flex; flex-wrap:wrap; gap:.6rem; align-items:center; justify-content:space-between; margin-bottom:.6rem; }
-  .filters-row .group { display:flex; gap:.6rem; align-items:center; }
-  .stat-grid { display:grid; grid-template-columns: repeat(1,1fr); gap:.6rem; }
-  @media(min-width: 900px){ .stat-grid { grid-template-columns: repeat(3,1fr); } }
-  .mini-card { background:#ffffff; color:#111827; border:1px solid #e5e7eb; border-radius:12px; padding:.8rem 1rem; }
-  .mini-card h3 { margin:.1rem 0; font-size:1rem; }
-  .mini-card p { margin:0; opacity:.8; font-size:.8rem; }
-  .stat-value { font-size: 2rem; font-weight: 700; }
-  select, .btn-min { padding:.5rem .7rem; border:1px solid #cbd5e1; border-radius:8px; background:#fff; color:#111827; }
-  .btn-min { cursor:pointer; }
-  /* Modal simple de detalle */
-  .modal { position:fixed; inset:0; display:none; align-items:center; justify-content:center; background:rgba(0,0,0,.5); z-index:1000; }
-  .modal.show { display:flex; }
-  .modal-card { width:min(92vw, 520px); background:#fff; color:#0f172a; border:1px solid #e5e7eb; border-radius:14px; box-shadow:0 20px 40px -20px rgba(15,23,42,.45); }
-  .modal-header,.modal-footer { display:flex; align-items:center; justify-content:space-between; gap:.6rem; padding:.9rem 1rem; border-bottom:1px solid #e5e7eb; }
-  .modal-footer { border-top:1px solid #e5e7eb; border-bottom:0; }
-  .modal-body { padding:1rem; }
-  .progress { width:100%; height:12px; background:#e5e7eb; border-radius:999px; overflow:hidden; }
-  .progress .bar { height:100%; background:#111827; }
-  .bar-asistencia { background:#16a34a; }
-  .bar-inasistencia { background:#ef4444; }
+    .dropdown {
+      position: relative;
+    }
+
+    .dropdown-toggle {
+      background: transparent;
+      border: none;
+      color: #111827;
+      cursor: pointer;
+      padding: .45rem .7rem;
+      border-radius: 6px;
+      font-size: .8rem;
+      font-weight: 400;
+      box-shadow: none;
+    }
+
+    .dropdown-toggle:hover,
+    .dropdown-toggle:focus {
+      background: #f3f4f6;
+      box-shadow: none;
+    }
+
+    .dropdown-toggle .caret {
+      font-size: .9em;
+      opacity: .8;
+    }
+
+    .dropdown-menu {
+      position: absolute;
+      top: calc(100% + .35rem);
+      left: 0;
+      min-width: 220px;
+      z-index: 100;
+      background: #ffffff;
+      color: #111827;
+      border: none;
+      border-radius: 0;
+      padding: .35rem 0;
+      box-shadow: none;
+      display: none;
+    }
+
+    .dropdown.open .dropdown-menu {
+      display: block;
+    }
+
+    .dropdown-item {
+      display: block;
+      padding: .55rem .9rem;
+      color: #111827;
+      text-decoration: none;
+      font-size: .85rem;
+      font-weight: 400;
+      border-radius: 2%;
+    }
+
+    .dropdown-item:hover {
+      background: #f3f4f6;
+    }
+
+    /* UI asistencia cursos */
+    .filters-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: .6rem;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: .6rem;
+    }
+
+    .filters-row .group {
+      display: flex;
+      gap: .6rem;
+      align-items: center;
+    }
+
+    .stat-grid {
+      display: grid;
+      grid-template-columns: repeat(1, 1fr);
+      gap: .6rem;
+    }
+
+    @media(min-width: 600px) {
+      .stat-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    @media(min-width: 1024px) {
+      .stat-grid {
+        grid-template-columns: repeat(3, 1fr);
+      }
+    }
+
+    .mini-card {
+      background: #ffffff;
+      color: #111827;
+      border: 1px solid #e5e7eb;
+      border-radius: 12px;
+      padding: .8rem 1rem;
+    }
+
+    .mini-card h3 {
+      margin: .1rem 0;
+      font-size: 1rem;
+    }
+
+    .mini-card p {
+      margin: 0;
+      opacity: .8;
+      font-size: .8rem;
+    }
+
+    .stat-value {
+      font-size: 2rem;
+      font-weight: 700;
+    }
+
+    select,
+    .btn-min {
+      padding: .5rem .7rem;
+      border: 1px solid #cbd5e1;
+      border-radius: 8px;
+      background: #fff;
+      color: #111827;
+    }
+
+    .btn-min {
+      cursor: pointer;
+    }
+
+    /* Modal simple de detalle */
+    .modal {
+      position: fixed;
+      inset: 0;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      background: rgba(0, 0, 0, .5);
+      z-index: 1000;
+    }
+
+    .modal.show {
+      display: flex;
+    }
+
+    .modal-card {
+      width: min(92vw, 1000px);
+      background: #fff;
+      color: #0f172a;
+      border: 1px solid #e5e7eb;
+      border-radius: 14px;
+      box-shadow: 0 20px 40px -20px rgba(15, 23, 42, .45);
+    }
+
+    .modal-header,
+    .modal-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: .6rem;
+      padding: .9rem 1rem;
+      border-bottom: 1px solid #e5e7eb;
+    }
+
+    .modal-footer {
+      border-top: 1px solid #e5e7eb;
+      border-bottom: 0;
+    }
+
+    .modal-body {
+      padding: 1rem;
+      max-height: 65vh;
+      overflow: auto;
+    }
+
+    /* Imagen del establecimiento en modal */
+    .est-img-wrap {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: .8rem;
+    }
+
+    .est-img {
+      display: block;
+      width: 100%;
+      max-width: 90px;
+      max-height: 160px;
+      object-fit: contain;
+      background: #f9fafb;
+      border: 1px solid #e5e7eb;
+      border-radius: 10px;
+      padding: .5rem;
+    }
+
+    .modal-hero {
+      padding: .6rem 1rem 0;
+    }
+
+    .progress {
+      width: 100%;
+      height: 12px;
+      background: #e5e7eb;
+      border-radius: 999px;
+      overflow: hidden;
+    }
+
+    .progress .bar {
+      height: 100%;
+      background: #111827;
+    }
+
+    .bar-asistencia {
+      background: #16a34a;
+    }
+
+    .bar-inasistencia {
+      background: #ef4444;
+    }
+
+    /* Tabla en modal */
+    .tbl-est {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    .tbl-est th,
+    .tbl-est td {
+      border: 1px solid #e5e7eb;
+      padding: .5rem .6rem;
+      text-align: left;
+    }
+
+    .tbl-est thead th {
+      background: #f8fafc;
+      color: #0f172a;
+      font-weight: 600;
+    }
   </style>
 </head>
+
 <body>
   <nav class="top-nav">
     <span class="brand">SLEPIQQ</span>
     <a class="nav-link active" href="asistencia.html">Asistencia</a>
     <a class="nav-link" href="establecimiento.html">Establecimiento</a>
-  <a class="nav-link" href="convivencia_escolar.html">Convivencia</a>
+    <a class="nav-link" href="convivencia_escolar.html">Convivencia</a>
     <div class="dropdown nav-acomp-dropdown" aria-label="Acompañamiento Visita">
       <button class="dropdown-toggle" type="button" aria-haspopup="true" aria-expanded="false">
         Acompañamiento <span class="caret">▾</span>
       </button>
       <div class="dropdown-menu" role="menu" aria-label="Acompañamiento Visita">
-        <a class="dropdown-item" role="menuitem" href="documentos.html" title="Documento de Acompañamiento">DOCUMENTO</a>
+        <a class="dropdown-item" role="menuitem" href="documentos.html"
+          title="Documento de Acompañamiento">DOCUMENTO</a>
         <a class="dropdown-item" role="menuitem" href="planilla.html" title="Planilla de Acompañamiento">PLANILLA</a>
       </div>
     </div>
     <a class="nav-link" href="../plataforma.html">INICIO</a>
-    <span class="user-badge"><span id="userName">...</span><button id="logoutBtn" class="btn" type="button">Salir</button></span>
+    <span class="user-badge"><span id="userName">...</span><button id="logoutBtn" class="btn"
+        type="button">Salir</button></span>
   </nav>
   <main>
-  <h1>Asistencia por establecimiento</h1>
+    <h1 style="color: #fff; text-align: center;">Porcentaje de asistencia por establecimiento</h1>
     <section class="section-card summary-light">
       <div class="filters-row">
         <div>
           <h2 style="margin:.2rem 0 .2rem;">Gráfico</h2>
-          <p style="margin:0;opacity:.75;font-size:.85rem;">Barras = % de asistencia por establecimiento. Haz clic para ver cursos.</p>
+          <p style="margin:0;opacity:.75;font-size:.85rem;">Barras = % de asistencia por establecimiento. Haz clic para
+            ver la imagen del establecimiento.</p>
         </div>
         <div class="group">
           <label for="areaSelect" style="font-size:.85rem;opacity:.85;">Área</label>
@@ -88,7 +356,7 @@
       <div class="stat-grid" style="margin:.6rem 0 .8rem;">
         <div class="mini-card">
           <h3>Promedio asistencia</h3>
-          <p>En cursos filtrados</p>
+          <p>En establecimientos filtrados</p>
           <div id="statPromedio" class="stat-value">0%</div>
         </div>
         <div class="mini-card">
@@ -98,23 +366,26 @@
         </div>
         <div class="mini-card">
           <h3>Tip</h3>
-          <p style="display:flex;gap:.4rem;align-items:center;">Haz clic en una barra para abrir el modal.</p>
+          <p style="display:flex;gap:.4rem;align-items:center;">Haz clic en una barra para ver la imagen del
+            establecimiento.</p>
         </div>
       </div>
 
-  <div id="chartCursos" style="width:1191px; height:1000px;"></div>
+      <div id="chartCursos"></div>
     </section>
 
   </main>
   <footer>&copy; SLEP IQUIQUE</footer>
+  <!-- SheetJS para leer Excel en el navegador -->
+  <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
   <script type="module">
-  import * as echarts from 'https://cdn.jsdelivr.net/npm/echarts@5.5.0/dist/echarts.esm.min.js';
+    import * as echarts from 'https://cdn.jsdelivr.net/npm/echarts@5.5.0/dist/echarts.esm.min.js';
 
     import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js';
     import { getAuth, onAuthStateChanged, signOut } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js';
     import { getFirestore, doc, getDoc } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js';
 
-    const firebaseConfig = { apiKey:"AIzaSyDzUGdJT-eyYjKtej63iThVLgvTHVzvxvA",authDomain:"ia-slep-iqq.firebaseapp.com",projectId:"ia-slep-iqq",storageBucket:"ia-slep-iqq.appspot.com",messagingSenderId:"528895424744",appId:"1:528895424744:web:7144f5e5db1bce5ffb315d" };
+    const firebaseConfig = { apiKey: "AIzaSyDzUGdJT-eyYjKtej63iThVLgvTHVzvxvA", authDomain: "ia-slep-iqq.firebaseapp.com", projectId: "ia-slep-iqq", storageBucket: "ia-slep-iqq.appspot.com", messagingSenderId: "528895424744", appId: "1:528895424744:web:7144f5e5db1bce5ffb315d" };
     const app = initializeApp(firebaseConfig);
     const auth = getAuth(app);
     const db = getFirestore(app);
@@ -122,231 +393,701 @@
     const userNameEl = document.getElementById('userName');
     const logoutBtn = document.getElementById('logoutBtn');
 
-    async function loadProfile(uid, email){
+    async function loadProfile(uid, email) {
       try {
-        const snap = await getDoc(doc(db,'users',uid));
-        userNameEl.textContent = snap.exists() && snap.data().name ? snap.data().name : (email||uid);
+        const snap = await getDoc(doc(db, 'users', uid));
+        userNameEl.textContent = snap.exists() && snap.data().name ? snap.data().name : (email || uid);
       } catch {
         userNameEl.textContent = email || uid;
       }
     }
 
-    onAuthStateChanged(auth, user=>{
-      if(!user){
+    onAuthStateChanged(auth, user => {
+      if (!user) {
         location.replace('../index.html');
         return;
       }
       loadProfile(user.uid, user.email);
-      // ====== Nueva UI: Establecimientos con cursos (filtro/estadísticas y modal) ======
-      try {
-        // Establecimientos provistos + porcentajes históricos usados antes
-        const NOMBRES = [
-          'CENTRO DE CAPACITACION LABORAL',
-          'COLEGIO DEPORTIVO TEC. PROF. ELENA DUVAUCHELLE CABEZON',
-          'COLEGIO ESPANA',
-          'COLEGIO REPUBLICA DE CROACIA',
-          'COLEGIO REPUBLICA DE ITALIA',
-          'COLEGIO SIMON BOLIVAR',
-          'ESC ESP DE LENGUAJE OASIS DEL SABER',
-          'ESC.EDUC.ESPECIAL FLOR DEL INCA',
-          'ESC.EDUC.GRAL.BAS.Y DES.ART.VIOLETA PARRA',
-          'ESCUELA ALMIRANTE PATRICIO LYNCH',
-          'ESCUELA CALETA CHANAVAYITA',
-          'ESCUELA CALETA SAN MARCOS',
-          'ESCUELA CENTENARIO',
-          'ESCUELA CHIPANA',
-          'ESCUELA EDUARDO LLANOS',
-          'ESCUELA GABRIELA MISTRAL',
-          'ESCUELA PAULA JARAQUEMADA ALQUIZAR',
-          'ESCUELA PLACIDO VILLARROEL',
-          'ESCUELA PROFESOR MANUEL CASTRO RAMOS',
-          'ESCUELA THILDA PORTILLO OLIVARES',
-          'INST. COM. DE IQUIQUE BALDOMERO WOLNITZKY',
-          'LICEO BICENTENARIO DOMINGO SANTA MARIA DE IQQ.',
-          'LICEO C.E.I.A. JOSE ALEJANDRO SORIA VARAS',
-          'LICEO LIBERT. GRAL.BERNARDO O´HIGGINS',
-          'LICEO LUIS CRUZ MARTINEZ',
-          'LICEO POLITEC. JOSE GUTIERREZ DE LA FUEN',
-          'LICEO S.S JUAN PABLO SEGUNDO',
-          'LICEO TECNICO PROFESIONAL DE ADULTOS'
-        ];
-        const ASIS = [68,82,87,86,82,75,81,75,78,79,82,87,86,82,90,84,82,93,69,80,79,83,44,81,83,80,91,60];
-        const DATA = NOMBRES.map((est, i) => ({
-          establecimiento: est,
-          curso: 'GENERAL',
-          asistencia: ASIS[i] ?? 0,
-          inasistencia: Math.max(0, 100 - (ASIS[i] ?? 0)),
-          area: '—',
-          alumnos: 0
-        }));
-
-  const selEl = document.getElementById('areaSelect');
-  const mesesEl = document.getElementById('mesesSelect');
-        const btnClear = document.getElementById('btnClearFiltro');
-        const statProm = document.getElementById('statPromedio');
-  const statEst = document.getElementById('statEst');
-        const chartDom = document.getElementById('chartCursos');
-        const modal = document.getElementById('cursosModal');
-        const modalBody = document.getElementById('cursosModalBody');
-        const modalTitle = document.getElementById('cursosModalTitle');
-
-        // Poblar select de áreas
-        const areas = Array.from(new Set(DATA.map(d=>d.area)));
-        selEl.innerHTML = ['<option value="todas">Todas las áreas</option>', ...areas.map(a=>`<option value="${a}">${a}</option>`)].join('');
-        let filtroArea = 'todas';
-        // Meses: solo Marzo a Diciembre + opción "Todos"
-        const MESES = [
-          { v: 'all', t: 'Todos' },
-          { v: '03', t: 'Marzo' },
-          { v: '04', t: 'Abril' },
-          { v: '05', t: 'Mayo' },
-          { v: '06', t: 'Junio' },
-          { v: '07', t: 'Julio' },
-          { v: '08', t: 'Agosto' },
-          { v: '09', t: 'Septiembre' },
-          { v: '10', t: 'Octubre' },
-          { v: '11', t: 'Noviembre' },
-          { v: '12', t: 'Diciembre' }
-        ];
-        let filtroMes = 'all';
-        if (mesesEl) {
-          mesesEl.innerHTML = MESES.map(m => `<option value="${m.v}">${m.t}</option>`).join('');
-          mesesEl.value = 'all';
-        }
-
-        const chart = echarts.init(chartDom);
-        function compute(agregados){
-          const prom = agregados.length ? Math.round(agregados.reduce((acc,d)=>acc + d.asistencia, 0) / agregados.length) : 0;
-          statProm.textContent = prom + '%';
-          statEst.textContent = agregados.length.toString();
-        }
-        function setChart(agregados, detallePorEst){
-          const option = {
-            backgroundColor:'#ffffff',
-            textStyle:{ color:'#111827' },
-            color:['#2563eb', '#ef4444'],
-            tooltip:{
-              trigger:'axis',
-              axisPointer:{ type:'shadow' },
-              formatter: (p)=>{
-                const name = p?.[0]?.name || '';
-                const a = p.find(s=>s.seriesName==='Asistencia')?.value ?? 0;
-                const i = p.find(s=>s.seriesName==='Inasistencia')?.value ?? 0;
-                return `${name}<br/>Asistencia: ${a}%<br/>Inasistencia: ${i}%`;
+      // ====== Carga Excel (Hoja "%") y gráfico por RBD con modal de cursos ======
+      (async function initUI() {
+        try {
+          // 1) Leer Excel desde carpeta "informe estudiante/2025/julio" (varias rutas candidatas)
+          const candidates = [
+            './informe estudiante/2025/julio/INFORME JULIO 2025.xlsx',
+            './informe%20estudiante/2025/julio/INFORME%20JULIO%202025.xlsx',
+            '/other_pag/informe estudiante/2025/julio/INFORME JULIO 2025.xlsx',
+            '/other_pag/informe%20estudiante/2025/julio/INFORME%20JULIO%202025.xlsx',
+          ];
+          async function tryFetch(url) {
+            try {
+              const resp = await fetch(url);
+              if (resp.ok) return resp;
+              return null;
+            } catch { return null; }
+          }
+          let resp = null, chosen = '';
+          for (const rel of candidates) {
+            const url = new URL(rel, location.href).toString();
+            // eslint-disable-next-line no-await-in-loop
+            const r = await tryFetch(url);
+            if (r) { resp = r; chosen = url; break; }
+          }
+          if (!resp) throw new Error('No se pudo cargar el Excel desde rutas candidatas');
+          console.info('[Asistencia] Excel cargado desde:', chosen);
+          const buf = await resp.arrayBuffer();
+          const wb = XLSX.read(buf, { type: 'array' });
+          const normSheet = s => s?.toString().toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').trim();
+          // Elegir la mejor hoja: mayor cantidad de RBD únicos y que NO parezca por curso
+          function pickBestRbdSheet(workbook) {
+            const norm = t => t?.toString().toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').trim();
+            const leadNum = (s) => { const m = String(s || '').match(/^(\s*)(\d{2,7})/); return m ? m[2] : ''; };
+            function findHeaderRow(allRows) {
+              const MAX_SCAN = Math.min(20, allRows.length);
+              const hasToken = (cell, tokens) => {
+                const h = norm(cell);
+                return tokens.some(t => h === t || h.includes(t));
+              };
+              for (let i = 0; i < MAX_SCAN; i++) {
+                const r = allRows[i] || [];
+                const nonEmpty = r.filter(x => String(x).trim() !== '').length;
+                if (nonEmpty < 2) continue;
+                let score = 0;
+                if (r.some(c => hasToken(c, ['rbd', 'etiquetas']))) score++;
+                if (r.some(c => hasToken(c, ['%', 'asistencia', 'porcentaje']))) score++;
+                if (r.some(c => hasToken(c, ['curso', 'nivel']))) score--;
+                if (score >= 1) return i;
               }
-            },
-            grid:{ left: 240, right: 20, top: 20, bottom: 20 },
-            xAxis:{ type:'value', min:0, max:100, axisLabel:{ formatter:'{value}%', color:'#111827' }, splitLine:{ lineStyle:{ color:'#e5e7eb' } } },
-            yAxis:{ type:'category', data: agregados.map(d=>d.establecimiento), axisLabel:{ color:'#111827' }, axisLine:{ lineStyle:{ color:'#e5e7eb' } } },
-            series:[
-              {
-                name:'Asistencia', type:'bar', stack:'total',
-                data: agregados.map(d=>d.asistencia),
-                label:{ show:true, position:'insideRight', color:'#ffffff', formatter:'{c}%' }
-              },
-              {
-                name:'Inasistencia', type:'bar', stack:'total',
-                data: agregados.map(d=>d.inasistencia),
-                label:{ show:true, position:'insideRight', color:'#ffffff', formatter:'{c}%' }
+              return 0;
+            }
+            let bestName = null, bestScore = -Infinity, bestCount = 0;
+            for (const name of workbook.SheetNames) {
+              const ws = workbook.Sheets[name];
+              const rows = XLSX.utils.sheet_to_json(ws, { header: 1, defval: '' });
+              if (!rows || !rows.length) continue;
+              const hdr = findHeaderRow(rows);
+              const headers = (rows[hdr] || []).map(String);
+              const Hn = headers.map(norm);
+              const iRbd = Hn.findIndex(h => h === 'rbd' || h.includes('rbd') || h.includes('etiquetas'));
+              const hasPerc = Hn.some(h => h.includes('%') || h.includes('asistencia') || h.includes('porcentaje'));
+              const hasCurso = Hn.some(h => h.includes('curso') || h.includes('nivel'));
+              if ((iRbd < 0 && !Hn.some(h => h.includes('etiquetas'))) || !hasPerc) continue;
+              const body = rows.slice(hdr + 1);
+              const uniq = new Set();
+              for (const r of body) {
+                if (!r) continue;
+                const cand = iRbd >= 0 ? String(r[iRbd]).trim() : String(r.find(x => /^\s*\d{2,7}/.test(String(x || ''))) || '').trim();
+                const id = leadNum(cand);
+                if (id) uniq.add(id);
               }
-            ]
+              let score = uniq.size;
+              if (hasCurso) score -= 50; // penalizar hojas por curso
+              if (norm(name).includes('rbd')) score += 3; // pequeño bonus
+              if (score > bestScore) { bestScore = score; bestName = name; bestCount = uniq.size; }
+            }
+            if (bestName) { console.info('[Asistencia] Hoja seleccionada por heurística:', bestName, 'RBD únicos:', bestCount); }
+            return bestName;
+          }
+          let sheetRbdName = pickBestRbdSheet(wb);
+          if (!sheetRbdName) {
+            // Fallback conservador a la lógica previa
+            if (wb.Sheets['RBD']) sheetRbdName = 'RBD';
+            else if (wb.Sheets['%'] || wb.SheetNames.some(n => /%/.test(n))) sheetRbdName = wb.Sheets['%'] ? '%' : wb.SheetNames.find(n => /%/.test(n));
+            else sheetRbdName = (wb.SheetNames.find(n => normSheet(n) === 'rbd' || normSheet(n).includes('rbd')) || wb.SheetNames[0]);
+          }
+          // No usamos detalle por curso
+          let sheetDetName = null;
+          const wsRbd = wb.Sheets[sheetRbdName];
+          const rowsRbd = XLSX.utils.sheet_to_json(wsRbd, { header: 1, defval: '' });
+          if (!rowsRbd || rowsRbd.length === 0) throw new Error('Hoja RBD sin datos');
+          console.info('[Asistencia] Hoja principal:', sheetRbdName, 'Filas:', rowsRbd.length);
+
+          // 2) Detectar automáticamente la fila de encabezados (no siempre es la primera)
+          const norm = s => s?.toString().toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').trim();
+          function findHeaderRow(allRows) {
+            const MAX_SCAN = Math.min(20, allRows.length);
+            const hasToken = (cell, tokens) => {
+              const h = norm(cell);
+              return tokens.some(t => h === t || h.includes(t));
+            };
+            for (let i = 0; i < MAX_SCAN; i++) {
+              const r = allRows[i] || [];
+              const nonEmpty = r.filter(x => String(x).trim() !== '').length;
+              if (nonEmpty < 2) continue;
+              let score = 0;
+              if (r.some(c => hasToken(c, ['rbd']))) score++;
+              if (r.some(c => hasToken(c, ['curso', 'nivel']))) score++;
+              if (r.some(c => hasToken(c, ['%', 'asistencia', 'porcentaje']))) score++;
+              if (r.some(c => hasToken(c, ['establecimiento', 'nombre establecimiento', 'establec', 'nombre']))) score++;
+              if (score >= 2) return i;
+            }
+            return 0; // fallback
+          }
+          let hdrIdxR = findHeaderRow(rowsRbd);
+          const looksHeader = (row) => /[a-zA-ZÁÉÍÓÚÑ]/.test((row || []).join(''));
+          if (!looksHeader(rowsRbd[hdrIdxR] || [])) {
+            // Sin encabezados: procesar desde la primera fila
+            hdrIdxR = -1;
+          }
+          const headersR = (rowsRbd[hdrIdxR] || []).map(String);
+          const findIdx = (aliases) => {
+            const H = headersR.map(h => norm(h));
+            for (let i = 0; i < H.length; i++) { if (aliases.some(a => H[i] === a)) return i; }
+            for (let i = 0; i < H.length; i++) { if (aliases.some(a => H[i].includes(a))) return i; }
+            return -1;
           };
-          chart.setOption(option);
-          chart.off('click');
-          chart.on('click', params => {
-            const idx = params.dataIndex;
-            const d = agregados[idx];
-            if (!d) return;
-            const cursos = detallePorEst.get(d.establecimiento) || [];
-            modalTitle.textContent = `Cursos de ${d.establecimiento}`;
-            const list = cursos.map(c=>`
-              <li style="margin:.35rem 0;">
-                <strong>${c.curso}</strong> — Área: ${c.area} — Matrícula: ${c.alumnos}<br/>
-                <small>Asistencia: ${c.asistencia}% • Inasistencia: ${c.inasistencia}%</small>
-              </li>
-            `).join('');
-            modalBody.innerHTML = `
-              <div style="margin-bottom:.6rem;opacity:.85;">Total cursos: <strong>${cursos.length}</strong></div>
-              <ul style="padding-left:1rem;">${list}</ul>
-            `;
-            modal.classList.add('show');
-          });
-        }
-        function apply(){
-          const list = filtroArea === 'todas' ? DATA : DATA.filter(d=>d.area === filtroArea);
-          // Filtro por mes (si existiera d.mes con formato 'MM')
-          let listMes = list;
-          if (filtroMes !== 'all') {
-            listMes = list.filter(d => {
-              const m = (d.mes || '').toString().padStart(2, '0');
-              return m === filtroMes;
+          // Índices para hoja RBD (solo RBD, % y opcional Establecimiento)
+          const idxRbdR = findIdx(['rbd', 'codigo rbd', 'rbd resultado', 'resultado rbd', 'etiquetas de fila', 'etiqueta de fila', 'etiquetas']);
+          const idxEstR = findIdx(['establecimiento', 'nombre establecimiento', 'establec', 'nombre', 'unidad educativa', 'otro nombre de establecimiento']);
+          const idxPercR = findIdx(['%', 'porcentaje', 'porc', 'asistencia', '% asistencia', 'porcentaje asistencia', 'asistencia %', '% asist']);
+          const idxInasR = findIdx(['inasistencia', '% inasistencia', 'porcentaje inasistencia', 'inasis', 'faltas', 'ausencia']);
+          console.info('[Asistencia] idx RBD -> rbd:', idxRbdR, 'est:', idxEstR, 'perc:', idxPercR);
+
+          const parsePerc = (v) => {
+            if (v === null || v === undefined) return 0;
+            let t = String(v).replace(/,/g, '.').trim();
+            if (!t) return 0;
+            if (t.endsWith('%')) t = t.slice(0, -1).trim();
+            let n = Number(t);
+            if (isNaN(n)) return 0;
+            if (n <= 1) n = n * 100; // 0.85 -> 85
+            if (n > 100) n = 100;
+            if (n < 0) n = 0;
+            return Math.round(n);
+          };
+
+          // Heurísticas de respaldo si algún índice no se encontró por encabezado
+          const bodyRows = rowsRbd.slice(hdrIdxR + 1);
+          const colCount = Math.max(...bodyRows.map(r => (r?.length || 0)));
+          function scanColumnScores() {
+            const scores = Array.from({ length: colCount }, () => ({ rbd: 0, perc: 0, curso: 0, est: 0 }));
+            const RBD_RX = /^(\d{2,7})(-[0-9kK])?$/;
+            const CURSO_RX = /^(pre|kinder|1|2|3|4|5|6|7|8|9|10|11|12)[^\w]?\s*[a-hA-HÁÉÍÓÚÑ]*/;
+            for (const r of bodyRows) {
+              if (!r) continue;
+              for (let c = 0; c < colCount; c++) {
+                const v = r[c];
+                const s = String(v ?? '').trim();
+                if (!s) continue;
+                // RBD: mayormente dígitos (posible -DV)
+                if (RBD_RX.test(s)) scores[c].rbd++;
+                // % asistencia: valores 0..100 y a veces llevan %/coma/punto
+                const p = (function (x) {
+                  let t = String(x).replace(/,/g, '.').replace('%', '').trim();
+                  const n = Number(t);
+                  if (!isNaN(n) && n >= 0 && n <= 100) return true;
+                  return false;
+                })(s);
+                if (p || /%/.test(s)) scores[c].perc++;
+                // Curso típico: patrones de curso/nivel
+                if (CURSO_RX.test(s.toLowerCase())) scores[c].curso++;
+                // Establecimiento: cadenas largas con letras y espacios
+                if (s.length >= 10 && /[a-zA-ZÁÉÍÓÚÑ]/.test(s)) scores[c].est++;
+              }
+            }
+            return scores;
+          }
+          const scores = scanColumnScores();
+          function bestIndex(kind, currentIdx) {
+            if (currentIdx >= 0) return currentIdx;
+            let best = -1, bestScore = 0;
+            for (let c = 0; c < scores.length; c++) {
+              const val = scores[c]?.[kind] || 0;
+              if (val > bestScore) { bestScore = val; best = c; }
+            }
+            return best;
+          }
+          let idxRbd2 = bestIndex('rbd', idxRbdR);
+          let idxPerc2 = bestIndex('perc', idxPercR);
+          let idxEst2 = bestIndex('est', idxEstR);
+          let idxInas2 = bestIndex('perc', idxInasR);
+          let idxPercInas = -1; // posible columna explícita de Inasistencia
+
+          // Fallback: 3 columnas sin encabezado [RBD, Inasistencia, Asistencia]
+          try {
+            const sample = bodyRows.slice(0, Math.min(10, bodyRows.length)).filter(r => r && r.length >= 3);
+            const isInt = (v) => { const s = String(v).trim(); return /^-?\d+$/.test(s); };
+            const isPerc = (v) => { const s = String(v).replace(',', '.').replace('%', '').trim(); const n = Number(s); return !isNaN(n) && n >= 0 && n <= 100; };
+            if (sample.length && (idxRbd2 < 0 || idxPerc2 < 0)) {
+              const ok = sample.every(r => isInt(r[0]) && isPerc(r[1]) && isPerc(r[2]));
+              if (ok) { idxRbd2 = 0; idxPercInas = 1; idxPerc2 = 2; idxEst2 = -1; }
+            }
+          } catch { }
+          console.info('[Asistencia] idx RBD heur -> rbd:', idxRbd2, 'est:', idxEst2, 'perc:', idxPerc2);
+
+          // 3) Construir RBD_MAIN desde hoja RBD
+          const RBD_MAIN = [];
+          const leadNum = (s) => { const m = String(s || '').match(/^(\s*)(\d{2,7})/); return m ? m[2] : ''; };
+          const tailName = (s) => {
+            const str = String(s || '');
+            const m = str.match(/^(\s*)(\d{2,7})(.*)$/);
+            if (!m) return '';
+            return m[3].replace(/^\s*[-–—.:]\s*/, '').trim();
+          };
+          for (let i = hdrIdxR + 1; i < rowsRbd.length; i++) {
+            const r = rowsRbd[i]; if (!r || r.every(c => String(c).trim() === '')) continue;
+            const rbdRaw = idxRbd2 >= 0 ? String(r[idxRbd2]).trim() : '';
+            const estRaw = idxEst2 >= 0 ? String(r[idxEst2]).trim() : '';
+            const asis = parsePerc(idxPerc2 >= 0 ? r[idxPerc2] : '');
+            const inas = idxPercInas >= 0 ? parsePerc(r[idxPercInas]) : (idxInas2 >= 0 ? parsePerc(r[idxInas2]) : Math.max(0, 100 - asis));
+            // Solo aceptar filas con RBD numérico presente (evita cursos)
+            const rbdNum = leadNum(rbdRaw) || leadNum(estRaw);
+            const nombreFromEtiq = tailName(rbdRaw);
+            if (!rbdNum) continue;
+            // Solo conservar establecimiento si existe una columna específica; evitar duplicar números
+            const estFinal = (idxEst2 >= 0 && estRaw && !/^\d{2,7}$/.test(estRaw)) ? estRaw : '';
+            const nombre = estFinal || nombreFromEtiq;
+            RBD_MAIN.push({ rbd: rbdNum, establecimiento: estFinal, nombre, asistencia: asis, inasistencia: inas, area: '—', mes: '07', anio: '2025' });
+          }
+          console.info('[Asistencia] RBD cargados:', RBD_MAIN.length);
+
+          if (!RBD_MAIN.length) {
+            const msg = document.createElement('div');
+            msg.textContent = `No se encontraron datos en la hoja "${sheetRbdName}" del Excel. Revisa encabezados: RBD y % Asistencia.`;
+            msg.style.cssText = 'padding:1rem;border:1px dashed #e5e7eb;border-radius:10px;color:#334155;background:#f9fafb;margin:.8rem 0;';
+            const cont = document.getElementById('chartCursos');
+            if (cont) { cont.innerHTML = ''; cont.appendChild(msg); }
+            return;
+          }
+
+          // (Cursos desactivado por solicitud: no se construye detalle por curso)
+
+          const selEl = document.getElementById('areaSelect');
+          const mesesEl = document.getElementById('mesesSelect');
+          const btnClear = document.getElementById('btnClearFiltro');
+          const statProm = document.getElementById('statPromedio');
+          const statEst = document.getElementById('statEst');
+          const chartDom = document.getElementById('chartCursos');
+
+          // Mapa de respaldo RBD -> Nombre (usado si la hoja trae solo números en "Etiquetas de fila")
+          // Fuente: other_pag/establecimiento.html
+          const RBD_TO_NAME = {
+            '97': 'Instituto Comercial Baldomero Wolnitzky',
+            '102': 'Escuela Educación Especial Flor del Inca',
+            '103': 'Escuela Educación Gral. Básica y Des. Artístico Violeta Parra',
+            '105': 'Centro de Capacitación Laboral',
+            '107': 'Liceo Libertador Gral. Bernardo O´Higgins',
+            '108': 'Liceo Politécnico José Gutiérrez de la Fuente',
+            '109': 'Liceo Deportivo TP Elena Duvauchelle Cabezón',
+            '110': 'Liceo Bicentenario Domingo Santa María de Iquique',
+            '111': 'Escuela Gabriela Mistral',
+            '112': 'Escuela Eduardo Llanos',
+            '113': 'Escuela Almirante Patricio Lynch',
+            '114': 'Escuela Plácido Villarroel',
+            '116': 'Colegio República de Croacia',
+            '117': 'Escuela Paula Jaraquemada Alquizar',
+            '119': 'Escuela Centenario',
+            '122': 'Escuela Thilda Portillo Olivares',
+            '123': 'Colegio España',
+            '124': 'Liceo Luis Cruz Martínez',
+            '125': 'Escuela Profesor Manuel Castro Ramos',
+            '126': 'Colegio República de Italia',
+            '10916': 'Escuela Caleta Chanavayita',
+            '10917': 'Liceo Bicentenario Minero S.S. Juan Pablo II',
+            '12538': 'Escuela Chipana',
+            '12542': 'Escuela Caleta San Marcos',
+            '12632': 'Colegio Simón Bolívar',
+            '12739': 'Escuela Especial de Lenguaje Oasis del Saber',
+            '12758': 'Liceo C.E.I.A. José Alejandro Soria Varas',
+            '33015': 'Jardín Carita de Sol',
+            '33019': 'Jardín Oasis del Saber',
+            '33020': 'Jardín Intina Wawapa',
+            '33021': 'Jardín Los Naranjos',
+            '33022': 'Jardín Tortuguitas',
+            '33024': 'Jardín Arumanti',
+            '33025': 'Jardín Lucerito Dorado',
+            '33026': 'Jardín Aventuras de Aprender',
+            '33027': 'Jardín Arcoíris del Desierto',
+            '33028': 'Jardín Magia de Aprender',
+            '33030': 'Jardín Mi Pequeño Mundo',
+            '35987': 'Jardín Suma Inti',
+            '40429': 'Liceo Técnico Profesional de Adultos'
+          };
+
+          // Mapa explícito RBD -> archivo de imagen existente en other_pag/img_establecimiento
+          const IMG_BY_RBD = {
+            '97': 'Instituto Comercial.png',
+            '102': 'logo_flor_inca.jpg',
+            '103': 'Escuela Violeta Parra.png',
+            '105': 'CCL.png',
+            '107': 'Ohiggins.jpg',
+            '108': 'Politecnico.png',
+            '109': 'CODE .png',
+            '110': 'Liceo Santa Maria.png',
+            '111': 'Escuela Gabriela Mistral.png',
+            '112': 'Colegio Eduardo LLanos Nava.png',
+            '113': 'Colegio Lynch.png',
+            '114': 'Escuela Placido Villarroel V2.png',
+            '116': 'Colegio República de Croacia.png',
+            '117': 'Paula Jaraquemada.png',
+            '119': 'Escuela Centenario.png',
+            '122': 'Escuela Thilda Portillo.png',
+            '123': 'Colegio España.png',
+            '124': 'Liceo Luis Cruz Martinez.png',
+            '125': 'logo_castro_ramos.jpg',
+            '126': 'Italia.jpg',
+            '10916': 'Escuela Chanavayita.png',
+            '10917': 'Liceo Juan Pablo II.png',
+            '12538': 'Chipana.jpg',
+            '12542': 'Escuela San Marcos.png',
+            '12632': 'Colegio Simon Bolivar.png',
+            '12739': 'Oasis del Saber.png',
+            '12758': 'Liceo CEIA.png',
+            '40429': 'Liceo Tp de Adultos.png'
+          };
+
+          // Poblar select de áreas (derivado de RBD_MAIN)
+          const areas = Array.from(new Set(RBD_MAIN.map(d => d.area || '—')));
+          selEl.innerHTML = ['<option value="todas">Todas las áreas</option>', ...areas.map(a => `<option value="${a}">${a}</option>`)].join('');
+          // Ocultar selector si no hay áreas reales distintas
+          if (areas.length <= 1 && areas[0] === '—') {
+            selEl.parentElement?.style && (selEl.parentElement.style.display = 'none');
+          }
+          let filtroArea = 'todas';
+          // Meses: solo Marzo a Diciembre + opción "Todos"
+          const MESES = [
+            { v: 'all', t: 'Todos' },
+            { v: '03', t: 'Marzo' },
+            { v: '04', t: 'Abril' },
+            { v: '05', t: 'Mayo' },
+            { v: '06', t: 'Junio' },
+            { v: '07', t: 'Julio' },
+            { v: '08', t: 'Agosto' },
+            { v: '09', t: 'Septiembre' },
+            { v: '10', t: 'Octubre' },
+            { v: '11', t: 'Noviembre' },
+            { v: '12', t: 'Diciembre' }
+          ];
+          let filtroMes = 'all';
+          if (mesesEl) {
+            mesesEl.innerHTML = MESES.map(m => `<option value="${m.v}">${m.t}</option>`).join('');
+            mesesEl.value = 'all';
+          }
+
+          const chart = echarts.init(chartDom);
+          function compute(agregados) {
+            const prom = agregados.length ? Math.round(agregados.reduce((acc, d) => acc + d.asistencia, 0) / agregados.length) : 0;
+            statProm.textContent = prom + '%';
+            statEst.textContent = agregados.length.toString();
+          }
+          function setChartRbd(agregados) {
+            // Ajuste dinámico del margen izquierdo según el largo de etiquetas
+            const maxLabelLen = agregados.reduce((m, d) => Math.max(m, (d.label || '').length), 0);
+            const vw = window.innerWidth || 1024;
+            const isMobile = vw < 600;
+            const isTablet = vw >= 600 && vw < 1024;
+            const baseLeft = isMobile ? 120 : (isTablet ? 180 : 240);
+            const pxPerChar = isMobile ? 5.5 : (isTablet ? 6.5 : 7.5);
+            const leftPad = Math.min(isMobile ? 260 : (isTablet ? 340 : 460), Math.max(baseLeft, Math.round(maxLabelLen * pxPerChar)));
+            const option = {
+              backgroundColor: '#ffffff',
+              textStyle: { color: '#111827' },
+              color: ['#2563eb', '#ef4444'],
+              tooltip: {
+                trigger: 'axis',
+                axisPointer: { type: 'shadow' },
+                formatter: (p) => {
+                  const idx = p?.[0]?.dataIndex ?? 0;
+                  const item = agregados[idx] || {};
+                  const a = p.find(s => s.seriesName === 'Asistencia')?.value ?? 0;
+                  const i = p.find(s => s.seriesName === 'Inasistencia')?.value ?? 0;
+                  const title = item.label || '';
+                  return `${title}<br/>Asistencia: ${a}%<br/>Inasistencia: ${i}%`;
+                }
+              },
+              grid: { left: leftPad, right: 20, top: 20, bottom: 20 },
+              xAxis: { type: 'value', min: 0, max: 100, axisLabel: { formatter: '{value}%', color: '#111827' }, splitLine: { lineStyle: { color: '#e5e7eb' } } },
+              yAxis: { type: 'category', data: agregados.map(d => d.label), axisLabel: { color: '#111827', fontSize: isMobile ? 10 : (isTablet ? 11 : 12) }, axisLine: { lineStyle: { color: '#e5e7eb' } } },
+              series: [
+                {
+                  name: 'Asistencia', type: 'bar', stack: 'total',
+                  data: agregados.map(d => d.asistencia),
+                  label: { show: true, position: 'insideRight', color: '#ffffff', formatter: '{c}%', fontSize: isMobile ? 10 : 11 }
+                },
+                {
+                  name: 'Inasistencia', type: 'bar', stack: 'total',
+                  data: agregados.map(d => d.inasistencia),
+                  label: { show: true, position: 'insideRight', color: '#ffffff', formatter: '{c}%', fontSize: isMobile ? 10 : 11 }
+                }
+              ]
+            };
+            chart.setOption(option);
+            // Click abre modal con imagen
+            chart.off('click');
+            chart.on('click', params => {
+              const idx = params.dataIndex;
+              const d = agregados[idx];
+              if (!d) return;
+              const displayName = d.nombre || d.establecimiento || '';
+              const modal = document.getElementById('estModal');
+              const modalTitle = document.getElementById('estModalTitle');
+              const imgEl = document.getElementById('estModalImg');
+              const bodyEl = document.getElementById('estModalBody');
+              if (modalTitle) modalTitle.textContent = displayName || 'Establecimiento';
+              if (bodyEl) {
+                const rbdStr = String(d.rbd || '').trim();
+                let htmlOut = '';
+                // Solo para RBD 97: mostrar tabla completa de cursos desde la hoja "97"
+                if (rbdStr === '97' && typeof XLSX !== 'undefined' && wb?.Sheets?.[rbdStr]) {
+                  try {
+                    const wsN = wb.Sheets[rbdStr];
+                    const rowsN = XLSX.utils.sheet_to_json(wsN, { header: 1, defval: '' });
+                    if (rowsN && rowsN.length) {
+                      const norm = s => s?.toString().toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').trim();
+                      const parsePerc = (v) => {
+                        if (v === null || v === undefined) return NaN;
+                        let t = String(v).replace(/,/g, '.').trim();
+                        if (!t) return NaN;
+                        if (t.endsWith('%')) t = t.slice(0, -1).trim();
+                        let n = Number(t);
+                        if (isNaN(n)) return NaN;
+                        if (n <= 1) n = n * 100;
+                        if (n > 100) n = 100;
+                        if (n < 0) n = 0;
+                        return Math.round(n);
+                      };
+                      const findHeaderRow = (allRows) => {
+                        const MAX_SCAN = Math.min(20, allRows.length);
+                        const hasToken = (cell, tokens) => {
+                          const h = norm(cell);
+                          return tokens.some(t => h === t || h.includes(t));
+                        };
+                        for (let i = 0; i < MAX_SCAN; i++) {
+                          const r = allRows[i] || [];
+                          const nonEmpty = r.filter(x => String(x).trim() !== '').length;
+                          if (nonEmpty < 2) continue;
+                          let score = 0;
+                          if (r.some(c => hasToken(c, ['curso', 'cursos', 'nivel']))) score++;
+                          if (r.some(c => hasToken(c, ['%', 'asistencia', 'porcentaje']))) score++;
+                          if (score >= 1) return i;
+                        }
+                        return 0;
+                      };
+                      const hdrIdx = findHeaderRow(rowsN);
+                      const headers = (rowsN[hdrIdx] || []).map(String);
+                      const Hn = headers.map(h => norm(h));
+                      const fIdx = (aliases) => {
+                        for (let i = 0; i < Hn.length; i++) { if (aliases.some(a => Hn[i] === a)) return i; }
+                        for (let i = 0; i < Hn.length; i++) { if (aliases.some(a => Hn[i].includes(a))) return i; }
+                        return -1;
+                      };
+                      let iCurso = fIdx(['curso', 'cursos', 'nivel']);
+                      let iAsis = fIdx(['% asistencia', 'asistencia %', 'asistencia', 'porcentaje']);
+                      let iInas = fIdx(['% inasistencia', 'inasistencia', 'ausencia', 'faltas']);
+                      const body = rowsN.slice(hdrIdx + 1);
+                      if (iCurso < 0 || (iAsis < 0 && iInas < 0)) {
+                        const colCount = Math.max(...body.map(r => (r?.length || 0), 0));
+                        const scores = Array.from({ length: colCount }, () => ({ text: 0, perc: 0 }));
+                        for (const r of body) {
+                          if (!r) continue;
+                          for (let c = 0; c < colCount; c++) {
+                            const s = String(r[c] ?? '').trim();
+                            if (!s) continue;
+                            if (/[a-zA-ZÁÉÍÓÚÑ]/.test(s)) scores[c].text++;
+                            const n = Number(String(s).replace(',', '.').replace('%', ''));
+                            if (!isNaN(n) && n >= 0 && n <= 100) scores[c].perc++;
+                          }
+                        }
+                        // Curso: columna más textual; Asistencia: mejor columna perc; Inasistencia: segunda perc si distinta
+                        const bestIdx = (k) => { let bi = -1, bs = -1; for (let c = 0; c < scores.length; c++) { const v = scores[c][k]; if (v > bs) { bs = v; bi = c; } } return bi; };
+                        if (iCurso < 0) iCurso = bestIdx('text');
+                        if (iAsis < 0) iAsis = bestIdx('perc');
+                        if (iInas < 0) {
+                          // buscar otra columna perc distinta a iAsis
+                          let bi = -1, bs = -1; for (let c = 0; c < scores.length; c++) { const v = scores[c].perc; if (c !== iAsis && v > bs) { bs = v; bi = c; } } iInas = bi;
+                        }
+                      }
+                      const rowsOut = [];
+                      for (const r of body) {
+                        if (!r) continue;
+                        const curso = iCurso >= 0 ? String(r[iCurso]).trim() : '';
+                        const av = iAsis >= 0 ? parsePerc(r[iAsis]) : NaN;
+                        const iv = iInas >= 0 ? parsePerc(r[iInas]) : (isNaN(av) ? NaN : Math.max(0, 100 - av));
+                        if (curso && (!isNaN(av) || !isNaN(iv))) {
+                          rowsOut.push({ curso, a: isNaN(av) ? '' : av, i: isNaN(iv) ? (isNaN(av) ? '' : Math.max(0, 100 - av)) : iv });
+                        }
+                      }
+                      if (rowsOut.length) {
+                        htmlOut = '<table class="tbl-est"><thead><tr><th>Cursos</th><th>Asistencia</th><th>Inasistencia</th></tr></thead><tbody>' +
+                          rowsOut.map(r => `<tr><td>${r.curso}</td><td>${r.a !== '' ? r.a + '%' : ''}</td><td>${r.i !== '' ? r.i + '%' : ''}</td></tr>`).join('') +
+                          '</tbody></table>';
+                      }
+                    }
+                  } catch { }
+                }
+                if (!htmlOut) {
+                  // Resumen por defecto (no RBD 97 o no se pudo leer hoja)
+                  const a = typeof d.asistencia === 'number' ? d.asistencia : 0;
+                  const i = typeof d.inasistencia === 'number' ? d.inasistencia : Math.max(0, 100 - a);
+                  htmlOut = `
+                  <table class="tbl-est">
+                    <thead>
+                      <tr><th>Indicador</th><th>Cursos</th></tr>
+                    </thead>
+                    <tbody>
+                      <tr><td>Asistencia</td><td>${a}%</td></tr>
+                      <tr><td>Inasistencia</td><td>${i}%</td></tr>
+                    </tbody>
+                  </table>`;
+                }
+                bodyEl.innerHTML = htmlOut;
+              }
+              // Candidatos de imagen
+              const baseDirs = [
+                'img_establecimiento/',
+                './img_establecimiento/',
+                '/other_pag/img_establecimiento/'
+              ];
+              const sanitize = (s) => String(s || '')
+                .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+                .replace(/[^a-zA-Z0-9\s._-]/g, '')
+                .trim();
+              const nameSan = sanitize(displayName);
+              const nameVariants = [];
+              if (nameSan) {
+                nameVariants.push(nameSan);
+                nameVariants.push(nameSan.toLowerCase());
+                nameVariants.push(nameSan.replace(/\s+/g, '_'));
+                nameVariants.push(nameSan.replace(/\s+/g, '-'));
+                nameVariants.push(nameSan.toLowerCase().replace(/\s+/g, '_'));
+                nameVariants.push(nameSan.toLowerCase().replace(/\s+/g, '-'));
+              }
+              const rbdStr = String(d.rbd || '');
+              const exts = ['.webp', '.png', '.jpg', '.jpeg'];
+              const candidates = [];
+              const explicitFile = (typeof IMG_BY_RBD !== 'undefined') ? IMG_BY_RBD[rbdStr] : undefined;
+              if (explicitFile) {
+                for (const b of baseDirs) { candidates.push(b + encodeURI(explicitFile)); }
+              }
+              for (const b of baseDirs) {
+                for (const ext of exts) { candidates.push(b + encodeURIComponent(rbdStr + ext)); }
+                for (const nv of nameVariants) { for (const ext of exts) { candidates.push(b + encodeURI(nv + ext)); } }
+              }
+              if (imgEl) {
+                imgEl.style.display = '';
+                imgEl.alt = displayName || 'Establecimiento';
+                try { imgEl.removeAttribute('src'); } catch { }
+                let ci = 0;
+                function tryNext() {
+                  if (!imgEl) return;
+                  if (ci >= candidates.length) {
+                    const logoPaths = ['Imagen/logo.png', './Imagen/logo.png', '/other_pag/Imagen/logo.png'];
+                    let li = 0;
+                    function tryLogo() {
+                      if (li >= logoPaths.length) { imgEl.style.display = 'none'; return; }
+                      const srcL = logoPaths[li++];
+                      imgEl.onerror = tryLogo;
+                      imgEl.src = srcL;
+                    }
+                    tryLogo();
+                    return;
+                  }
+                  const src = candidates[ci++];
+                  imgEl.onerror = tryNext;
+                  imgEl.src = src;
+                }
+                tryNext();
+              }
+              if (modal) modal.classList.add('show');
             });
           }
-          // Agrupar por establecimiento y promediar asistencia
-          const byEst = new Map(); // est -> { sum, count }
-          const detallePorEst = new Map(); // est -> cursos[]
-          for (const it of listMes){
-            const e = it.establecimiento;
-            if (!byEst.has(e)) byEst.set(e, { sum:0, count:0 });
-            const agg = byEst.get(e); agg.sum += it.asistencia; agg.count += 1;
-            if (!detallePorEst.has(e)) detallePorEst.set(e, []);
-            detallePorEst.get(e).push(it);
+          function apply() {
+            // En esta vista solo usamos RBD_MAIN (detalle viene de DETALLE_MAP)
+            const list = filtroArea === 'todas' ? RBD_MAIN : RBD_MAIN.filter(d => d.area === filtroArea);
+            // Filtro por mes (si existiera d.mes con formato 'MM')
+            let listMes = list;
+            if (filtroMes !== 'all') {
+              listMes = list.filter(d => {
+                const m = (d.mes || '').toString().padStart(2, '0');
+                return m === filtroMes;
+              });
+            }
+            // Agrupar por RBD (única vista)
+            const byRbd = new Map(); // rbd -> { sum, count, est, nom }
+            for (const it of listMes) {
+              const key = it.rbd; // agrupar estrictamente por RBD
+              if (!byRbd.has(key)) byRbd.set(key, { sum: 0, count: 0, est: it.establecimiento, nom: it.nombre });
+              const agg = byRbd.get(key);
+              agg.sum += it.asistencia; agg.count += 1;
+              agg.est = agg.est || it.establecimiento;
+              agg.nom = agg.nom || it.nombre;
+            }
+            const agregados = Array.from(byRbd.entries()).map(([rbd, v]) => {
+              const asis = v.count ? Math.round(v.sum / v.count) : 0;
+              const mapped = RBD_TO_NAME[String(rbd)] || '';
+              const nombreFinal = mapped || v.nom || v.est || '';
+              const label = nombreFinal || String(rbd); // etiqueta visible (nombre del establecimiento)
+              return { rbd, establecimiento: v.est || '', nombre: nombreFinal, label, asistencia: asis, inasistencia: Math.max(0, 100 - asis) };
+            });
+            // Mantener el orden original (no ordenar) para reflejar el Excel "copiar/pegar"
+            // Altura dinámica del gráfico según cantidad de RBD
+            try {
+              const w = window.innerWidth || 1024;
+              const isMobile = w < 600;
+              const isTablet = w >= 600 && w < 1024;
+              const baseMin = isMobile ? 420 : (isTablet ? 520 : 600);
+              const perBar = isMobile ? 28 : (isTablet ? 32 : 36);
+              const targetH = Math.max(baseMin, agregados.length * perBar);
+              const chartDom = document.getElementById('chartCursos');
+              if (chartDom) { chartDom.style.height = `${targetH}px`; }
+            } catch { }
+            compute(agregados);
+            setChartRbd(agregados);
+            try { chart.resize(); } catch { }
           }
-          const agregados = Array.from(byEst.entries()).map(([establecimiento, v])=>{
-            const asis = Math.round(v.sum / v.count);
-            return { establecimiento, asistencia: asis, inasistencia: Math.max(0, 100 - asis) };
-          });
-          // Ordenar desc por asistencia
-          agregados.sort((a,b)=> b.asistencia - a.asistencia);
-          compute(agregados);
-          setChart(agregados, detallePorEst);
+          selEl.addEventListener('change', () => { filtroArea = selEl.value; apply(); });
+          mesesEl?.addEventListener('change', () => { filtroMes = mesesEl.value; apply(); });
+          btnClear.addEventListener('click', () => { filtroArea = 'todas'; selEl.value = 'todas'; filtroMes = 'all'; if (mesesEl) mesesEl.value = 'all'; apply(); });
+          apply();
+          window.addEventListener('resize', () => chart.resize());
+        } catch (e) {
+          console.error('Error inicializando UI cursos:', e);
+          // Mantener UI sin datos
         }
-  selEl.addEventListener('change', ()=>{ filtroArea = selEl.value; apply(); });
-  mesesEl?.addEventListener('change', ()=>{ filtroMes = mesesEl.value; apply(); });
-  btnClear.addEventListener('click', ()=>{ filtroArea = 'todas'; selEl.value = 'todas'; filtroMes = 'all'; if(mesesEl) mesesEl.value = 'all'; apply(); });
-        apply();
-        window.addEventListener('resize', ()=> chart.resize());
-      } catch (e) {
-        console.error('Error inicializando UI cursos:', e);
-      }
+      })();
     });
 
-    logoutBtn.addEventListener('click', async ()=>{
-      try{ await signOut(auth); location.replace('../index.html'); }catch(e){ console.error(e); alert('Error al cerrar sesión'); }
+    logoutBtn.addEventListener('click', async () => {
+      try { await signOut(auth); location.replace('../index.html'); } catch (e) { console.error(e); alert('Error al cerrar sesión'); }
     });
   </script>
-  <!-- Modal de detalle de curso -->
-  <div id="cursosModal" class="modal" role="dialog" aria-modal="true" aria-labelledby="cursosModalTitle">
+  <!-- Modal de imagen del establecimiento (sin cursos) -->
+  <div id="estModal" class="modal" role="dialog" aria-modal="true" aria-labelledby="estModalTitle">
     <div class="modal-card">
       <div class="modal-header">
-        <h3 id="cursosModalTitle" style="margin:0;">Detalle</h3>
-        <button type="button" id="cursosModalClose" class="btn-min">Cerrar</button>
+        <h3 id="estModalTitle" style="margin:0;">Establecimiento</h3>
+        <button type="button" id="estModalClose" class="btn-min">Cerrar</button>
       </div>
-      <div id="cursosModalBody" class="modal-body"></div>
+      <div class="modal-hero">
+        <div class="est-img-wrap">
+          <img id="estModalImg" class="est-img" alt="Establecimiento" />
+        </div>
+      </div>
+      <div class="modal-body" id="estModalBody"></div>
       <div class="modal-footer" style="justify-content:flex-end;">
-        <button type="button" id="cursosModalClose2" class="btn-min">Cerrar</button>
+        <button type="button" id="estModalClose2" class="btn-min">Cerrar</button>
       </div>
     </div>
   </div>
   <script>
     // Dropdown ligero: toggle, click fuera y ESC
-    (function(){
+    (function () {
       const dd = document.querySelector('.nav-acomp-dropdown');
       const btn = dd?.querySelector('.dropdown-toggle');
-      function close(){ if(!dd) return; dd.classList.remove('open'); btn?.setAttribute('aria-expanded','false'); }
-      function toggle(){ if(!dd) return; const open = dd.classList.toggle('open'); btn?.setAttribute('aria-expanded', open ? 'true' : 'false'); }
-      btn?.addEventListener('click', (e)=>{ e.stopPropagation(); toggle(); });
-      document.addEventListener('click', (e)=>{ if(!dd) return; if(!dd.contains(e.target)) close(); });
-      window.addEventListener('keydown', (e)=>{ if(e.key==='Escape') close(); });
+      function close() { if (!dd) return; dd.classList.remove('open'); btn?.setAttribute('aria-expanded', 'false'); }
+      function toggle() { if (!dd) return; const open = dd.classList.toggle('open'); btn?.setAttribute('aria-expanded', open ? 'true' : 'false'); }
+      btn?.addEventListener('click', (e) => { e.stopPropagation(); toggle(); });
+      document.addEventListener('click', (e) => { if (!dd) return; if (!dd.contains(e.target)) close(); });
+      window.addEventListener('keydown', (e) => { if (e.key === 'Escape') close(); });
     })();
-    // Modal listeners
-    (function(){
-      const modal = document.getElementById('cursosModal');
-      const closeBtns = [document.getElementById('cursosModalClose'), document.getElementById('cursosModalClose2')];
-      closeBtns.forEach(b=> b?.addEventListener('click', ()=> modal.classList.remove('show')));
-      modal?.addEventListener('click', (e)=>{ if (e.target === modal) modal.classList.remove('show'); });
-      window.addEventListener('keydown', (e)=>{ if(e.key==='Escape' && modal?.classList.contains('show')) modal.classList.remove('show'); });
+    // Modal listeners (imagen de establecimiento)
+    (function () {
+      const modal = document.getElementById('estModal');
+      const closeBtns = [document.getElementById('estModalClose'), document.getElementById('estModalClose2')];
+      closeBtns.forEach(b => b?.addEventListener('click', () => modal?.classList.remove('show')));
+      modal?.addEventListener('click', (e) => { if (e.target === modal) modal.classList.remove('show'); });
+      window.addEventListener('keydown', (e) => { if (e.key === 'Escape' && modal?.classList.contains('show')) modal.classList.remove('show'); });
     })();
   </script>
 </body>
+
 </html>

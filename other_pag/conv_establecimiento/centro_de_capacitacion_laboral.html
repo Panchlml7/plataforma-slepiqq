@@ -91,6 +91,8 @@
             <div style="margin-top:1rem;"><a href="../convivencia_escolar.html">← Galería</a></div>
         </section>
     </main>
+        <!-- SheetJS para leer XLSX en el navegador -->
+        <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
         <script>
             // Filtro por Mes/Año sobre las filas existentes
             (function(){
@@ -202,10 +204,131 @@
                     cursoSel.disabled = arr.length === 0;
                 }
 
-                populateYears();
-                populateCourses();
-                bind();
-                applyFilters();
+                // === Carga de XLSX y render en la tabla ===
+                const XLSX_PATH = './xlsx/07/CENTRO_DE_CAPACITACION_LABORAL_FALTA_ESTUDIANTES_2025.xlsx';
+
+                function norm(s){ return (s||'').toString().toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').trim(); }
+
+                // Mapeo estricto a las 6 columnas esperadas
+                const EXPECTED = {
+                    nombre: ['nombre completo','nombre'],
+                    mes: ['mes'],
+                    rbd: ['rbd'],
+                    curso: ['curso','nivel'],
+                    total: ['total ausencias','total inasistencias','total faltas'],
+                    dias: ['dias ausentes','dias inasistidos','dias de inasistencia','dias faltados']
+                };
+                function findIndexByAliases(headers, aliases){
+                    const H = headers.map(h => norm(h));
+                    // Igualdad exacta primero
+                    for (let i=0;i<H.length;i++){
+                        for (const a of aliases){ if (H[i] === a) return i; }
+                    }
+                    // Si no hay exacto, permitir contiene
+                    for (let i=0;i<H.length;i++){
+                        for (const a of aliases){ if (H[i].includes(a)) return i; }
+                    }
+                    return -1;
+                }
+
+                function findHeaderRow(data){
+                    // Busca la primera fila que parezca encabezado (coinciden varias etiquetas esperadas)
+                    for (let i=0;i<data.length;i++){
+                        const row = (data[i]||[]).map(v=>norm(String(v)));
+                        let matches = 0;
+                        // nombre
+                        if (row.some(c => EXPECTED.nombre.some(a => c === a || c.includes(a)))) matches++;
+                        // mes
+                        if (row.some(c => EXPECTED.mes.some(a => c === a || c.includes(a)))) matches++;
+                        // rbd
+                        if (row.some(c => EXPECTED.rbd.some(a => c === a || c.includes(a)))) matches++;
+                        // curso
+                        if (row.some(c => EXPECTED.curso.some(a => c === a || c.includes(a)))) matches++;
+                        if (matches >= 2) return i; // suficiente para asumir encabezado
+                    }
+                    return 0; // fallback
+                }
+
+                async function loadXlsxToTable(url){
+                    try {
+                        const resp = await fetch(url);
+                        if (!resp.ok) throw new Error('No se pudo cargar el archivo XLSX');
+                        const buf = await resp.arrayBuffer();
+                        const wb = XLSX.read(buf, { type: 'array' });
+                        const sheetName = wb.SheetNames[0];
+                        const ws = wb.Sheets[sheetName];
+                        const data = XLSX.utils.sheet_to_json(ws, { header: 1, defval: '' }); // array de arrays
+                        if (!data || data.length === 0) return;
+
+                        const headerRowIndex = findHeaderRow(data);
+                        const headers = (data[headerRowIndex]||[]).map(String);
+                        const rows = data.slice(headerRowIndex + 1);
+
+                        // Encontrar índices de columnas requeridas de forma estricta
+                        const idxNombre = findIndexByAliases(headers, EXPECTED.nombre);
+                        const idxMes = findIndexByAliases(headers, EXPECTED.mes);
+                        const idxRbd = findIndexByAliases(headers, EXPECTED.rbd);
+                        const idxCurso = findIndexByAliases(headers, EXPECTED.curso);
+                        let idxTotalAus = findIndexByAliases(headers, EXPECTED.total);
+                        let idxDiasAus = findIndexByAliases(headers, EXPECTED.dias);
+
+                        // Alias de respaldo amplios
+                        if (idxTotalAus < 0) idxTotalAus = findIndexByAliases(headers, ['total']);
+                        if (idxDiasAus < 0) idxDiasAus = findIndexByAliases(headers, ['dias','dias ','días']);
+
+                        // Posiciones por defecto si no se hallan (patrón común: [N°, Nombre, Mes, RBD, Curso, Total, Días])
+                        if (idxNombre < 0) idxNombre = 1;
+                        if (idxMes < 0) idxMes = 2;
+                        if (idxRbd < 0) idxRbd = 3;
+                        if (idxCurso < 0) idxCurso = 4;
+                        if (idxTotalAus < 0) idxTotalAus = 5;
+                        if (idxDiasAus < 0) idxDiasAus = 6;
+
+                        // Limpiar tbody y quitar fila "Sin registros"
+                        rowsTbody.innerHTML = '';
+
+                        let count = 0;
+                        for (const r of rows){
+                            // Omitir filas completamente vacías
+                            if (!r || r.every(c => String(c).trim()==='')) continue;
+                            const tr = document.createElement('tr');
+                            const get = (idx) => idx>=0 ? String(r[idx] ?? '') : '';
+                            const cells = [
+                                get(idxNombre),
+                                get(idxMes),
+                                get(idxRbd),
+                                get(idxCurso),
+                                get(idxTotalAus),
+                                get(idxDiasAus)
+                            ];
+                            for (const val of cells){
+                                const td = document.createElement('td');
+                                td.textContent = String(val ?? '').trim();
+                                tr.appendChild(td);
+                            }
+                            rowsTbody.appendChild(tr);
+                            count++;
+                        }
+
+                        if (count === 0){
+                            const tr = document.createElement('tr');
+                            tr.innerHTML = '<td colspan="6" class="muted">Sin registros</td>';
+                            rowsTbody.appendChild(tr);
+                        }
+
+                    } catch (err){
+                        console.error('Error leyendo XLSX:', err);
+                        // Dejar la fila "Sin registros" tal cual
+                    }
+                }
+
+                // Cargar datos y luego poblar filtros
+                loadXlsxToTable(XLSX_PATH).then(() => {
+                    populateYears();
+                    populateCourses();
+                    bind();
+                    applyFilters();
+                });
             })();
         </script>
 </body>

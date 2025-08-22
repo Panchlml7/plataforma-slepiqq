@@ -13,20 +13,22 @@
 <body>
   <nav class="top-nav">
     <span class="brand">SLEPIQQ</span>
-    <a class="nav-link" href="#asistencia">Asistencia</a>
+    <a class="nav-link" href="asistencia.html">Asistencia</a>
     <a class="nav-link" href="establecimiento.html">Establecimiento</a>
-  <a class="nav-link" href="convivencia_escolar.html">Convivencia</a>
+    <a class="nav-link" href="convivencia_escolar.html">Convivencia</a>
     <div class="dropdown nav-acomp-dropdown" aria-label="Acompañamiento Visita">
       <button class="dropdown-toggle" type="button" aria-haspopup="true" aria-expanded="false">
         Acompañamiento <span class="caret">▾</span>
       </button>
       <div class="dropdown-menu" role="menu" aria-label="Acompañamiento Visita">
-        <a class="dropdown-item" role="menuitem" href="documentos.html" title="Documento de Acompañamiento">DOCUMENTO</a>
+        <a class="dropdown-item" role="menuitem" href="documentos.html"
+          title="Documento de Acompañamiento">DOCUMENTO</a>
         <a class="dropdown-item" role="menuitem" href="planilla.html" title="Planilla de Acompañamiento">PLANILLA</a>
       </div>
     </div>
     <a class="nav-link" href="../plataforma.html">INICIO</a>
-    <span class="user-badge"><span id="userName">...</span><button id="logoutBtn" class="btn" type="button">Salir</button></span>
+    <span class="user-badge"><span id="userName">...</span><button id="logoutBtn" class="btn"
+        type="button">Salir</button></span>
   </nav>
 
   <main>
@@ -38,10 +40,22 @@
 
     <!-- Estadísticas -->
     <div class="stats-section">
-      <div class="stat-card"><div class="num" id="statTotal">0</div><div class="lbl">Documentos Totales</div></div>
-      <div class="stat-card"><div class="num" id="statEst">0</div><div class="lbl">Establecimientos</div></div>
-      <div class="stat-card"><div class="num" id="statMes">0</div><div class="lbl">Este Mes</div></div>
-      <div class="stat-card"><div class="num" id="statAses">0</div><div class="lbl">Asesores</div></div>
+      <div class="stat-card">
+        <div class="num" id="statTotal">0</div>
+        <div class="lbl">Documentos Totales</div>
+      </div>
+      <div class="stat-card">
+        <div class="num" id="statEst">0</div>
+        <div class="lbl">Establecimientos</div>
+      </div>
+      <div class="stat-card">
+        <div class="num" id="statMes">0</div>
+        <div class="lbl">Este Mes</div>
+      </div>
+      <div class="stat-card">
+        <div class="num" id="statAses">0</div>
+        <div class="lbl">Asesores</div>
+      </div>
     </div>
 
     <!-- Sección: Nuevo Documento (wizard existente) -->
@@ -73,12 +87,12 @@
                 <option value="" disabled selected>Selecciona establecimiento</option>
                 <!-- Se cargará dinámicamente desde Firestore; fallback estático en script -->
               </select>
-              
-            <div class="full">
-              <label class="small" for="objetivoEstrategico">Objetivo Estratégico</label>
-              <textarea id="objetivoEstrategico" name="objetivoEstrategico" required
-                placeholder="Describe el objetivo estratégico..."></textarea>
-            </div>
+
+              <div class="full">
+                <label class="small" for="objetivoEstrategico">Objetivo Estratégico</label>
+                <textarea id="objetivoEstrategico" name="objetivoEstrategico" required
+                  placeholder="Describe el objetivo estratégico..."></textarea>
+              </div>
             </div>
             <div>
               <label class="small" for="rbd">RBD</label>
@@ -183,7 +197,8 @@
           <div class="grid">
             <div class="full">
               <label class="small" for="objetivoVisita">Objetivo</label>
-              <textarea id="objetivoVisita" name="objetivoVisita" required placeholder="Describe el objetivo de la visita..."></textarea>
+              <textarea id="objetivoVisita" name="objetivoVisita" required
+                placeholder="Describe el objetivo de la visita..."></textarea>
             </div>
           </div>
 
@@ -197,14 +212,16 @@
           <div class="grid">
             <div class="full">
               <label class="small" for="instrumentos">Instrumentos / Insumos</label>
-              <textarea id="instrumentos" name="instrumentos" placeholder="Listar instrumentos o insumos utilizados..."></textarea>
+              <textarea id="instrumentos" name="instrumentos"
+                placeholder="Listar instrumentos o insumos utilizados..."></textarea>
             </div>
           </div>
 
           <div class="grid">
             <div class="full">
               <label class="small" for="practicaProblematica">Práctica problemática</label>
-              <textarea id="practicaProblematica" name="practicaProblematica" placeholder="Describir la práctica problemática observada..."></textarea>
+              <textarea id="practicaProblematica" name="practicaProblematica"
+                placeholder="Describir la práctica problemática observada..."></textarea>
             </div>
           </div>
 
@@ -212,7 +229,8 @@
           <div class="grid">
             <div class="full">
               <label class="small" for="actividadesRealizadas">Actividades</label>
-              <textarea id="actividadesRealizadas" name="actividadesRealizadas" placeholder="Detalle de actividades realizadas..."></textarea>
+              <textarea id="actividadesRealizadas" name="actividadesRealizadas"
+                placeholder="Detalle de actividades realizadas..."></textarea>
             </div>
           </div>
 
@@ -221,7 +239,7 @@
             <div class="full">
               <label class="small" for="acuerdos">Acuerdos/ Fecha de la implementación/ Responsables</label>
               <textarea id="acuerdos" name="acuerdos" placeholder="Compromisos y acuerdos..."></textarea>
-            </div>            
+            </div>
           </div>
 
           <h2 style="margin-top:1rem;">Observaciones</h2>
@@ -256,7 +274,8 @@
           <span style="font-size:1.1rem;">🔎</span> Buscar Documentos
         </h3>
         <div class="search-row">
-          <input id="searchBox" type="text" placeholder="Buscar por N° ACTA, establecimiento, asesor, fecha, modalidad, capacidad">
+          <input id="searchBox" type="text"
+            placeholder="Buscar por N° ACTA, establecimiento, asesor, fecha, modalidad, capacidad">
           <button id="btnSearch" class="btn-sm" style="background:#7c3aed;color:#fff;">Buscar</button>
           <button id="btnClear" class="btn-sm" style="background:#374151;color:#fff;">Limpiar</button>
         </div>
@@ -265,7 +284,8 @@
           <span style="font-size:.85rem;">Visibilidad:</span>
           <span>Mis documentos</span>
         </div>
-        <small style="display:block;opacity:.75;margin-top:.5rem; color: #000;">Busca por cualquier campo. Consejo: para N° ACTA exacto, escribe el código completo (ej: ACT-20240809-123).</small>
+        <small style="display:block;opacity:.75;margin-top:.5rem; color: #000;">Busca por cualquier campo. Consejo: para
+          N° ACTA exacto, escribe el código completo (ej: ACT-20240809-123).</small>
         <hr style="border:none;border-top:1px solid #e5e7eb; margin:.8rem 0;">
         <div class="chips">
           <button type="button" class="chip" data-filter="Presencial">📌 Presencial</button>
@@ -285,7 +305,7 @@
         </div>
       </div>
 
-  <div id="results" class="results doc-grid"></div>
+      <div id="results" class="results doc-grid"></div>
     </div>
   </main>
 
@@ -315,7 +335,7 @@
 
   <script type="module">
     // Carga dinámica de Firebase con fallback de versión
-    async function loadFirebase(version){
+    async function loadFirebase(version) {
       const base = `https://www.gstatic.com/firebasejs/${version}`;
       const appMod = await import(`${base}/firebase-app.js`);
       const authMod = await import(`${base}/firebase-auth.js`);
@@ -339,33 +359,33 @@
     const { getAuth, onAuthStateChanged, signOut } = authMod;
     const { getFirestore, collection, addDoc, serverTimestamp, doc, getDoc, getDocs, onSnapshot, query, where, updateDoc } = fsMod;
 
-  // Logo de impresión: archivo local (ruta relativa al HTML)
-  const PRINT_LOGO_URL = '../Imagen/slepiqq.png';
-  // Precarga simple del logo para mejorar aparición en PDF
-  const _preloadLogo = (()=>{ const img = new Image(); img.src = PRINT_LOGO_URL; return img; })();
+    // Logo de impresión: archivo local (ruta relativa al HTML)
+    const PRINT_LOGO_URL = '../Imagen/slepiqq.png';
+    // Precarga simple del logo para mejorar aparición en PDF
+    const _preloadLogo = (() => { const img = new Image(); img.src = PRINT_LOGO_URL; return img; })();
 
     const firebaseConfig = { apiKey: "AIzaSyDzUGdJT-eyYjKtej63iThVLgvTHVzvxvA", authDomain: "ia-slep-iqq.firebaseapp.com", projectId: "ia-slep-iqq", storageBucket: "ia-slep-iqq.appspot.com", messagingSenderId: "528895424744", appId: "1:528895424744:web:7144f5e5db1bce5ffb315d" };
     const app = initializeApp(firebaseConfig);
     const auth = getAuth(app);
     const db = getFirestore(app);
 
-  const userNameEl = document.getElementById('userName');
-  const logoutBtn = document.getElementById('logoutBtn');
-  let currentUser = null; // para permisos de edición/borrado
+    const userNameEl = document.getElementById('userName');
+    const logoutBtn = document.getElementById('logoutBtn');
+    let currentUser = null; // para permisos de edición/borrado
 
-  // Cerrar sesión (Salir)
-  logoutBtn?.addEventListener('click', async (e) => {
-    e.preventDefault();
-    try {
-      await signOut(auth);
-    } catch (err) {
-      console.error(err);
-      alert('Error al cerrar sesión');
-    } finally {
-      // Redirigir siempre al login
-      location.replace('../index.html');
-    }
-  });
+    // Cerrar sesión (Salir)
+    logoutBtn?.addEventListener('click', async (e) => {
+      e.preventDefault();
+      try {
+        await signOut(auth);
+      } catch (err) {
+        console.error(err);
+        alert('Error al cerrar sesión');
+      } finally {
+        // Redirigir siempre al login
+        location.replace('../index.html');
+      }
+    });
 
     // Cargar perfil usuario (nombre y rol)
     let currentUserRole = 'user';
@@ -398,11 +418,11 @@
     document.getElementById('actaNumber').value = genActa();
 
     // Cargar establecimientos (Firestore > establecimientos) con fallback
-  async function loadEstablecimientos() {
+    async function loadEstablecimientos() {
       const sel = document.getElementById('establecimiento');
       sel.innerHTML = '<option value="" disabled selected>Cargando...</option>';
       const fallback = [
-        { name: 'SLEP IQUIQUE - Oficina Central', rbd: 'SLEP IQUIQUE'},
+        { name: 'SLEP IQUIQUE - Oficina Central', rbd: 'SLEP IQUIQUE' },
         { name: 'Instituto Comercial Baldomero Wolnitzky', rbd: '97', directorName: 'Land-Yen Beatriz Davila Castillo' },
         { name: 'Esc. Educ. Especial Flor Del Inca', rbd: '102', directorName: 'Ivonne Del Carmen Alonso Oyarzo' },
         { name: 'Esc. Educ.Gral. Bas. Y Des. Art. Violeta Parra', rbd: '103', directorName: 'Juana Cecilia Rojas Fredes' },
@@ -498,8 +518,8 @@
     }
 
     // Guardar en Firestore con fallback a subcolección privada si falta permiso en global
-  let currentUserName = null; // se define al cargar perfil
-  async function saveForm(user) {
+    let currentUserName = null; // se define al cargar perfil
+    async function saveForm(user) {
       if (!validateTimes()) return;
       const payload = {
         // Paso 1
@@ -508,7 +528,7 @@
         objetivoEstrategico: document.getElementById('objetivoEstrategico').value,
         establecimiento: document.getElementById('establecimiento').value,
         rbd: document.getElementById('rbd').value,
-  director: document.getElementById('director')?.value?.trim() || null,
+        director: document.getElementById('director')?.value?.trim() || null,
         asesorPrincipal: document.getElementById('asesorPrincipal').value,
         asesorSegundo: document.getElementById('asesorSegundo').value || null,
         horaInicio: document.getElementById('horaInicio').value,
@@ -524,16 +544,16 @@
         instrumentos: document.getElementById('instrumentos').value.trim() || null,
         practicaProblematica: document.getElementById('practicaProblematica').value.trim() || null,
         actividadesRealizadas: document.getElementById('actividadesRealizadas').value.trim() || null,
-  acuerdos: document.getElementById('acuerdos').value.trim() || null,
-  // Campos opcionales (pueden no existir en el DOM): proteger accesos
-  fechaImplementacion: document.getElementById('fechaImplementacion')?.value || null,
-  responsables: document.getElementById('responsables')?.value?.trim() || null,
+        acuerdos: document.getElementById('acuerdos').value.trim() || null,
+        // Campos opcionales (pueden no existir en el DOM): proteger accesos
+        fechaImplementacion: document.getElementById('fechaImplementacion')?.value || null,
+        responsables: document.getElementById('responsables')?.value?.trim() || null,
         aspectosPositivos: document.getElementById('aspectosPositivos').value.trim() || null,
-  areasMejora: document.getElementById('areasMejora').value.trim() || null,
-  // Metadatos base de propiedad
-  ownerUid: user?.uid || null,
-  ownerEmail: user?.email || null,
-  ownerName: currentUserName || user?.displayName || user?.email || null
+        areasMejora: document.getElementById('areasMejora').value.trim() || null,
+        // Metadatos base de propiedad
+        ownerUid: user?.uid || null,
+        ownerEmail: user?.email || null,
+        ownerName: currentUserName || user?.displayName || user?.email || null
       };
       if (!payload.objetivoVisita) { alert('El objetivo de la visita es obligatorio.'); return; }
 
@@ -580,8 +600,8 @@
       document.getElementById('objetivoEstrategico').value = d.objetivoEstrategico || '';
       document.getElementById('establecimiento').value = d.establecimiento || '';
       document.getElementById('rbd').value = d.rbd || '';
-  const elDir = document.getElementById('director');
-  if (elDir) elDir.value = d.director || '';
+      const elDir = document.getElementById('director');
+      if (elDir) elDir.value = d.director || '';
       document.getElementById('asesorPrincipal').value = d.asesorPrincipal || '';
       document.getElementById('asesorSegundo').value = d.asesorSegundo || '';
       document.getElementById('horaInicio').value = d.horaInicio || '';
@@ -598,11 +618,11 @@
       document.getElementById('practicaProblematica').value = d.practicaProblematica || '';
       document.getElementById('actividadesRealizadas').value = d.actividadesRealizadas || '';
       document.getElementById('acuerdos').value = d.acuerdos || '';
-  // Campos opcionales: asignar solo si existen
-  const _fi = document.getElementById('fechaImplementacion');
-  if (_fi) _fi.value = toInputDate(d.fechaImplementacion);
-  const _resp = document.getElementById('responsables');
-  if (_resp) _resp.value = d.responsables || '';
+      // Campos opcionales: asignar solo si existen
+      const _fi = document.getElementById('fechaImplementacion');
+      if (_fi) _fi.value = toInputDate(d.fechaImplementacion);
+      const _resp = document.getElementById('responsables');
+      if (_resp) _resp.value = d.responsables || '';
       document.getElementById('aspectosPositivos').value = d.aspectosPositivos || '';
       document.getElementById('areasMejora').value = d.areasMejora || '';
     }
@@ -629,15 +649,15 @@
     const secNuevo = document.getElementById('nuevo-documento');
     const secGuard = document.getElementById('documentos-guardados');
 
-    tabNuevo.addEventListener('click', ()=>{
+    tabNuevo.addEventListener('click', () => {
       tabNuevo.classList.add('active'); tabGuard.classList.remove('active');
-      tabNuevo.setAttribute('aria-selected','true'); tabGuard.setAttribute('aria-selected','false');
+      tabNuevo.setAttribute('aria-selected', 'true'); tabGuard.setAttribute('aria-selected', 'false');
       secNuevo.classList.add('active'); secGuard.classList.remove('active');
       window.scrollTo({ top: 0, behavior: 'smooth' });
     });
-    tabGuard.addEventListener('click', ()=>{
+    tabGuard.addEventListener('click', () => {
       tabGuard.classList.add('active'); tabNuevo.classList.remove('active');
-      tabGuard.setAttribute('aria-selected','true'); tabNuevo.setAttribute('aria-selected','false');
+      tabGuard.setAttribute('aria-selected', 'true'); tabNuevo.setAttribute('aria-selected', 'false');
       secGuard.classList.add('active'); secNuevo.classList.remove('active');
       window.scrollTo({ top: 0, behavior: 'smooth' });
     });
@@ -685,7 +705,7 @@
           ? new Date(d.seconds * 1000)
           : new Date(d);
         if (isNaN(dt.getTime())) return '';
-        return dt.toLocaleDateString('es-CL', { year:'numeric', month:'2-digit', day:'2-digit' });
+        return dt.toLocaleDateString('es-CL', { year: 'numeric', month: '2-digit', day: '2-digit' });
       } catch { return ''; }
     }
     function truncate(s, n = 120) {
@@ -702,28 +722,28 @@
       return `${dt.getFullYear()}-${p(dt.getMonth() + 1)}-${p(dt.getDate())}`;
     }
 
-  // Estado de edición
-  let allDocs = [];
-  let filtered = [];
-  let editingId = null; // <= id del doc en edición
-  let editingSrc = 'global'; // 'global' | 'sub'
-  let editingOwnerUid = null;
+    // Estado de edición
+    let allDocs = [];
+    let filtered = [];
+    let editingId = null; // <= id del doc en edición
+    let editingSrc = 'global'; // 'global' | 'sub'
+    let editingOwnerUid = null;
 
     // Estadísticas
-    function renderStats(list){
+    function renderStats(list) {
       document.getElementById('statTotal').textContent = list.length;
-      const estSet = new Set(list.map(x=>x.establecimiento).filter(Boolean));
+      const estSet = new Set(list.map(x => x.establecimiento).filter(Boolean));
       document.getElementById('statEst').textContent = estSet.size;
-      const now = new Date(); const ym = now.getFullYear()+'-'+String(now.getMonth()+1).padStart(2,'0');
-      const thisMonth = list.filter(x=>{
+      const now = new Date(); const ym = now.getFullYear() + '-' + String(now.getMonth() + 1).padStart(2, '0');
+      const thisMonth = list.filter(x => {
         const f = x.fecha || x.createdAt;
         if (!f) return false;
-        const dd = (f.seconds? new Date(f.seconds*1000): new Date(f));
-        const ymm = dd.getFullYear()+'-'+String(dd.getMonth()+1).padStart(2,'0');
-        return ymm===ym;
+        const dd = (f.seconds ? new Date(f.seconds * 1000) : new Date(f));
+        const ymm = dd.getFullYear() + '-' + String(dd.getMonth() + 1).padStart(2, '0');
+        return ymm === ym;
       }).length;
       document.getElementById('statMes').textContent = thisMonth;
-      const asesSet = new Set(list.map(x=>x.asesorPrincipal).filter(Boolean));
+      const asesSet = new Set(list.map(x => x.asesorPrincipal).filter(Boolean));
       document.getElementById('statAses').textContent = asesSet.size;
     }
 
@@ -731,19 +751,19 @@
     const resultsEl = document.getElementById('results');
 
     // Render resultados (ajuste: usar modal en "view" y corregir style inválido del header)
-  function renderList(list){
+    function renderList(list) {
       resultsEl.innerHTML = '';
-      if (!list.length){
+      if (!list.length) {
         resultsEl.innerHTML = '<div class="doc-card"><em>No hay resultados.</em></div>';
         return;
       }
-      list.forEach(d=>{
+      list.forEach(d => {
         const el = document.createElement('div');
         el.className = 'doc-card';
-  // Edición para todos; eliminación solo autor o admin
-  const canEdit = true;
-  const canDelete = ((d.ownerUid && currentUser && d.ownerUid === currentUser.uid) || currentUserRole === 'admin');
-  const editBtn = '<button type="button" class="btn-sm btn-edit" data-act="edit">Editar</button>';
+        // Edición para todos; eliminación solo autor o admin
+        const canEdit = true;
+        const canDelete = ((d.ownerUid && currentUser && d.ownerUid === currentUser.uid) || currentUserRole === 'admin');
+        const editBtn = '<button type="button" class="btn-sm btn-edit" data-act="edit">Editar</button>';
         const delBtn = canDelete
           ? '<button type="button" class="btn-sm btn-del" data-act="del">Eliminar</button>'
           : '<button type="button" class="btn-sm btn-del" data-act="del" disabled title="Solo autor o admin">Eliminar</button>';
@@ -768,12 +788,12 @@
             <button type="button" class="btn-sm btn-pdf" data-act="pdf">PDF</button>
           </div>
         `;
-        el.querySelectorAll('button').forEach(b=>{
-          b.addEventListener('click', async (e)=>{
+        el.querySelectorAll('button').forEach(b => {
+          b.addEventListener('click', async (e) => {
             e.preventDefault();
             e.stopPropagation();
             const act = b.getAttribute('data-act');
-            if (act==='del'){
+            if (act === 'del') {
               if (!canDelete) { alert('Solo autor o admin puede eliminar.'); return; }
               if (confirm('¿Eliminar este documento?')) {
                 try {
@@ -788,11 +808,11 @@
                 }
                 catch (e) { console.error(e); alert('No se pudo eliminar'); }
               }
-            } else if (act==='view'){
+            } else if (act === 'view') {
               openViewModal(d);
-            } else if (act==='edit'){
+            } else if (act === 'edit') {
               startEdit(d);
-            } else if (act==='pdf'){
+            } else if (act === 'pdf') {
               // Exportar/Imprimir solo este documento
               printOne(d);
             }
@@ -805,13 +825,13 @@
     // NUEVO: helpers modal
     const viewModal = document.getElementById('viewModal');
     const viewModalBody = document.getElementById('viewModalBody');
-    function openViewModal(d){
-      if (!viewModal || !viewModalBody) { 
-        console.warn('Modal no encontrado, usando fallback'); 
-        alert('Vista completa:\n\n' + JSON.stringify(d, null, 2)); 
-        return; 
+    function openViewModal(d) {
+      if (!viewModal || !viewModalBody) {
+        console.warn('Modal no encontrado, usando fallback');
+        alert('Vista completa:\n\n' + JSON.stringify(d, null, 2));
+        return;
       }
-      const f = (v)=> (v && typeof v === 'string' ? v : (v ?? '—'));
+      const f = (v) => (v && typeof v === 'string' ? v : (v ?? '—'));
       const dt = formatDate(d.fecha || d.createdAt);
       viewModalBody.innerHTML = `
         <div style="margin-bottom:1rem;">
@@ -871,20 +891,20 @@
     }
 
     // NUEVO: cerrar modal (ESC, botón Cerrar, X y clic fuera) — FIX: la función estaba incompleta
-    function closeViewModal(){
+    function closeViewModal() {
       if (!viewModal) return;
       viewModal.classList.add('hidden');
       document.body.classList.remove('modal-open');
       if (viewModalBody) viewModalBody.innerHTML = '';
     }
     // Cerrar al hacer clic en el fondo o en elementos con data-close-view (botón Cerrar y la “X”)
-    viewModal?.addEventListener('click', (e)=>{
+    viewModal?.addEventListener('click', (e) => {
       if (e.target === viewModal || e.target.closest?.('[data-close-view]')) {
         closeViewModal();
       }
     });
     // Cerrar con tecla ESC
-    window.addEventListener('keydown', (e)=>{
+    window.addEventListener('keydown', (e) => {
       if (e.key === 'Escape' && !viewModal.classList.contains('hidden')) {
         closeViewModal();
       }
@@ -896,19 +916,19 @@
     const btnClear = document.getElementById('btnClear');
     let quickFilter = 'Todos';
 
-    function applyFilters(){
+    function applyFilters() {
       const q = (searchInput?.value || '').trim().toLowerCase();
       let list = [...allDocs];
 
       if (quickFilter === 'Presencial' || quickFilter === 'Remoto' || quickFilter === 'Híbrida') {
         list = list.filter(x => (x.modalidad || '').toLowerCase() === quickFilter.toLowerCase());
       } else if (quickFilter === 'Recientes') {
-        list = list.sort((a,b)=>(b.createdAt?.seconds||0)-(a.createdAt?.seconds||0)).slice(0,20);
+        list = list.sort((a, b) => (b.createdAt?.seconds || 0) - (a.createdAt?.seconds || 0)).slice(0, 20);
       }
 
       if (q) {
         const exact = list.filter(x => (x.actaNumber || '').toLowerCase() === q);
-        filtered = exact.length ? exact : list.filter(x=>{
+        filtered = exact.length ? exact : list.filter(x => {
           const hay = [
             x.actaNumber, x.establecimiento, x.asesorPrincipal, x.fecha, x.modalidad, x.capacidadBasal, x.cicloApoyo
           ].map(v => (typeof v === 'string' ? v.toLowerCase() : (v?.toString?.().toLowerCase?.() || '')));
@@ -921,54 +941,54 @@
       renderList(filtered);
     }
 
-    document.querySelectorAll('.chip').forEach(c=>{
-      c.addEventListener('click', ()=>{
-        document.querySelectorAll('.chip').forEach(x=>x.classList.remove('active'));
+    document.querySelectorAll('.chip').forEach(c => {
+      c.addEventListener('click', () => {
+        document.querySelectorAll('.chip').forEach(x => x.classList.remove('active'));
         c.classList.add('active');
         quickFilter = c.getAttribute('data-filter') || 'Todos';
         applyFilters();
       });
     });
-    btnSearch?.addEventListener('click', (e)=>{ e.preventDefault(); applyFilters(); });
-    btnClear?.addEventListener('click', (e)=>{
+    btnSearch?.addEventListener('click', (e) => { e.preventDefault(); applyFilters(); });
+    btnClear?.addEventListener('click', (e) => {
       e.preventDefault();
       if (searchInput) searchInput.value = '';
       quickFilter = 'Todos';
-      document.querySelectorAll('.chip').forEach(x=>x.classList.remove('active'));
+      document.querySelectorAll('.chip').forEach(x => x.classList.remove('active'));
       document.querySelector('.chip[data-filter="Todos"]')?.classList.add('active');
       applyFilters();
     });
 
-  // Utilidades de estado y reconexión
-  const infoEl = document.getElementById('docsInfo');
-  const btnReconnect = document.getElementById('btnReconnect');
-  const btnDiag = document.getElementById('btnDiag');
-  function showDocsInfo(msg){ if (infoEl) infoEl.textContent = msg || ''; }
-  function clearDocsInfo(){ showDocsInfo(''); }
+    // Utilidades de estado y reconexión
+    const infoEl = document.getElementById('docsInfo');
+    const btnReconnect = document.getElementById('btnReconnect');
+    const btnDiag = document.getElementById('btnDiag');
+    function showDocsInfo(msg) { if (infoEl) infoEl.textContent = msg || ''; }
+    function clearDocsInfo() { showDocsInfo(''); }
 
-  // Radios de alcance y función global de resuscripción
-  let scopeRadioMine = null, scopeRadioTeam = null;
-  let globalResubscribe = ()=>{};
+    // Radios de alcance y función global de resuscripción
+    let scopeRadioMine = null, scopeRadioTeam = null;
+    let globalResubscribe = () => { };
 
     // Suscripción: solo “Mis documentos” (subcolección privada) para evitar bloqueos de permisos
-    function subscribeUserDocs(uid){
+    function subscribeUserDocs(uid) {
       const mySubRef = collection(db, 'users', uid, 'datosBasicos');
       let subDocs = [];
-      const render = ()=>{
+      const render = () => {
         allDocs = [...subDocs];
-        allDocs.sort((a,b)=>(b.createdAt?.seconds||0)-(a.createdAt?.seconds||0));
+        allDocs.sort((a, b) => (b.createdAt?.seconds || 0) - (a.createdAt?.seconds || 0));
         applyFilters();
       };
-      const unsubSub = onSnapshot(mySubRef, (snap)=>{
-        subDocs = snap.docs.map(d=> ({ _id:d.id, _src:'sub', _ownerUid:uid, _path:`users/${uid}/datosBasicos/${d.id}`, ...d.data() }));
+      const unsubSub = onSnapshot(mySubRef, (snap) => {
+        subDocs = snap.docs.map(d => ({ _id: d.id, _src: 'sub', _ownerUid: uid, _path: `users/${uid}/datosBasicos/${d.id}`, ...d.data() }));
         clearDocsInfo();
         if (!subDocs.length) showDocsInfo('Aún no tienes documentos. Guarda uno nuevo.');
         render();
-      }, async (_err)=>{
+      }, async (_err) => {
         showDocsInfo('No se pudieron leer “Mis documentos”. Intentando una lectura puntual...');
         try {
           const s = await getDocs(mySubRef);
-          subDocs = s.docs.map(d=> ({ _id:d.id, _src:'sub', _ownerUid:uid, _path:`users/${uid}/datosBasicos/${d.id}`, ...d.data() }));
+          subDocs = s.docs.map(d => ({ _id: d.id, _src: 'sub', _ownerUid: uid, _path: `users/${uid}/datosBasicos/${d.id}`, ...d.data() }));
           clearDocsInfo();
           if (!subDocs.length) showDocsInfo('Aún no tienes documentos.');
           render();
@@ -976,57 +996,57 @@
           showDocsInfo('No se pudieron leer “Mis documentos”. Revisa tu conexión o permisos.');
         }
       });
-      return ()=>{ try{unsubSub();}catch{} };
+      return () => { try { unsubSub(); } catch { } };
     }
 
     // NUEVO: suscripción combinada: propios + compartidos por un usuario específico
-    function subscribeUserDocsWithShared(uid){
+    function subscribeUserDocsWithShared(uid) {
       const SHARED_OWNER_EMAIL = 'francisco.ramos@slepiquique.cl';
-      const myRef = query(collection(db,'datosBasicos'), where('ownerUid','==', uid));
-      const sharedRef = query(collection(db,'datosBasicos'), where('ownerEmail','==', SHARED_OWNER_EMAIL));
+      const myRef = query(collection(db, 'datosBasicos'), where('ownerUid', '==', uid));
+      const sharedRef = query(collection(db, 'datosBasicos'), where('ownerEmail', '==', SHARED_OWNER_EMAIL));
       let myDocs = [];
       let sharedDocs = [];
-      const mergeAndRender = ()=>{
+      const mergeAndRender = () => {
         const map = new Map();
-        [...myDocs, ...sharedDocs].forEach(doc=>{ map.set(doc._id, doc); });
+        [...myDocs, ...sharedDocs].forEach(doc => { map.set(doc._id, doc); });
         allDocs = Array.from(map.values());
-        allDocs.sort((a,b)=>(b.createdAt?.seconds||0)-(a.createdAt?.seconds||0));
+        allDocs.sort((a, b) => (b.createdAt?.seconds || 0) - (a.createdAt?.seconds || 0));
         applyFilters();
       };
-      const unsubMy = onSnapshot(myRef, (snap)=>{
-        myDocs = snap.docs.map(d=> ({ _id:d.id, ...d.data() }));
+      const unsubMy = onSnapshot(myRef, (snap) => {
+        myDocs = snap.docs.map(d => ({ _id: d.id, ...d.data() }));
         mergeAndRender();
-      }, async (_err)=>{
-        try { const s = await getDocs(myRef); myDocs = s.docs.map(d=> ({ _id:d.id, ...d.data() })); mergeAndRender(); } catch {}
+      }, async (_err) => {
+        try { const s = await getDocs(myRef); myDocs = s.docs.map(d => ({ _id: d.id, ...d.data() })); mergeAndRender(); } catch { }
       });
-      const unsubShared = onSnapshot(sharedRef, (snap)=>{
-        sharedDocs = snap.docs.map(d=> ({ _id:d.id, ...d.data() }));
+      const unsubShared = onSnapshot(sharedRef, (snap) => {
+        sharedDocs = snap.docs.map(d => ({ _id: d.id, ...d.data() }));
         mergeAndRender();
-      }, async (_err)=>{
-        try { const s = await getDocs(sharedRef); sharedDocs = s.docs.map(d=> ({ _id:d.id, ...d.data() })); mergeAndRender(); } catch {}
+      }, async (_err) => {
+        try { const s = await getDocs(sharedRef); sharedDocs = s.docs.map(d => ({ _id: d.id, ...d.data() })); mergeAndRender(); } catch { }
       });
-      return ()=>{ try{unsubMy();}catch{} try{unsubShared();}catch{} };
+      return () => { try { unsubMy(); } catch { } try { unsubShared(); } catch { } };
     }
-    function subscribeAllDocs(){
-      const cRef = collection(db,'datosBasicos');
-      return onSnapshot(cRef, (snap)=>{
-        allDocs = snap.docs.map(d=> ({ _id:d.id, ...d.data() }));
-        allDocs.sort((a,b)=>(b.createdAt?.seconds||0)-(a.createdAt?.seconds||0));
+    function subscribeAllDocs() {
+      const cRef = collection(db, 'datosBasicos');
+      return onSnapshot(cRef, (snap) => {
+        allDocs = snap.docs.map(d => ({ _id: d.id, ...d.data() }));
+        allDocs.sort((a, b) => (b.createdAt?.seconds || 0) - (a.createdAt?.seconds || 0));
         clearDocsInfo();
         applyFilters();
-      }, async (err)=>{
+      }, async (err) => {
         // Si es permiso-denegado, cambiar a "Mis documentos"
         if (err?.code === 'permission-denied' && scopeRadioMine && scopeRadioTeam) {
           scopeRadioMine.checked = true;
           scopeRadioTeam.checked = false;
           showDocsInfo('Sin permiso para ver “Equipo”. Cambiando a “Mis documentos”.');
-          try { globalResubscribe(); } catch {}
-          return () => {};
+          try { globalResubscribe(); } catch { }
+          return () => { };
         }
         showDocsInfo('No se pudo leer “Equipo (todos)”. Intentando lectura puntual...');
         try {
           const s = await getDocs(cRef);
-          allDocs = s.docs.map(d=> ({ _id:d.id, ...d.data() }));
+          allDocs = s.docs.map(d => ({ _id: d.id, ...d.data() }));
           clearDocsInfo();
           applyFilters();
         } catch (e) {
@@ -1035,10 +1055,10 @@
       });
     }
 
-  // Visibilidad fija: no hay radios ni cambios
-  function updateScopeVisibility(){}
+    // Visibilidad fija: no hay radios ni cambios
+    function updateScopeVisibility() { }
 
-  // NUEVO: restaurar onAuthStateChanged para cargar y suscribirse
+    // NUEVO: restaurar onAuthStateChanged para cargar y suscribirse
     onAuthStateChanged(auth, async (user) => {
       if (!user) { location.replace('../index.html'); return; }
       currentUser = user;
@@ -1046,7 +1066,7 @@
       // guardar nombre usado en guardado
       try {
         currentUserName = userNameEl?.textContent || user.displayName || user.email || null;
-      } catch {}
+      } catch { }
       await loadEstablecimientos();
       updateScopeVisibility();
 
@@ -1061,18 +1081,18 @@
       });
 
       // Suscripción fija: Mis documentos
-  let unsubDocs = null;
-  function resub(){
-        try { unsubDocs && unsubDocs(); } catch {}
+      let unsubDocs = null;
+      function resub() {
+        try { unsubDocs && unsubDocs(); } catch { }
         unsubDocs = subscribeAllDocs();
       }
-  globalResubscribe = resub;
-  resub();
-  // Eventos de conectividad y botón Reconectar
-  btnReconnect?.addEventListener('click', ()=>{ showDocsInfo('Reconectando...'); resub(); });
-  window.addEventListener('online', ()=>{ showDocsInfo('Conectado. Actualizando...'); resub(); });
-  window.addEventListener('offline', ()=>{ showDocsInfo('Estás sin conexión (offline).'); });
-      btnDiag?.addEventListener('click', async ()=>{
+      globalResubscribe = resub;
+      resub();
+      // Eventos de conectividad y botón Reconectar
+      btnReconnect?.addEventListener('click', () => { showDocsInfo('Reconectando...'); resub(); });
+      window.addEventListener('online', () => { showDocsInfo('Conectado. Actualizando...'); resub(); });
+      window.addEventListener('offline', () => { showDocsInfo('Estás sin conexión (offline).'); });
+      btnDiag?.addEventListener('click', async () => {
         try {
           showDocsInfo('Diagnóstico: probando conexión y permisos...');
           // 1) Ping: intentar getDocs en colección global compartida
@@ -1090,8 +1110,8 @@
       });
 
       // Deep-link: abrir documento por ID vía ?id= o ?doc= (modo opcional ?mode=edit|view)
-      async function openDocFromQuery(){
-        try{
+      async function openDocFromQuery() {
+        try {
           const qs = new URLSearchParams(location.search);
           let targetId = qs.get('id') || qs.get('doc');
           if (!targetId) {
@@ -1107,46 +1127,46 @@
           const mode = (qs.get('mode') || 'view').toLowerCase();
           showDocsInfo('Abriendo documento…');
           // 1) Intentar en colección global
-          try{
+          try {
             const gref = doc(db, 'datosBasicos', targetId);
             const gs = await getDoc(gref);
-            if (gs.exists()){
-              const d = { _id: targetId, _src:'global', _ownerUid: gs.data().ownerUid || null, ...gs.data() };
+            if (gs.exists()) {
+              const d = { _id: targetId, _src: 'global', _ownerUid: gs.data().ownerUid || null, ...gs.data() };
               // Forzar alcance Equipo para coherencia visual si no es admin, solo si tiene permiso de lectura
               if (scopeRadioTeam && scopeRadioMine && scopeRadioTeam.checked === false) {
                 scopeRadioTeam.checked = true; scopeRadioMine.checked = false;
-                try { globalResubscribe(); } catch {}
+                try { globalResubscribe(); } catch { }
               }
               clearDocsInfo();
               if (mode === 'edit') startEdit(d); else openViewModal(d);
               return;
             }
-          }catch(e){ /* puede ser permiso-denegado, seguimos a subcolección */ }
+          } catch (e) { /* puede ser permiso-denegado, seguimos a subcolección */ }
           // 2) Intentar en subcolección del usuario actual
-          try{
+          try {
             const sref = doc(db, 'users', currentUser.uid, 'datosBasicos', targetId);
             const ss = await getDoc(sref);
-            if (ss.exists()){
-              const d = { _id: targetId, _src:'sub', _ownerUid: currentUser.uid, ...ss.data() };
-              if (scopeRadioMine && scopeRadioTeam) { scopeRadioMine.checked = true; scopeRadioTeam.checked = false; try{ globalResubscribe(); }catch{} }
+            if (ss.exists()) {
+              const d = { _id: targetId, _src: 'sub', _ownerUid: currentUser.uid, ...ss.data() };
+              if (scopeRadioMine && scopeRadioTeam) { scopeRadioMine.checked = true; scopeRadioTeam.checked = false; try { globalResubscribe(); } catch { } }
               clearDocsInfo();
               if (mode === 'edit') startEdit(d); else openViewModal(d);
               return;
             }
-          }catch(e){ /* ignorar y reportar */ }
+          } catch (e) { /* ignorar y reportar */ }
           showDocsInfo('No se encontró el documento o no tienes permisos para verlo.');
         } catch { /* noop */ }
       }
       // Ejecutar después de la primera suscripción
-      try { openDocFromQuery(); } catch {}
+      try { openDocFromQuery(); } catch { }
 
-      const cleanup = ()=>{ try{unsubDocs&&unsubDocs();}catch{} };
+      const cleanup = () => { try { unsubDocs && unsubDocs(); } catch { } };
       window.addEventListener('pagehide', cleanup);
-      document.addEventListener('visibilitychange', ()=>{ if (document.visibilityState === 'hidden') cleanup(); });
+      document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'hidden') cleanup(); });
     });
 
     // NUEVO: vista previa (ya existente arriba)
-    function buildPreviewFromForm(){
+    function buildPreviewFromForm() {
       const v = id => (document.getElementById(id)?.value ?? '').toString();
       return {
         // Paso 1
@@ -1155,7 +1175,7 @@
         objetivoEstrategico: v('objetivoEstrategico').trim(),
         establecimiento: v('establecimiento'),
         rbd: v('rbd'),
-  director: v('director').trim(),
+        director: v('director').trim(),
         asesorPrincipal: v('asesorPrincipal'),
         asesorSegundo: v('asesorSegundo'),
         horaInicio: v('horaInicio'),
@@ -1178,22 +1198,22 @@
         areasMejora: v('areasMejora').trim()
       };
     }
-    btnPreview?.addEventListener('click', (e)=>{
+    btnPreview?.addEventListener('click', (e) => {
       e.preventDefault();
       const data = buildPreviewFromForm();
       openViewModal(data);
     });
 
     // Construye el contenido imprimible con todos los documentos
-    function buildPrintableDoc(d){
+    function buildPrintableDoc(d) {
       const f = v => {
         const s = (v ?? '').toString().trim();
         return s ? s : '—';
       };
       const fmt = v => {
         try {
-          const dt = (v && typeof v === 'object' && 'seconds' in v) ? new Date(v.seconds*1000) : new Date(v);
-          return isNaN(dt.getTime()) ? '' : dt.toLocaleDateString('es-CL', { year:'numeric', month:'2-digit', day:'2-digit' });
+          const dt = (v && typeof v === 'object' && 'seconds' in v) ? new Date(v.seconds * 1000) : new Date(v);
+          return isNaN(dt.getTime()) ? '' : dt.toLocaleDateString('es-CL', { year: 'numeric', month: '2-digit', day: '2-digit' });
         } catch { return ''; }
       };
       // Fallback para nombre de Director/a en documentos antiguos (normalizado y con respaldo)
@@ -1218,7 +1238,7 @@
                 </div>
                 <div class="print-meta">
                   ${f(d.actaNumber)} <br>
-                  <strong>${fmt(d.fecha || d.createdAt)}</strong> • ${f(d.modalidad)} • ${f(d.horaInicio)||'—'} - ${f(d.horaTermino)||'—'}
+                  <strong>${fmt(d.fecha || d.createdAt)}</strong> • ${f(d.modalidad)} • ${f(d.horaInicio) || '—'} - ${f(d.horaTermino) || '—'}
                   
                 </div>
               </div>
@@ -1300,36 +1320,36 @@
     }
 
     // Esperar a que carguen las imágenes dentro de un contenedor (máx. timeout)
-    function waitImagesIn(container, timeoutMs = 1500){
-      try{
+    function waitImagesIn(container, timeoutMs = 1500) {
+      try {
         const imgs = Array.from(container.querySelectorAll('img'));
         if (!imgs.length) return Promise.resolve();
         const waits = imgs.map(img => new Promise(res => {
           if (img.complete && img.naturalWidth > 0) return res();
-          const done = ()=>{ img.removeEventListener('load', done); img.removeEventListener('error', done); res(); };
+          const done = () => { img.removeEventListener('load', done); img.removeEventListener('error', done); res(); };
           img.addEventListener('load', done);
           img.addEventListener('error', done);
         }));
         const t = new Promise(res => setTimeout(res, timeoutMs));
         return Promise.race([Promise.all(waits), t]);
-      }catch{ return Promise.resolve(); }
+      } catch { return Promise.resolve(); }
     }
 
     // Limpia el contenedor tras imprimir
-    window.addEventListener('afterprint', ()=>{
+    window.addEventListener('afterprint', () => {
       const container = document.getElementById('printAll');
-      if (container){ container.innerHTML = ''; container.style.display = 'none'; }
+      if (container) { container.innerHTML = ''; container.style.display = 'none'; }
     });
 
     // Botón PDF (todos): usa la lista filtrada si existe, si no, todos
     const btnPrintAll = document.getElementById('btnPrintAll');
-    btnPrintAll?.addEventListener('click', (e)=>{
+    btnPrintAll?.addEventListener('click', (e) => {
       e.preventDefault();
-      const rows = (typeof filtered!=='undefined' && filtered.length) ? filtered : (typeof allDocs!=='undefined' ? allDocs : []);
+      const rows = (typeof filtered !== 'undefined' && filtered.length) ? filtered : (typeof allDocs !== 'undefined' ? allDocs : []);
       printAll(rows);
     });
 
-    async function printOne(d){
+    async function printOne(d) {
       const container = document.getElementById('printAll');
       if (!container) { console.warn('Contenedor de impresión no encontrado'); return; }
       container.innerHTML = buildPrintableDoc(d);
@@ -1338,14 +1358,14 @@
       if (d?.actaNumber) document.title = d.actaNumber; // útil al “Guardar como PDF”
       await waitImagesIn(container, 1500);
       window.print();
-      setTimeout(()=>{ document.title = prevTitle; }, 300);
+      setTimeout(() => { document.title = prevTitle; }, 300);
     }
 
-    async function printAll(list){
+    async function printAll(list) {
       const container = document.getElementById('printAll');
       if (!container) { console.warn('Contenedor de impresión no encontrado'); return; }
-      const rows = (list && list.length) ? list : (typeof allDocs!=='undefined' ? allDocs : []);
-      if (!rows.length){ alert('No hay datos para imprimir.'); return; }
+      const rows = (list && list.length) ? list : (typeof allDocs !== 'undefined' ? allDocs : []);
+      if (!rows.length) { alert('No hay datos para imprimir.'); return; }
       container.innerHTML = rows.map(buildPrintableDoc).join('');
       container.style.display = 'block';
       await waitImagesIn(container, 1800);
@@ -1354,14 +1374,14 @@
   </script>
   <script>
     // Dropdown ligero: toggle, click fuera y ESC
-    (function(){
+    (function () {
       const dd = document.querySelector('.nav-acomp-dropdown');
       const btn = dd?.querySelector('.dropdown-toggle');
-      function close(){ if(!dd) return; dd.classList.remove('open'); btn?.setAttribute('aria-expanded','false'); }
-      function toggle(){ if(!dd) return; const open = dd.classList.toggle('open'); btn?.setAttribute('aria-expanded', open ? 'true' : 'false'); }
-      btn?.addEventListener('click', (e)=>{ e.stopPropagation(); toggle(); });
-      document.addEventListener('click', (e)=>{ if(!dd) return; if(!dd.contains(e.target)) close(); });
-      window.addEventListener('keydown', (e)=>{ if(e.key==='Escape') close(); });
+      function close() { if (!dd) return; dd.classList.remove('open'); btn?.setAttribute('aria-expanded', 'false'); }
+      function toggle() { if (!dd) return; const open = dd.classList.toggle('open'); btn?.setAttribute('aria-expanded', open ? 'true' : 'false'); }
+      btn?.addEventListener('click', (e) => { e.stopPropagation(); toggle(); });
+      document.addEventListener('click', (e) => { if (!dd) return; if (!dd.contains(e.target)) close(); });
+      window.addEventListener('keydown', (e) => { if (e.key === 'Escape') close(); });
     })();
   </script>
 </body>

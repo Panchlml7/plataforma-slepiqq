@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,102 +8,364 @@
   <link rel="stylesheet" href="style.css">
   <style>
     .section-card {
-      background: #ffffff; color: #0f172a;
-      border: 1px solid #e5e7eb; border-radius: 14px;
-      padding: 1rem 1.2rem; margin: 1rem 0;
+      background: #ffffff;
+      color: #0f172a;
+      border: 1px solid #e5e7eb;
+      border-radius: 14px;
+      padding: 1rem 1.2rem;
+      margin: 1rem 0;
       box-shadow: 0 8px 18px -12px rgba(15, 23, 42, .15);
     }
-  .filters { display: grid; gap: .6rem; grid-template-columns: 1fr; }
-  @media (min-width: 900px) { .filters { grid-template-columns: 2fr repeat(5, 1fr) auto auto; align-items: end; } }
-    .filters label { font-size:.8rem; opacity:.8; display:block; margin-bottom:.25rem; }
-    .filters input[type="text"], .filters input[type="date"], .filters select {
-      width:100%; padding:.55rem .7rem; border:1px solid #cbd5e1; border-radius:10px; background:#fff; color:#0f172a;
+
+    .filters {
+      display: grid;
+      gap: .6rem;
+      grid-template-columns: 1fr;
     }
-    .btn, .btn-sm {
-      appearance:none; display:inline-flex; align-items:center; justify-content:center; gap:.4rem;
-      padding:.6rem .9rem; border-radius:10px; border:1px solid transparent; font-weight:700; cursor:pointer;
+
+    @media (min-width: 900px) {
+      .filters {
+        grid-template-columns: 2fr repeat(5, 1fr) auto auto;
+        align-items: end;
+      }
     }
-    .btn-primary { background:#6366f1; color:#fff; }
-    .btn-secondary { background:#111827; color:#fff; }
-    .btn-outline { background:#fff; color:#111827; border-color:#cbd5e1; }
+
+    .filters label {
+      font-size: .8rem;
+      opacity: .8;
+      display: block;
+      margin-bottom: .25rem;
+    }
+
+    .filters input[type="text"],
+    .filters input[type="date"],
+    .filters select {
+      width: 100%;
+      padding: .55rem .7rem;
+      border: 1px solid #cbd5e1;
+      border-radius: 10px;
+      background: #fff;
+      color: #0f172a;
+    }
+
+    .btn,
+    .btn-sm {
+      appearance: none;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: .4rem;
+      padding: .6rem .9rem;
+      border-radius: 10px;
+      border: 1px solid transparent;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .btn-primary {
+      background: #6366f1;
+      color: #fff;
+    }
+
+    .btn-secondary {
+      background: #111827;
+      color: #fff;
+    }
+
+    .btn-outline {
+      background: #fff;
+      color: #111827;
+      border-color: #cbd5e1;
+    }
+
     .table-wrap {
-      border:1px solid #e5e7eb; border-radius:12px; box-shadow:0 10px 24px -18px rgba(15,23,42,.25);
-      overflow:auto; max-height:70vh;
+      border: 1px solid #e5e7eb;
+      border-radius: 12px;
+      box-shadow: 0 10px 24px -18px rgba(15, 23, 42, .25);
+      overflow: auto;
+      max-height: 70vh;
     }
-    table { width:100%; min-width:1200px; border-collapse:collapse; table-layout:auto; }
+
+    table {
+      width: 100%;
+      min-width: 1200px;
+      border-collapse: collapse;
+      table-layout: auto;
+    }
+
     thead th {
-      position:sticky; top:0; background:linear-gradient(180deg,#f8fafc,#eef2ff); z-index:1;
-      color:#334155; text-transform:uppercase; letter-spacing:.3px; font-size:.8rem;
+      position: sticky;
+      top: 0;
+      background: linear-gradient(180deg, #f8fafc, #eef2ff);
+      z-index: 1;
+      color: #334155;
+      text-transform: uppercase;
+      letter-spacing: .3px;
+      font-size: .8rem;
     }
-    table, th, td { border:1px solid #e5e7eb; }
-    th, td { padding:.55rem .6rem; text-align:left; vertical-align:middle; }
-    tbody tr:nth-child(odd){ background:#f9fafb; }
-    tbody tr:hover{ background:#eef2ff; transition:background .15s ease; }
-    .top-nav { display:flex; gap:.8rem; align-items:center; justify-content:space-between; padding:.6rem 1rem; }
-    .brand { font-weight:800; }
-    .nav-link { margin-right:.6rem; text-decoration:none; }
-    .user-badge .btn { margin-left:.6rem; }
+
+    table,
+    th,
+    td {
+      border: 1px solid #e5e7eb;
+    }
+
+    th,
+    td {
+      padding: .55rem .6rem;
+      text-align: left;
+      vertical-align: middle;
+    }
+
+    tbody tr:nth-child(odd) {
+      background: #f9fafb;
+    }
+
+    tbody tr:hover {
+      background: #eef2ff;
+      transition: background .15s ease;
+    }
+
+    .top-nav {
+      display: flex;
+      gap: .8rem;
+      align-items: center;
+      justify-content: space-between;
+      padding: .6rem 1rem;
+    }
+
+    .brand {
+      font-weight: 800;
+    }
+
+    .nav-link {
+      margin-right: .6rem;
+      text-decoration: none;
+    }
+
+    .user-badge .btn {
+      margin-left: .6rem;
+    }
+
     @media print {
-  /* Página horizontal y márgenes razonables */
-  @page { size: A4 landscape; margin: 10mm; }
-  .section-card, .top-nav { box-shadow:none; border:none; }
-  .filters, .actions-bar { display:none !important; }
-  .table-wrap { max-height:none; box-shadow:none; border:none; }
-  /* Repetir encabezado de tabla en saltos de página */
-  thead { display: table-header-group; }
-  tfoot { display: table-footer-group; }
-  /* Modo "solo tabla": ocultar todo excepto la tabla */
-  body.print-table-only * { visibility: hidden !important; }
-  body.print-table-only #planillaTable,
-  body.print-table-only #planillaTable * { visibility: visible !important; }
-  body.print-table-only #planillaTable { width: 100% !important; min-width: auto !important; }
-  body.print-table-only .table-wrap { overflow: visible !important; }
+
+      /* Página horizontal y márgenes razonables */
+      @page {
+        size: A4 landscape;
+        margin: 10mm;
+      }
+
+      .section-card,
+      .top-nav {
+        box-shadow: none;
+        border: none;
+      }
+
+      .filters,
+      .actions-bar {
+        display: none !important;
+      }
+
+      .table-wrap {
+        max-height: none;
+        box-shadow: none;
+        border: none;
+      }
+
+      /* Repetir encabezado de tabla en saltos de página */
+      thead {
+        display: table-header-group;
+      }
+
+      tfoot {
+        display: table-footer-group;
+      }
+
+      /* Modo "solo tabla": ocultar todo excepto la tabla */
+      body.print-table-only * {
+        visibility: hidden !important;
+      }
+
+      body.print-table-only #planillaTable,
+      body.print-table-only #planillaTable * {
+        visibility: visible !important;
+      }
+
+      body.print-table-only #planillaTable {
+        width: 100% !important;
+        min-width: auto !important;
+      }
+
+      body.print-table-only .table-wrap {
+        overflow: visible !important;
+      }
     }
+
     /* NUEVO: resalte de fila enfocada desde parámetros */
-    .row-focus { outline: 2px solid #6366f1; background: #eef2ff !important; }
+    .row-focus {
+      outline: 2px solid #6366f1;
+      background: #eef2ff !important;
+    }
+
     /* NUEVO: modal simple para ver detalles */
-    .modal { position:fixed; inset:0; display:none; align-items:center; justify-content:center; background:rgba(0,0,0,.5); z-index:1000; }
-    .modal.show { display:flex; }
-    .modal-card { width:min(92vw, 860px); max-height:85vh; overflow:auto; background:#fff; color:#0f172a; border:1px solid #e5e7eb; border-radius:14px; box-shadow:0 20px 40px -20px rgba(15,23,42,.45); }
-    .modal-header,.modal-footer { display:flex; align-items:center; justify-content:space-between; gap:.6rem; padding:.9rem 1rem; border-bottom:1px solid #e5e7eb; }
-    .modal-footer { border-top:1px solid #e5e7eb; border-bottom:0; }
-    .modal-content { padding:1rem; }
+    .modal {
+      position: fixed;
+      inset: 0;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      background: rgba(0, 0, 0, .5);
+      z-index: 1000;
+    }
+
+    .modal.show {
+      display: flex;
+    }
+
+    .modal-card {
+      width: min(92vw, 860px);
+      max-height: 85vh;
+      overflow: auto;
+      background: #fff;
+      color: #0f172a;
+      border: 1px solid #e5e7eb;
+      border-radius: 14px;
+      box-shadow: 0 20px 40px -20px rgba(15, 23, 42, .45);
+    }
+
+    .modal-header,
+    .modal-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: .6rem;
+      padding: .9rem 1rem;
+      border-bottom: 1px solid #e5e7eb;
+    }
+
+    .modal-footer {
+      border-top: 1px solid #e5e7eb;
+      border-bottom: 0;
+    }
+
+    .modal-content {
+      padding: 1rem;
+    }
   </style>
   <!-- Overrides: top-nav blanca y dropdown ligero -->
   <style>
-    .top-nav { background:#ffffff; border-bottom:1px solid #e5e7eb; color:#111827; }
-    .top-nav .brand { font-weight:600; }
-    .top-nav a { color:#111827; opacity:1; text-decoration:none; padding:.45rem .7rem; border-radius:6px; }
-    .top-nav a:hover { background:#f3f4f6; }
-    .top-nav .user-badge { background:#ffffff; color:#111827; border:1px solid #e5e7eb; border-radius:999px; padding:.4rem .6rem; }
+    .top-nav {
+      background: #ffffff;
+      border-bottom: 1px solid #e5e7eb;
+      color: #111827;
+    }
+
+    .top-nav .brand {
+      font-weight: 600;
+    }
+
+    .top-nav a {
+      color: #111827;
+      opacity: 1;
+      text-decoration: none;
+      padding: .45rem .7rem;
+      border-radius: 6px;
+    }
+
+    .top-nav a:hover {
+      background: #f3f4f6;
+    }
+
+    .top-nav .user-badge {
+      background: #ffffff;
+      color: #111827;
+      border: 1px solid #e5e7eb;
+      border-radius: 999px;
+      padding: .4rem .6rem;
+    }
+
     /* Dropdown estilo ligero */
-    .dropdown { position: relative; }
-    .dropdown-toggle { background:transparent; border:none; color:#111827; cursor:pointer; padding:.45rem .7rem; border-radius:6px; font-size:.8rem; font-weight:400; box-shadow:none; }
-    .dropdown-toggle:hover, .dropdown-toggle:focus { background:#f3f4f6; box-shadow:none; }
-    .dropdown-toggle .caret { font-size:.9em; opacity:.8; }
-    .dropdown-menu { position:absolute; top:calc(100% + .35rem); left:0; min-width:220px; z-index:100; background:#ffffff; color:#111827; border:none; border-radius:0; padding:.35rem 0; box-shadow:none; display:none; }
-    .dropdown.open .dropdown-menu { display:block; }
-    .dropdown-item { display:block; padding:.55rem .9rem; color:#111827; text-decoration:none; font-size:.85rem; font-weight:400; border-radius:2%; }
-    .dropdown-item:hover { background:#f3f4f6; }
+    .dropdown {
+      position: relative;
+    }
+
+    .dropdown-toggle {
+      background: transparent;
+      border: none;
+      color: #111827;
+      cursor: pointer;
+      padding: .45rem .7rem;
+      border-radius: 6px;
+      font-size: .8rem;
+      font-weight: 400;
+      box-shadow: none;
+    }
+
+    .dropdown-toggle:hover,
+    .dropdown-toggle:focus {
+      background: #f3f4f6;
+      box-shadow: none;
+    }
+
+    .dropdown-toggle .caret {
+      font-size: .9em;
+      opacity: .8;
+    }
+
+    .dropdown-menu {
+      position: absolute;
+      top: calc(100% + .35rem);
+      left: 0;
+      min-width: 220px;
+      z-index: 100;
+      background: #ffffff;
+      color: #111827;
+      border: none;
+      border-radius: 0;
+      padding: .35rem 0;
+      box-shadow: none;
+      display: none;
+    }
+
+    .dropdown.open .dropdown-menu {
+      display: block;
+    }
+
+    .dropdown-item {
+      display: block;
+      padding: .55rem .9rem;
+      color: #111827;
+      text-decoration: none;
+      font-size: .85rem;
+      font-weight: 400;
+      border-radius: 2%;
+    }
+
+    .dropdown-item:hover {
+      background: #f3f4f6;
+    }
   </style>
 </head>
+
 <body>
   <nav class="top-nav">
     <span class="brand">SLEPIQQ</span>
-  <a class="nav-link" href="asistencia.html">Asistencia</a>
+    <a class="nav-link" href="asistencia.html">Asistencia</a>
     <a class="nav-link" href="establecimiento.html">Establecimiento</a>
-  <a class="nav-link" href="convivencia_escolar.html">Convivencia</a>
+    <a class="nav-link" href="convivencia_escolar.html">Convivencia</a>
     <div class="dropdown nav-acomp-dropdown" aria-label="Acompañamiento Visita">
       <button class="dropdown-toggle" type="button" aria-haspopup="true" aria-expanded="false">
         Acompañamiento <span class="caret">▾</span>
       </button>
       <div class="dropdown-menu" role="menu" aria-label="Acompañamiento Visita">
-        <a class="dropdown-item" role="menuitem" href="documentos.html" title="Documento de Acompañamiento">DOCUMENTO</a>
+        <a class="dropdown-item" role="menuitem" href="documentos.html"
+          title="Documento de Acompañamiento">DOCUMENTO</a>
         <a class="dropdown-item" role="menuitem" href="planilla.html" title="Planilla de Acompañamiento">PLANILLA</a>
       </div>
     </div>
     <a class="nav-link" href="../plataforma.html">INICIO</a>
-    <span class="user-badge"><span id="userName">...</span><button id="logoutBtn" class="btn btn-outline" type="button">Salir</button></span>
+    <span class="user-badge"><span id="userName">...</span><button id="logoutBtn" class="btn btn-outline"
+        type="button">Salir</button></span>
   </nav>
 
   <main style="max-width:2500px;margin:0 auto;padding:0 1rem 2rem;">
@@ -163,7 +426,7 @@
       <div class="actions-bar" style="display:flex;gap:.6rem;align-items:center;margin-bottom:.6rem;">
         <!-- NUEVO: indicador de total -->
         <span>Total registros: <strong id="countTotal">0</strong></span>
-  <span id="listInfo" style="margin-left:1rem;font-size:.85rem;color:#374151;"></span>
+        <span id="listInfo" style="margin-left:1rem;font-size:.85rem;color:#374151;"></span>
       </div>
       <div class="table-wrap">
         <table id="planillaTable">
@@ -207,9 +470,9 @@
   <script type="module">
     import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js';
     import { getAuth, onAuthStateChanged, signOut } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js';
-  import { getFirestore, collection, query, where, onSnapshot, getDoc, getDocs, doc } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js';
+    import { getFirestore, collection, query, where, onSnapshot, getDoc, getDocs, doc } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js';
 
-    const firebaseConfig = { apiKey:"AIzaSyDzUGdJT-eyYjKtej63iThVLgvTHVzvxvA",authDomain:"ia-slep-iqq.firebaseapp.com",projectId:"ia-slep-iqq",storageBucket:"ia-slep-iqq.appspot.com",messagingSenderId:"528895424744",appId:"1:528895424744:web:7144f5e5db1bce5ffb315d" };
+    const firebaseConfig = { apiKey: "AIzaSyDzUGdJT-eyYjKtej63iThVLgvTHVzvxvA", authDomain: "ia-slep-iqq.firebaseapp.com", projectId: "ia-slep-iqq", storageBucket: "ia-slep-iqq.appspot.com", messagingSenderId: "528895424744", appId: "1:528895424744:web:7144f5e5db1bce5ffb315d" };
     const app = initializeApp(firebaseConfig);
     const auth = getAuth(app);
     const db = getFirestore(app);
@@ -218,7 +481,7 @@
     const logoutBtn = document.getElementById('logoutBtn');
 
     // Mejora: prioriza displayName de Auth; luego Firestore; luego email/uid
-    async function loadProfile(userOrUid, maybeEmail){
+    async function loadProfile(userOrUid, maybeEmail) {
       try {
         const isUser = typeof userOrUid === 'object' && userOrUid !== null;
         const uid = isUser ? userOrUid.uid : userOrUid;
@@ -230,34 +493,34 @@
 
         // 2) Intenta obtener un nombre más actualizado desde Firestore (si existe permiso)
         try {
-          const snap = await getDoc(doc(db,'users',uid));
-          if (snap.exists()){
+          const snap = await getDoc(doc(db, 'users', uid));
+          if (snap.exists()) {
             const n = snap.data().name || snap.data().displayName || '';
             if (n && userNameEl) { userNameEl.textContent = n; return; }
           }
-        } catch {/* ignorar errores de permisos/ausencia */}
+        } catch {/* ignorar errores de permisos/ausencia */ }
 
         // 3) Fallback estable si no hay datos en Firestore
-        if (userNameEl && (!userNameEl.textContent || userNameEl.textContent === '...')){
+        if (userNameEl && (!userNameEl.textContent || userNameEl.textContent === '...')) {
           userNameEl.textContent = email || uid || 'Usuario';
         }
       } catch {
         if (userNameEl) userNameEl.textContent = 'Usuario';
       }
     }
-    logoutBtn.addEventListener('click', async ()=>{ try{ await signOut(auth); location.replace('../index.html'); }catch(e){ alert('Error al cerrar sesión'); } });
+    logoutBtn.addEventListener('click', async () => { try { await signOut(auth); location.replace('../index.html'); } catch (e) { alert('Error al cerrar sesión'); } });
 
     const qEl = document.getElementById('q');
     const fromEl = document.getElementById('fromDate');
     const toEl = document.getElementById('toDate');
     const modEl = document.getElementById('mod');
-  const tbody = document.getElementById('tbodyPlanilla');
-  const mesSel = document.getElementById('mesSel');
-  const anioSel = document.getElementById('anioSel');
+    const tbody = document.getElementById('tbodyPlanilla');
+    const mesSel = document.getElementById('mesSel');
+    const anioSel = document.getElementById('anioSel');
     const countTotal = document.getElementById('countTotal');
     const btnExport = document.getElementById('btnExport');
     const listInfo = document.getElementById('listInfo');
-    function showInfo(msg, type='info'){
+    function showInfo(msg, type = 'info') {
       if (!listInfo) return;
       const colors = { info: '#374151', warn: '#92400e', err: '#991b1b', ok: '#065f46' };
       listInfo.textContent = msg || '';
@@ -265,44 +528,44 @@
     }
     const btnPrint = document.getElementById('btnPrint');
 
-  let allDocs = [];
-  let filtered = [];
+    let allDocs = [];
+    let filtered = [];
 
     const params = new URLSearchParams(location.search);
     const focusId = params.get('id') || '';
     const focusActa = params.get('acta') || '';
 
-    function toInputDate(val){
+    function toInputDate(val) {
       if (!val) return '';
       const dt = (typeof val === 'object' && 'seconds' in val) ? new Date(val.seconds * 1000) : new Date(val);
       if (isNaN(dt.getTime())) return '';
       const p = n => String(n).padStart(2, '0');
-      return `${dt.getFullYear()}-${p(dt.getMonth()+1)}-${p(dt.getDate())}`;
+      return `${dt.getFullYear()}-${p(dt.getMonth() + 1)}-${p(dt.getDate())}`;
     }
-    function formatDate(val){
+    function formatDate(val) {
       const s = toInputDate(val);
       if (!s) return '';
-      const [y,m,d] = s.split('-');
+      const [y, m, d] = s.split('-');
       return `${d}-${m}-${y}`;
     }
-    function getDateObj(val){
+    function getDateObj(val) {
       if (!val) return null;
-      if (typeof val === 'object' && 'seconds' in val) return new Date(val.seconds*1000);
+      if (typeof val === 'object' && 'seconds' in val) return new Date(val.seconds * 1000);
       const s = typeof val === 'string' ? val : '';
       return s ? new Date(s) : null;
     }
-    function truncate(s, n=120){ s = (s ?? '').toString(); return s.length>n ? s.slice(0,n).trim()+'…' : s; }
+    function truncate(s, n = 120) { s = (s ?? '').toString(); return s.length > n ? s.slice(0, n).trim() + '…' : s; }
 
     const modalEl = document.getElementById('detailModal');
     const modalBody = document.getElementById('detailBody');
     const btnCloseDetail = document.getElementById('btnCloseDetail');
     const btnCloseDetail2 = document.getElementById('btnCloseDetail2');
-    function openDetail(d){
+    function openDetail(d) {
       const f = v => (v ?? '—');
       modalBody.innerHTML = `
         <div style="margin-bottom:.8rem;">
           <div style="font-size:1.1rem;font-weight:700;">${f(d.establecimiento)} <small style="font-weight:400;opacity:.7;">(${f(d.rbd)})</small></div>
-          <div style="font-size:.85rem;opacity:.8;">${f(d.actaNumber)} • ${f(d.modalidad)} • ${f(d.horaInicio||'—')} - ${f(d.horaTermino||'—')}</div>
+          <div style="font-size:.85rem;opacity:.8;">${f(d.actaNumber)} • ${f(d.modalidad)} • ${f(d.horaInicio || '—')} - ${f(d.horaTermino || '—')}</div>
         </div>
         <div style="margin-bottom:.6rem;"><strong>Objetivo Estratégico:</strong><div style="white-space:pre-wrap;">${f(d.objetivoEstrategico)}</div></div>
         <div style="margin-bottom:.6rem;"><strong>Objetivo de la Visita:</strong><div style="white-space:pre-wrap;">${f(d.objetivoVisita)}</div></div>
@@ -316,18 +579,18 @@
       `;
       modalEl.classList.add('show');
     }
-    function closeDetail(){
+    function closeDetail() {
       modalEl.classList.remove('show');
       modalBody.innerHTML = '';
     }
     btnCloseDetail.addEventListener('click', closeDetail);
     btnCloseDetail2.addEventListener('click', closeDetail);
-    window.addEventListener('keydown', (e)=>{ if(e.key==='Escape' && modalEl.classList.contains('show')) closeDetail(); });
-    modalEl.addEventListener('click', (e)=>{ if (e.target===modalEl) closeDetail(); });
+    window.addEventListener('keydown', (e) => { if (e.key === 'Escape' && modalEl.classList.contains('show')) closeDetail(); });
+    modalEl.addEventListener('click', (e) => { if (e.target === modalEl) closeDetail(); });
 
-    function renderTable(list){
+    function renderTable(list) {
       tbody.innerHTML = '';
-      list.forEach(d=>{
+      list.forEach(d => {
         const tr = document.createElement('tr');
         tr.dataset.id = d._id || '';
         tr.innerHTML = `
@@ -337,13 +600,13 @@
           <td>${d.rbd || ''}</td>
           <td>${d.modalidad || ''}</td>
           <td>${[d.asesorPrincipal, d.asesorSegundo].filter(Boolean).join(' / ')}</td>
-          <td>${[d.horaInicio||'—', d.horaTermino||'—'].join(' - ')}</td>
+          <td>${[d.horaInicio || '—', d.horaTermino || '—'].join(' - ')}</td>
           <td>${truncate(d.objetivoVisita || d.objetivoEstrategico || '')}</td>
           <td>${d.cicloApoyo || ''}</td>
           <td><button type="button" class="btn btn-primary btn-sm" data-act="view">Ver</button></td>
         `;
-        tr.addEventListener('click', ()=> openDetail(d));
-        tr.querySelector('[data-act="view"]')?.addEventListener('click', (e)=>{
+        tr.addEventListener('click', () => openDetail(d));
+        tr.querySelector('[data-act="view"]')?.addEventListener('click', (e) => {
           e.preventDefault();
           e.stopPropagation();
           openDetail(d);
@@ -351,26 +614,26 @@
         tbody.appendChild(tr);
       });
       let focusRow = null;
-      if (focusId){
-        focusRow = [...tbody.querySelectorAll('tr')].find(r=> r.dataset.id===focusId) || null;
-      } else if (focusActa){
-        const idx = list.findIndex(x=> (x.actaNumber||'')===focusActa);
-        if (idx>=0) focusRow = tbody.querySelectorAll('tr')[idx] || null;
+      if (focusId) {
+        focusRow = [...tbody.querySelectorAll('tr')].find(r => r.dataset.id === focusId) || null;
+      } else if (focusActa) {
+        const idx = list.findIndex(x => (x.actaNumber || '') === focusActa);
+        if (idx >= 0) focusRow = tbody.querySelectorAll('tr')[idx] || null;
       }
-      if (focusRow){
+      if (focusRow) {
         focusRow.classList.add('row-focus');
-        focusRow.scrollIntoView({ behavior:'smooth', block:'center' });
+        focusRow.scrollIntoView({ behavior: 'smooth', block: 'center' });
       }
       // NUEVO: proteger si el elemento no existe
       if (countTotal) countTotal.textContent = list.length;
     }
 
-  function applyFilters(){
+    function applyFilters() {
       const q = (qEl.value || '').trim().toLowerCase();
       const mod = (modEl.value || '').toLowerCase();
       const from = fromEl.value ? new Date(fromEl.value) : null;
       const to = toEl.value ? new Date(toEl.value) : null;
-      if (to) { to.setHours(23,59,59,999); }
+      if (to) { to.setHours(23, 59, 59, 999); }
       const fmm = mesSel?.value || '';
       const fy = anioSel?.value || '';
 
@@ -381,7 +644,7 @@
 
       // Rango de fechas (usa campo fecha o createdAt)
       if (from || to) {
-        list = list.filter(x=>{
+        list = list.filter(x => {
           const d = getDateObj(x.fecha || x.createdAt);
           if (!d) return false;
           if (from && d < from) return false;
@@ -392,10 +655,10 @@
 
       // Filtro por Mes/Año
       if (fmm || fy) {
-        list = list.filter(x=>{
+        list = list.filter(x => {
           const d = getDateObj(x.fecha || x.createdAt);
           if (!d) return false;
-          const mm = String(d.getMonth()+1).padStart(2,'0');
+          const mm = String(d.getMonth() + 1).padStart(2, '0');
           const yyyy = String(d.getFullYear());
           if (fmm && mm !== fmm) return false;
           if (fy && yyyy !== fy) return false;
@@ -405,7 +668,7 @@
 
       // Texto
       if (q) {
-        list = list.filter(x=>{
+        list = list.filter(x => {
           const hay = [
             x.actaNumber, x.establecimiento, x.asesorPrincipal, x.asesorSegundo,
             x.modalidad, x.rbd, x.objetivoVisita, x.objetivoEstrategico,
@@ -420,26 +683,26 @@
     }
 
     // Suscripción a Firestore: documentos compartidos (datosBasicos)
-    function subscribeAllDocs(){
+    function subscribeAllDocs() {
       const cRef = collection(db, 'datosBasicos');
-      return onSnapshot(cRef, (snap)=>{
+      return onSnapshot(cRef, (snap) => {
         allDocs = snap.docs.map(d => ({ _id: d.id, ...d.data() }));
         // Orden descendente por fecha de creación si existe
-        allDocs.sort((a,b)=> (b.createdAt?.seconds||0) - (a.createdAt?.seconds||0));
+        allDocs.sort((a, b) => (b.createdAt?.seconds || 0) - (a.createdAt?.seconds || 0));
         showInfo('', 'info');
         populateYearOptions();
         applyFilters();
-      }, async (err)=>{
+      }, async (err) => {
         console.warn('Fallo suscripción datosBasicos:', err);
         showInfo('No se pudo suscribir en tiempo real. Cargando una vez…', 'warn');
         try {
           const s = await getDocs(cRef);
           allDocs = s.docs.map(d => ({ _id: d.id, ...d.data() }));
-          allDocs.sort((a,b)=> (b.createdAt?.seconds||0) - (a.createdAt?.seconds||0));
+          allDocs.sort((a, b) => (b.createdAt?.seconds || 0) - (a.createdAt?.seconds || 0));
           showInfo('', 'info');
           populateYearOptions();
           applyFilters();
-        } catch(e){
+        } catch (e) {
           console.error('Fallo lectura puntual:', e);
           showInfo('Error leyendo documentos. Revisa permisos o conexión.', 'err');
         }
@@ -447,7 +710,7 @@
     }
 
     // Enlazar filtros a applyFilters
-    function bindFilters(){
+    function bindFilters() {
       qEl?.addEventListener('input', applyFilters);
       fromEl?.addEventListener('change', applyFilters);
       toEl?.addEventListener('change', applyFilters);
@@ -457,37 +720,37 @@
     }
 
     // Llenar opciones de año con base en los datos
-    function populateYearOptions(){
+    function populateYearOptions() {
       if (!anioSel) return;
       const years = new Set();
-      for (const x of allDocs){
+      for (const x of allDocs) {
         const d = getDateObj(x.fecha || x.createdAt);
         if (!d) continue;
         years.add(String(d.getFullYear()));
       }
-      const arr = Array.from(years).sort((a,b)=> b.localeCompare(a));
-      const options = ['<option value="">Todos</option>'].concat(arr.map(y=>`<option value="${y}">${y}</option>`));
+      const arr = Array.from(years).sort((a, b) => b.localeCompare(a));
+      const options = ['<option value="">Todos</option>'].concat(arr.map(y => `<option value="${y}">${y}</option>`));
       anioSel.innerHTML = options.join('');
       anioSel.disabled = arr.length === 0;
     }
 
     // Autenticación y arranque
-    onAuthStateChanged(auth, (user)=>{
+    onAuthStateChanged(auth, (user) => {
       if (!user) { location.replace('../index.html'); return; }
       loadProfile(user, user.email);
       bindFilters();
       // Suscribirse a colección global
       const unsub = subscribeAllDocs();
       // Cleanup al salir
-      const cleanup = ()=>{ try{ unsub && unsub(); }catch{} };
+      const cleanup = () => { try { unsub && unsub(); } catch { } };
       window.addEventListener('pagehide', cleanup, { once: true });
-      document.addEventListener('visibilitychange', ()=>{ if (document.visibilityState === 'hidden') cleanup(); }, { once: true });
+      document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'hidden') cleanup(); }, { once: true });
     });
 
     // Nota: exportación a Excel permanece deshabilitada a petición previa.
 
     // Botón Imprimir: imprime solo la tabla (paisaje)
-    btnPrint?.addEventListener('click', (e)=>{
+    btnPrint?.addEventListener('click', (e) => {
       e.preventDefault();
       try {
         const hasRows = !!tbody && tbody.querySelectorAll('tr').length > 0;
@@ -497,25 +760,26 @@
         // Activar modo "solo tabla"
         document.body.classList.add('print-table-only');
         // Dar un pequeño tiempo para que el navegador aplique estilos
-        setTimeout(()=>{
+        setTimeout(() => {
           window.print();
           // Restaurar estado tras imprimir
-          setTimeout(()=>{ document.title = prevTitle; document.body.classList.remove('print-table-only'); }, 200);
+          setTimeout(() => { document.title = prevTitle; document.body.classList.remove('print-table-only'); }, 200);
         }, 50);
-      } catch(err){ console.error('Error al imprimir:', err); }
+      } catch (err) { console.error('Error al imprimir:', err); }
     });
   </script>
   <script>
     // Dropdown ligero: toggle, click fuera y ESC
-    (function(){
+    (function () {
       const dd = document.querySelector('.nav-acomp-dropdown');
       const btn = dd?.querySelector('.dropdown-toggle');
-      function close(){ if(!dd) return; dd.classList.remove('open'); btn?.setAttribute('aria-expanded','false'); }
-      function toggle(){ if(!dd) return; const open = dd.classList.toggle('open'); btn?.setAttribute('aria-expanded', open ? 'true' : 'false'); }
-      btn?.addEventListener('click', (e)=>{ e.stopPropagation(); toggle(); });
-      document.addEventListener('click', (e)=>{ if(!dd) return; if(!dd.contains(e.target)) close(); });
-      window.addEventListener('keydown', (e)=>{ if(e.key==='Escape') close(); });
+      function close() { if (!dd) return; dd.classList.remove('open'); btn?.setAttribute('aria-expanded', 'false'); }
+      function toggle() { if (!dd) return; const open = dd.classList.toggle('open'); btn?.setAttribute('aria-expanded', open ? 'true' : 'false'); }
+      btn?.addEventListener('click', (e) => { e.stopPropagation(); toggle(); });
+      document.addEventListener('click', (e) => { if (!dd) return; if (!dd.contains(e.target)) close(); });
+      window.addEventListener('keydown', (e) => { if (e.key === 'Escape') close(); });
     })();
   </script>
 </body>
+
 </html>
