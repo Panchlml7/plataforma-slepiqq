@@ -21,7 +21,8 @@
         Acompañamiento <span class="caret">▾</span>
       </button>
       <div class="dropdown-menu" role="menu" aria-label="Acompañamiento Visita">
-        <a class="dropdown-item" role="menuitem" href="documentos_redes.html" title="Documentos de Redes">DOCUMENTOS REDES</a>
+        <a class="dropdown-item" role="menuitem" href="documentos.html"
+          title="Documento de Acompañamiento">DOCUMENTO</a>
         <a class="dropdown-item" role="menuitem" href="planilla.html" title="Planilla de Acompañamiento">PLANILLA</a>
       </div>
     </div>
@@ -60,12 +61,12 @@
     <!-- Sección: Nuevo Documento (wizard existente) -->
     <div id="nuevo-documento" class="main-content-section active">
       <!-- ABRIR FORM: envuelve ambos pasos y acciones -->
-      <form id="datosBasicosForm" class="section-card">
+  <form id="datosRedesForm" class="section-card">
         <!-- Paso 1: Datos Básicos -->
         <div class="wizard-step" data-step="1">
           <div class="wizard-legend" style="text-align: end;">Paso 1 de 2: Datos Básicos</div>
           <!-- Información General -->
-          <h1 style="text-align: center;">Acta de Acompañamiento Técnico UATP</h1>
+          <h1 style="text-align: center;">Acta de Redes</h1>
           <div class="grid cols-2">
             <div>
               <label class="small" for="actaNumber">N° Acta</label>
@@ -81,15 +82,17 @@
           <h2 style="margin-top:1rem;">DATOS INSTITUCIÓN VISITADA</h2>
           <div class="grid cols-2">
             <div>
+              <label class="small" for="rbd">RBD</label>
+              <select id="rbd" name="rbd">
+                <option value="" disabled selected>Selecciona RBD</option>
+              </select>
+            </div>
+            <div>
               <label class="small" for="establecimiento">Establecimiento</label>
               <select id="establecimiento" name="establecimiento" required>
                 <option value="" disabled selected>Selecciona establecimiento</option>
                 <!-- Se cargará dinámicamente desde Firestore; fallback estático en script -->
               </select>
-            </div>
-            <div>
-              <label class="small" for="rbd">RBD</label>
-              <input id="rbd" name="rbd" type="text" placeholder="Ej: 12345-6" required>
             </div>
             <div class="full">
               <label class="small" for="objetivoEstrategico">Objetivo Estratégico</label>
@@ -97,10 +100,12 @@
                 placeholder="Describe el objetivo estratégico..."></textarea>
             </div>
             <div class="full">
-              <label class="small" for="director">Director/a de Establecimiento</label>
+              <label class="small" for="director">Director/a de establecimiento</label>
               <input id="director" name="director" type="text" placeholder="Nombre del/la director/a">
             </div>
-          </div>              
+          </div>
+
+          <!-- Equipo de Asesores -->
           <h2 style="margin-top:1rem;">Equipo de Asesores</h2>
           <div class="grid cols-2">
             <div>
@@ -403,7 +408,7 @@
       return role;
     }
 
-    // Generar N° Acta (deshabilitado: se ha quitado la autogeneración)
+    // Generar N° Acta (deshabilitado: sin autogeneración)
     function genActa() {
       const d = new Date();
       const pad = n => String(n).padStart(2, '0');
@@ -415,7 +420,9 @@
     // Cargar establecimientos (Firestore > establecimientos) con fallback
     async function loadEstablecimientos() {
       const sel = document.getElementById('establecimiento');
+      const rbdSel = document.getElementById('rbd');
       sel.innerHTML = '<option value="" disabled selected>Cargando...</option>';
+      rbdSel.innerHTML = '<option value="" disabled selected>Cargando...</option>';
       const fallback = [
         { name: 'SLEP IQUIQUE - Oficina Central', rbd: 'SLEP IQUIQUE' },
         { name: 'Instituto Comercial Baldomero Wolnitzky', rbd: '97', directorName: 'Land-Yen Beatriz Davila Castillo' },
@@ -467,6 +474,7 @@
           directorName: d.data().directorName || d.data().director || d.data().directorEstablecimiento || ''
         }));
         sel.innerHTML = '<option value="" disabled selected>Selecciona establecimiento</option>';
+        rbdSel.innerHTML = '<option value="" disabled selected>Selecciona RBD</option>';
         for (const it of items) {
           const opt = document.createElement('option');
           opt.value = it.name;
@@ -474,12 +482,22 @@
           if (it.rbd) opt.setAttribute('data-rbd', it.rbd);
           if (it.directorName) opt.setAttribute('data-director', it.directorName);
           sel.appendChild(opt);
+
+          if (it.rbd) {
+            const ropt = document.createElement('option');
+            ropt.value = it.rbd;
+            ropt.textContent = it.rbd; // solo número
+            ropt.setAttribute('data-name', it.name);
+            if (it.directorName) ropt.setAttribute('data-director', it.directorName);
+            rbdSel.appendChild(ropt);
+          }
         }
       } catch (e) {
         // Silenciar detalle cuando es por permisos y usar fallback local
         const msg = (e && (e.code === 'permission-denied' || e.message?.includes('permission'))) ? 'Sin permisos para leer establecimientos; usando lista local.' : 'No se pudo cargar establecimientos; usando lista local.';
         console.warn(msg);
         sel.innerHTML = '<option value="" disabled selected>Selecciona establecimiento</option>';
+        rbdSel.innerHTML = '<option value="" disabled selected>Selecciona RBD</option>';
         for (const it of fallback) {
           const opt = document.createElement('option');
           opt.value = it.name;
@@ -487,6 +505,15 @@
           opt.setAttribute('data-rbd', it.rbd);
           if (it.directorName) opt.setAttribute('data-director', it.directorName);
           sel.appendChild(opt);
+
+          if (it.rbd) {
+            const ropt = document.createElement('option');
+            ropt.value = it.rbd;
+            ropt.textContent = it.rbd; // solo número
+            ropt.setAttribute('data-name', it.name);
+            if (it.directorName) ropt.setAttribute('data-director', it.directorName);
+            rbdSel.appendChild(ropt);
+          }
         }
       }
     }
@@ -499,6 +526,35 @@
       const dir = opt?.getAttribute('data-director') || '';
       const dirEl = document.getElementById('director');
       if (dirEl) dirEl.value = dir;
+    });
+
+    // NUEVO: Buscar por RBD y mostrar Establecimiento (y Director) automáticamente (con normalización)
+  const rbdInput = document.getElementById('rbd');
+    const normalizeRBD = (s) => (s ?? '').toString().replace(/[^0-9]/g, '');
+    function syncEstByRbd(rawVal) {
+      const val = normalizeRBD((rawVal || '').trim());
+      const sel = document.getElementById('establecimiento');
+      const rbdSel = document.getElementById('rbd');
+      if (!sel || !rbdSel || !val) return;
+      const opts = Array.from(sel.options || []);
+      const match = opts.find(o => normalizeRBD(o.getAttribute('data-rbd') || '') === val);
+      if (match) {
+        sel.value = match.value;
+        // Seleccionar también en el select de RBD
+        const rbdOpts = Array.from(rbdSel.options || []);
+        const rbdMatch = rbdOpts.find(o => normalizeRBD(o.value || '') === val);
+        if (rbdMatch) rbdSel.value = rbdMatch.value;
+        const dir = match.getAttribute('data-director') || '';
+        const dirEl = document.getElementById('director');
+        if (dirEl) dirEl.value = dir;
+      }
+    }
+    rbdInput?.addEventListener('input', () => syncEstByRbd(rbdInput.value));
+    rbdInput?.addEventListener('change', () => syncEstByRbd(rbdInput.value));
+    // Cambio desde el select RBD: sincronizar establecimiento y director
+    rbdInput?.addEventListener('change', (e) => {
+      const val = normalizeRBD((e.target.value || '').trim());
+      syncEstByRbd(val);
     });
 
     // Validar horario
@@ -561,10 +617,10 @@
         // Actualizar en colección global compartida; si el origen fue sub, creamos copia en global
         try {
           if (editingSrc === 'sub') {
-            await addDoc(collection(db, 'datosBasicos'), { ...payload, createdAt: serverTimestamp(), migratedFrom: 'sub', migratedFromId: editingId });
+            await addDoc(collection(db, 'datosRedes'), { ...payload, createdAt: serverTimestamp(), migratedFrom: 'sub', migratedFromId: editingId });
             alert('Documento publicado en compartidos (global).');
           } else {
-            await updateDoc(doc(db, 'datosBasicos', editingId), { ...payload, updatedAt: serverTimestamp() });
+            await updateDoc(doc(db, 'datosRedes', editingId), { ...payload, updatedAt: serverTimestamp() });
             alert('Documento actualizado.');
           }
         } catch (e) {
@@ -575,7 +631,7 @@
       } else {
         // Crear: guardar directamente en colección global compartida
         try {
-          await addDoc(collection(db, 'datosBasicos'), { ...payload, createdAt: serverTimestamp() });
+          await addDoc(collection(db, 'datosRedes'), { ...payload, createdAt: serverTimestamp() });
           alert('Guardado en compartidos (global).');
         } catch (e2) {
           console.error('Fallo guardado en compartidos:', e2);
@@ -587,7 +643,7 @@
       // Reset a modo "nuevo"
       editingId = null;
       document.getElementById('btnSubmit').textContent = 'Guardar';
-  document.getElementById('datosBasicosForm').reset();
+  document.getElementById('datosRedesForm').reset();
       stepIndex = 0; showStep(stepIndex);
     }
 
@@ -661,7 +717,7 @@
       window.scrollTo({ top: 0, behavior: 'smooth' });
     });
 
-    const form = document.getElementById('datosBasicosForm');
+  const form = document.getElementById('datosRedesForm');
     const steps = Array.from(form.querySelectorAll('.wizard-step'));
     const btnBack = document.getElementById('btnBack');
     const btnNext = document.getElementById('btnNext');
@@ -793,9 +849,9 @@
                   await import('https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js').then(async m => {
                     if (d._src === 'sub') {
                       const ownerUid = d._ownerUid || d.ownerUid || (currentUser?.uid || '');
-                      await m.deleteDoc(m.doc(db, 'users', ownerUid, 'datosBasicos', d._id));
+                      await m.deleteDoc(m.doc(db, 'users', ownerUid, 'datosRedes', d._id));
                     } else {
-                      await m.deleteDoc(m.doc(db, 'datosBasicos', d._id));
+                      await m.deleteDoc(m.doc(db, 'datosRedes', d._id));
                     }
                   });
                 }
@@ -965,7 +1021,7 @@
 
     // Suscripción: solo “Mis documentos” (subcolección privada) para evitar bloqueos de permisos
     function subscribeUserDocs(uid) {
-      const mySubRef = collection(db, 'users', uid, 'datosBasicos');
+  const mySubRef = collection(db, 'users', uid, 'datosRedes');
       let subDocs = [];
       const render = () => {
         allDocs = [...subDocs];
@@ -973,7 +1029,7 @@
         applyFilters();
       };
       const unsubSub = onSnapshot(mySubRef, (snap) => {
-        subDocs = snap.docs.map(d => ({ _id: d.id, _src: 'sub', _ownerUid: uid, _path: `users/${uid}/datosBasicos/${d.id}`, ...d.data() }));
+  subDocs = snap.docs.map(d => ({ _id: d.id, _src: 'sub', _ownerUid: uid, _path: `users/${uid}/datosRedes/${d.id}`, ...d.data() }));
         clearDocsInfo();
         if (!subDocs.length) showDocsInfo('Aún no tienes documentos. Guarda uno nuevo.');
         render();
@@ -981,7 +1037,7 @@
         showDocsInfo('No se pudieron leer “Mis documentos”. Intentando una lectura puntual...');
         try {
           const s = await getDocs(mySubRef);
-          subDocs = s.docs.map(d => ({ _id: d.id, _src: 'sub', _ownerUid: uid, _path: `users/${uid}/datosBasicos/${d.id}`, ...d.data() }));
+          subDocs = s.docs.map(d => ({ _id: d.id, _src: 'sub', _ownerUid: uid, _path: `users/${uid}/datosRedes/${d.id}`, ...d.data() }));
           clearDocsInfo();
           if (!subDocs.length) showDocsInfo('Aún no tienes documentos.');
           render();
@@ -995,8 +1051,8 @@
     // NUEVO: suscripción combinada: propios + compartidos por un usuario específico
     function subscribeUserDocsWithShared(uid) {
       const SHARED_OWNER_EMAIL = 'francisco.ramos@slepiquique.cl';
-      const myRef = query(collection(db, 'datosBasicos'), where('ownerUid', '==', uid));
-      const sharedRef = query(collection(db, 'datosBasicos'), where('ownerEmail', '==', SHARED_OWNER_EMAIL));
+  const myRef = query(collection(db, 'datosRedes'), where('ownerUid', '==', uid));
+  const sharedRef = query(collection(db, 'datosRedes'), where('ownerEmail', '==', SHARED_OWNER_EMAIL));
       let myDocs = [];
       let sharedDocs = [];
       const mergeAndRender = () => {
@@ -1021,7 +1077,7 @@
       return () => { try { unsubMy(); } catch { } try { unsubShared(); } catch { } };
     }
     function subscribeAllDocs() {
-      const cRef = collection(db, 'datosBasicos');
+  const cRef = collection(db, 'datosRedes');
       return onSnapshot(cRef, (snap) => {
         allDocs = snap.docs.map(d => ({ _id: d.id, ...d.data() }));
         allDocs.sort((a, b) => (b.createdAt?.seconds || 0) - (a.createdAt?.seconds || 0));
@@ -1063,7 +1119,7 @@
       await loadEstablecimientos();
       updateScopeVisibility();
 
-      document.getElementById('datosBasicosForm').addEventListener('submit', async (e) => {
+  document.getElementById('datosRedesForm').addEventListener('submit', async (e) => {
         e.preventDefault();
         try {
           await saveForm(user);
@@ -1090,7 +1146,7 @@
           showDocsInfo('Diagnóstico: probando conexión y permisos...');
           // 1) Ping: intentar getDocs en colección global compartida
           try {
-            const cref = collection(db, 'datosBasicos');
+            const cref = collection(db, 'datosRedes');
             await getDocs(cref);
           } catch (e) {
             console.error('Diag global:', e);
@@ -1121,7 +1177,7 @@
           showDocsInfo('Abriendo documento…');
           // 1) Intentar en colección global
           try {
-            const gref = doc(db, 'datosBasicos', targetId);
+            const gref = doc(db, 'datosRedes', targetId);
             const gs = await getDoc(gref);
             if (gs.exists()) {
               const d = { _id: targetId, _src: 'global', _ownerUid: gs.data().ownerUid || null, ...gs.data() };
@@ -1137,7 +1193,7 @@
           } catch (e) { /* puede ser permiso-denegado, seguimos a subcolección */ }
           // 2) Intentar en subcolección del usuario actual
           try {
-            const sref = doc(db, 'users', currentUser.uid, 'datosBasicos', targetId);
+            const sref = doc(db, 'users', currentUser.uid, 'datosRedes', targetId);
             const ss = await getDoc(sref);
             if (ss.exists()) {
               const d = { _id: targetId, _src: 'sub', _ownerUid: currentUser.uid, ...ss.data() };
@@ -1159,7 +1215,7 @@
     });
 
     // NUEVO: vista previa (ya existente arriba)
-  function buildPreviewFromForm() {
+    function buildPreviewFromForm() {
       const v = id => (document.getElementById(id)?.value ?? '').toString();
       return {
         // Paso 1
@@ -1193,11 +1249,10 @@
     }
     btnPreview?.addEventListener('click', (e) => {
       e.preventDefault();
-  // Validación mínima para previsualizar
-  const acta = document.getElementById('actaNumber')?.value?.trim();
-  const fecha = document.getElementById('fecha')?.value?.trim();
-  const est = document.getElementById('establecimiento')?.value?.trim();
-  if (!acta || !fecha || !est) { alert('Completa N° Acta, Fecha y Establecimiento para previsualizar.'); return; }
+      const acta = document.getElementById('actaNumber')?.value?.trim();
+      const fecha = document.getElementById('fecha')?.value?.trim();
+      const est = document.getElementById('establecimiento')?.value?.trim();
+      if (!acta || !fecha || !est) { alert('Completa N° Acta, Fecha y Establecimiento para previsualizar.'); return; }
       const data = buildPreviewFromForm();
       openViewModal(data);
     });
