@@ -24,13 +24,29 @@ input, select, textarea { width:100%; background:#0f1b2d; border:1px solid #2e43
 textarea { min-height:110px; }
 .actions { display:flex; gap:.6rem; margin-top:1rem; }
 
-/* Esquema claro para formulario Datos Básicos */
-#datosBasicosForm.section-card { background:#ffffff; color:#0f172a; border:1px solid #e5e7eb; box-shadow: var(--shadow); }
-#datosBasicosForm h2 { color:#0f172a; }
-#datosBasicosForm label.small { color:#334155; }
-#datosBasicosForm input, #datosBasicosForm select, #datosBasicosForm textarea { background:#ffffff; color:#0f172a; border:1px solid #cbd5e1; }
-#datosBasicosForm input::placeholder, #datosBasicosForm textarea::placeholder { color:#64748b; opacity:.95; }
-#datosBasicosForm input:focus, #datosBasicosForm select:focus, #datosBasicosForm textarea:focus { outline:none; border-color:#6366f1; box-shadow:0 0 0 2px rgba(99,102,241,.2); }
+/* Esquema claro para formularios (Datos Básicos y Redes) */
+#datosBasicosForm.section-card,
+#datosRedesForm.section-card { background:#ffffff; color:#0f172a; border:1px solid #e5e7eb; box-shadow: var(--shadow); }
+#datosBasicosForm h2,
+#datosRedesForm h2 { color:#0f172a; }
+#datosBasicosForm label.small,
+#datosRedesForm label.small { color:#334155; }
+#datosBasicosForm input, #datosBasicosForm select, #datosBasicosForm textarea,
+#datosRedesForm input, #datosRedesForm select, #datosRedesForm textarea {
+  background: #ffffff; /* fondo blanco consistente */
+  color: #0f172a;
+  border: 1px solid #cbd5e1;
+}
+#datosBasicosForm input::placeholder, #datosBasicosForm textarea::placeholder,
+#datosRedesForm input::placeholder, #datosRedesForm textarea::placeholder { color:#64748b; opacity:.95; }
+#datosBasicosForm input:focus, #datosBasicosForm select:focus, #datosBasicosForm textarea:focus,
+#datosRedesForm input:focus, #datosRedesForm select:focus, #datosRedesForm textarea:focus {
+  outline: none;
+  border-color: #cbd5e1; /* mismo borde que en reposo (suave) */
+  box-shadow: none;      /* sin halo de color */
+  background: #ffffff;   /* mantener blanco en foco */
+  color: #0f172a;
+}
 
 /* Tabs */
 .tabs { display:flex; gap:.8rem; align-items:center; background:#f8fafc; border:1px solid #e5e7eb; border-radius:12px; padding:.4rem; margin:0 0 .9rem; }
@@ -156,3 +172,11 @@ body.modal-open { overflow:hidden; }
 }
 
 .print-area { display:none; }
+
+/* Override específico: documentos_redes (fondo blanco en campos) */
+#datosRedesForm input,
+#datosRedesForm select,
+#datosRedesForm textarea { background:#ffffff !important; color:#0f172a; border:1px solid #cbd5e1; }
+#datosRedesForm input:focus,
+#datosRedesForm select:focus,
+#datosRedesForm textarea:focus { background:#ffffff !important; border-color:#cbd5e1; box-shadow:none; outline:none; }

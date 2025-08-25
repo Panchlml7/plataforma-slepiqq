@@ -8,6 +8,17 @@
   <link rel="stylesheet" href="style.css">
   <link rel="stylesheet" href="doc/style.css">
   <link rel="icon" type="image/png" href="Imagen/slepiqq.png">
+  <style>
+    /* Override inmediato: campos blancos en formulario Redes */
+    #datosRedesForm input,
+    #datosRedesForm select,
+    #datosRedesForm textarea{background:#fff !important;color:#0f172a !important;border:1px solid #cbd5e1 !important}
+    #datosRedesForm input:focus,
+    #datosRedesForm select:focus,
+    #datosRedesForm textarea:focus{background:#fff !important;color:#0f172a !important;border-color:#cbd5e1 !important;box-shadow:none !important;outline:none !important}
+    #datosRedesForm input::placeholder,
+    #datosRedesForm textarea::placeholder{color:#64748b;opacity:.95}
+  </style>
 </head>
 
 <body>
@@ -22,7 +33,7 @@
       </button>
       <div class="dropdown-menu" role="menu" aria-label="Acompañamiento Visita">
         <a class="dropdown-item" role="menuitem" href="documentos.html"
-          title="Documento de Acompañamiento">DOCUMENTO</a>
+          title="Documento de Acompañamiento">DOCUMENTO VISITA</a>
         <a class="dropdown-item" role="menuitem" href="planilla.html" title="Planilla de Acompañamiento">PLANILLA</a>
       </div>
     </div>
@@ -749,10 +760,29 @@
     function formatDate(d) {
       if (!d) return '';
       try {
-        // Firestore Timestamp o Date/string
-        const dt = (d && typeof d === 'object' && 'seconds' in d)
-          ? new Date(d.seconds * 1000)
-          : new Date(d);
+        // Firestore Timestamp
+        if (typeof d === 'object' && 'seconds' in d) {
+          const dt = new Date(d.seconds * 1000);
+          if (isNaN(dt.getTime())) return '';
+          return dt.toLocaleDateString('es-CL', { year: 'numeric', month: '2-digit', day: '2-digit' });
+        }
+        // String ISO (YYYY-MM-DD) -> construir local para evitar desfase
+        if (typeof d === 'string') {
+          const s = d.trim();
+          let m = s.match(/^(\d{4})-(\d{1,2})-(\d{1,2})$/);
+          if (m) {
+            const dt = new Date(Number(m[1]), Number(m[2]) - 1, Number(m[3]));
+            if (!isNaN(dt.getTime())) return dt.toLocaleDateString('es-CL', { year: 'numeric', month: '2-digit', day: '2-digit' });
+          }
+          // String DD-MM-YYYY o DD/MM/YYYY
+          m = s.match(/^([0-3]?\d)[-/]([0-1]?\d)[-/](\d{4})$/);
+          if (m) {
+            const dt = new Date(Number(m[3]), Number(m[2]) - 1, Number(m[1]));
+            if (!isNaN(dt.getTime())) return dt.toLocaleDateString('es-CL', { year: 'numeric', month: '2-digit', day: '2-digit' });
+          }
+        }
+        // Fallback
+        const dt = new Date(d);
         if (isNaN(dt.getTime())) return '';
         return dt.toLocaleDateString('es-CL', { year: 'numeric', month: '2-digit', day: '2-digit' });
       } catch { return ''; }
@@ -762,12 +792,28 @@
       return s.length > n ? s.slice(0, n).trim() + '…' : s;
     }
 
-    // NUEVO: fecha para inputs type="date" (YYYY-MM-DD)
+    // NUEVO: fecha para inputs type="date" (YYYY-MM-DD) con soporte a múltiples formatos
     function toInputDate(val) {
       if (!val) return '';
-      const dt = (typeof val === 'object' && 'seconds' in val) ? new Date(val.seconds * 1000) : new Date(val);
-      if (isNaN(dt.getTime())) return '';
       const p = n => String(n).padStart(2, '0');
+      // Firestore Timestamp
+      if (typeof val === 'object' && 'seconds' in val) {
+        const d = new Date(val.seconds * 1000);
+        if (isNaN(d.getTime())) return '';
+        return `${d.getFullYear()}-${p(d.getMonth() + 1)}-${p(d.getDate())}`;
+      }
+      if (typeof val === 'string') {
+        const s = val.trim();
+        // ISO YYYY-MM-DD -> devolver normalizado
+        let m = s.match(/^(\d{4})-(\d{1,2})-(\d{1,2})$/);
+        if (m) return `${m[1]}-${p(m[2])}-${p(m[3])}`;
+        // DD-MM-YYYY o DD/MM/YYYY -> a ISO
+        m = s.match(/^([0-3]?\d)[-/]([0-1]?\d)[-/](\d{4})$/);
+        if (m) return `${m[3]}-${p(m[2])}-${p(m[1])}`;
+      }
+      // Fallback
+      const dt = new Date(val);
+      if (isNaN(dt.getTime())) return '';
       return `${dt.getFullYear()}-${p(dt.getMonth() + 1)}-${p(dt.getDate())}`;
     }
 
@@ -819,7 +865,7 @@
         el.innerHTML = `
           <div class="doc-header" style="margin: 1rem;">
             <span class="badge">${d.actaNumber || 'SIN-ACTA'}</span>
-            <span style="font-size:.8rem;opacity:.7;">${formatDate(d.createdAt || d.fecha)}</span>
+            <span style="font-size:.8rem;opacity:.7;">${formatDate(d.fecha || d.createdAt)}</span>
           </div>
           <h3 style="margin:.2rem 0 1rem; text-align:center;">${d.establecimiento || '—'}</h3>
           <div class="doc-meta">
