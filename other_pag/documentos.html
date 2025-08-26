@@ -17,6 +17,42 @@
     #datosBasicosForm #objetivoVisita {
       height: 100px !important;
     }
+
+    /* Impresión: firmas (imagen arriba, línea, etiqueta) */
+    .print-sign-row {
+      display: flex;
+      gap: 24px;
+      align-items: flex-end;
+      justify-content: space-between;
+    }
+    .print-sign-box {
+      flex: 1 1 0;
+      border: 1px solid #111;
+      border-radius: 10px;
+  padding: 10px 12px;
+  min-height: 170px;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      background: #fff;
+    }
+    .print-sign-image {
+      display: block;
+  max-height: 100px;
+  max-width: 95%;
+      object-fit: contain;
+      margin: 0 auto 8px;
+    }
+    .print-sign-line {
+      height: 1.5px;
+      background: #111;
+      border: none;
+      margin: 6px auto 4px;
+      width: 80%;
+    }
+    .print-sign-label {
+      text-align: center;
+    }
   </style>
 </head>
 
@@ -121,11 +157,15 @@
           <div class="grid cols-2">
             <div>
               <label class="small" for="asesorPrincipal">Asesor principal</label>
-              <input id="asesorPrincipal" name="asesorPrincipal" type="text">
+              <select id="asesorPrincipal" name="asesorPrincipal">
+                <option value="" disabled selected>Selecciona asesor</option>
+              </select>
             </div>
             <div>
               <label class="small" for="asesorSegundo">Asesor segundo</label>
-              <input id="asesorSegundo" name="asesorSegundo" type="text">
+              <select id="asesorSegundo" name="asesorSegundo">
+                <option value="" selected>(Opcional)</option>
+              </select>
             </div>
           </div>
 
@@ -173,7 +213,7 @@
               <select id="capacidadBasal" name="capacidadBasal">
                 <option value="" disabled selected>Selecciona</option>
                 <option value="Reflexión">Reflexión</option>
-                <option value="ReflexiónREDES">Reflexión a partir del Análisis de datos</option>
+                <option value="Reflexión a partir del Análisis de datos">Reflexión a partir del Análisis de datos</option>
                 <option value="Colaboración">Colaboración</option>
                 <option value="Confianza Relacional">Confianza Relacional</option>
                 <option value="Liderazgo Distribuido">Liderazgo Distribuido</option>
@@ -514,6 +554,57 @@
       }
     }
 
+    // Cargar asesores desde colección 'users'; fallback deja selects vacíos
+  async function loadAsesores() {
+      const selPri = document.getElementById('asesorPrincipal');
+      const selSeg = document.getElementById('asesorSegundo');
+      if (!selPri || !selSeg) return;
+      selPri.innerHTML = '<option value="" disabled selected>Cargando asesores…</option>';
+      selSeg.innerHTML = '<option value="" selected>(Opcional)</option>';
+      try {
+        const snap = await getDocs(collection(db, 'users'));
+        const items = snap.docs.map(d => {
+          const data = d.data() || {};
+          const label = (data.name || data.displayName || data.email || d.id || '').toString();
+          return label;
+        }).filter(Boolean);
+  // Inyectar lista fija solicitada
+  const injected = ['Claudia Andrea Barriga Ibañez', 'Miguel de Jesús Roborido Vargas', 'Miryam González Muñoz', 'Nadia Minerva Zagal Neira', 'Pilar Andrea Castillo Lobos', 'Paola Palavecino Escalante', 'Verónica Montecinos Castillo'];
+  const uniqSet = new Set([...items, ...injected]);
+  const ordered = Array.from(uniqSet).sort((a,b)=>a.localeCompare(b,'es'));
+  selPri.innerHTML = '<option value="" disabled selected>Selecciona asesor</option>';
+  ordered.forEach(label => {
+          const o1 = document.createElement('option'); o1.value = label; o1.textContent = label; selPri.appendChild(o1);
+          const o2 = document.createElement('option'); o2.value = label; o2.textContent = label; selSeg.appendChild(o2);
+        });
+      } catch (e) {
+        selPri.innerHTML = '<option value="" disabled selected>Selecciona asesor</option>';
+        selSeg.innerHTML = '<option value="" selected>(Opcional)</option>';
+        // Fallback fijo mínimo
+        ['Claudia Andrea Barriga Ibañez', 'Miguel de Jesús Roborido Vargas', 'Miryam González Muñoz', 'Nadia Minerva Zagal Neira', 'Pilar Andrea Castillo Lobos', 'Paola Palavecino Escalante', 'Verónica Montecinos Castillo']
+          .sort((a,b)=>a.localeCompare(b,'es'))
+          .forEach(label => {
+          const o1 = document.createElement('option'); o1.value = label; o1.textContent = label; selPri.appendChild(o1);
+          const o2 = document.createElement('option'); o2.value = label; o2.textContent = label; selSeg.appendChild(o2);
+        });
+        console.warn('No se pudieron cargar asesores; verifica permisos.');
+      }
+    }
+
+    // Helper select seguro para edición
+    function setSelectValue(id, value) {
+      const sel = document.getElementById(id);
+      if (!sel) return;
+      const val = (value ?? '').toString();
+      if (!val) { sel.value = ''; return; }
+      const exists = Array.from(sel.options).some(o => (o.value || o.textContent) === val);
+      if (!exists) {
+        const opt = document.createElement('option');
+        opt.value = val; opt.textContent = val; sel.appendChild(opt);
+      }
+      sel.value = val;
+    }
+
     // Autocompletar RBD y Director al cambiar establecimiento
     document.getElementById('establecimiento').addEventListener('change', (e) => {
       const opt = e.target.selectedOptions?.[0];
@@ -624,8 +715,8 @@
       document.getElementById('rbd').value = d.rbd || '';
       const elDir = document.getElementById('director');
       if (elDir) elDir.value = d.director || '';
-      document.getElementById('asesorPrincipal').value = d.asesorPrincipal || '';
-      document.getElementById('asesorSegundo').value = d.asesorSegundo || '';
+  setSelectValue('asesorPrincipal', d.asesorPrincipal || '');
+  setSelectValue('asesorSegundo', d.asesorSegundo || '');
       document.getElementById('horaInicio').value = d.horaInicio || '';
       document.getElementById('horaTermino').value = d.horaTermino || '';
       document.getElementById('modalidad').value = d.modalidad || '';
@@ -746,6 +837,32 @@
     function truncate(s, n = 120) {
       s = (s ?? '').toString();
       return s.length > n ? s.slice(0, n).trim() + '…' : s;
+    }
+
+    // Firmas digitales: mapeo nombre -> archivo (en carpeta FimDigitalUATP)
+    const SIGNATURE_MAP = {
+      'Claudia Andrea Barriga Ibañez': 'ClaudiaBarriga',
+      'Miguel de Jesús Roborido Vargas': 'MiguelRoborido',
+      'Miryam González Muñoz': 'MiryamGonzalez',
+      'Nadia Minerva Zagal Neira': 'NadiaZagal',
+      'Pilar Andrea Castillo Lobos': 'PilarCastillo',
+      'Paola Palavecino Escalante': 'PaolaPalavecino',
+      'Verónica Montecinos Castillo': 'VeronicaMontecinos'
+    };
+    function signatureImgTag(name) {
+      const key = (name ?? '').toString().trim();
+      const stem = SIGNATURE_MAP[key];
+      if (!stem) return '';
+  const bases = ['doc/FimDigitalUATP', '../doc/FimDigitalUATP', 'FimDigitalUATP', '../FimDigitalUATP'];
+  const exts = ['png','PNG','jpg','JPG','jpeg','JPEG','webp','WEBP'];
+  const encodedStem = encodeURIComponent(stem);
+  const candidates = [];
+  for (const b of bases) for (const e of exts) candidates.push(`${b}/${encodedStem}.${e}`);
+      const [first, ...rest] = candidates;
+      const list = rest.join('|');
+      return `<img class="print-sign-image" src="${first}" alt="Firma ${key}" data-candidates="${list}"
+                 onerror="(function(img){var r=img.dataset.candidates||''; if(!r){img.style.display='none';return;} var p=r.split('|'); var n=p.shift(); img.dataset.candidates=p.join('|'); img.src=n; })(this)"
+                 style="display:block;max-height:70px;margin:0 auto 6px;object-fit:contain;" />`;
     }
 
     // NUEVO: fecha para inputs type="date" (YYYY-MM-DD) con soporte a múltiples formatos de entrada
@@ -1118,7 +1235,8 @@
       try {
         currentUserName = userNameEl?.textContent || user.displayName || user.email || null;
       } catch { }
-      await loadEstablecimientos();
+  await loadEstablecimientos();
+  await loadAsesores();
       updateScopeVisibility();
 
       document.getElementById('datosBasicosForm').addEventListener('submit', async (e) => {
@@ -1290,13 +1408,13 @@
         ta.value = conPelText;
         btnPEL.dataset.mode = 'on';
         btnPEL.textContent = 'SIN PEL';
-        btnPEL.title = 'Quitar PEL (poner SIN PEL)';
+        btnPEL.title = 'PEL (poner SIN PEL)';
       } else {
         // Cambiar a SIN PEL
         ta.value = sinPelText;
         btnPEL.dataset.mode = 'off';
         btnPEL.textContent = 'PEL';
-        btnPEL.title = 'Insertar PEL (poner CON PEL)';
+        btnPEL.title = 'CON PEL';
       }
       ta.focus();
       try { ta.setSelectionRange(ta.value.length, ta.value.length); } catch {}
@@ -1370,7 +1488,7 @@
         .map(x => (x ?? '').toString().trim())
         .find(Boolean) || '—';
       // NUEVO: se generan SIEMPRE dos páginas: 1) contenido, 2) firmas
-      return `
+  return `
         <div class="print-page">
           <!-- Encabezado -->
           <div class="print-header">
@@ -1452,6 +1570,7 @@
           <!-- Firmas (nunca se parten entre páginas) -->
           <div class="print-sign-row">
             <div class="print-sign-box">
+              ${signatureImgTag(d.asesorPrincipal)}
               <div class="print-sign-line"></div>
               <div class="print-sign-label">Asesor/a Principal: <span class="sign-name">${f(d.asesorPrincipal)}</span></div>
             </div>
@@ -1460,6 +1579,7 @@
               <div ><span class="sign-name"></span></div>
             </div>
             <div class="print-sign-box">
+              ${signatureImgTag(d.asesorSegundo)}
               <div class="print-sign-line"></div>
               <div class="print-sign-label">Asesor/a Segundo/a: <span class="sign-name">${f(d.asesorSegundo)}</span></div>
             </div>
