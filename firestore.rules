@@ -12,14 +12,28 @@ service cloud.firestore {
       allow read, write: if request.auth != null && request.auth.uid == uid;
     }
 
-    // Subcolección privada de documentos del usuario: lectura/escritura solo por el dueño autenticado
+    // Subcolecciones privadas del usuario: lectura/escritura solo por el dueño autenticado
     match /users/{uid}/datosBasicos/{docId} {
+      allow read, write, update, delete: if request.auth != null && request.auth.uid == uid;
+    }
+    match /users/{uid}/datosRedes/{docId} {
+      allow read, write, update, delete: if request.auth != null && request.auth.uid == uid;
+    }
+    match /users/{uid}/datosActas/{docId} {
       allow read, write, update, delete: if request.auth != null && request.auth.uid == uid;
     }
 
     // Colección global compartida: lectura/creación/edición para cualquier usuario autenticado;
     // borrado solo por el dueño (ownerUid)
     match /datosBasicos/{docId} {
+      allow read: if request.auth != null;
+      allow create: if request.auth != null;
+      allow update: if request.auth != null;
+      allow delete: if request.auth != null && resource.data.ownerUid == request.auth.uid;
+    }
+
+    // Colección global de documentos de Redes (si se usa): mismas reglas que datosBasicos
+    match /datosRedes/{docId} {
       allow read: if request.auth != null;
       allow create: if request.auth != null;
       allow update: if request.auth != null;

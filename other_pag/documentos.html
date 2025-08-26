@@ -8,6 +8,16 @@
   <link rel="stylesheet" href="style.css">
   <link rel="stylesheet" href="doc/style.css">
   <link rel="icon" type="image/png" href="Imagen/slepiqq.png">
+  <style>
+    /* Altura específica para Objetivo Estratégico en Documentos */
+    #datosBasicosForm #objetivoEstrategico {
+      height: 85px !important;
+    }
+    /* Altura específica para Objetivo de la Visita en Documentos */
+    #datosBasicosForm #objetivoVisita {
+      height: 100px !important;
+    }
+  </style>
 </head>
 
 <body>
@@ -21,7 +31,7 @@
         Acompañamiento <span class="caret">▾</span>
       </button>
       <div class="dropdown-menu" role="menu" aria-label="Acompañamiento Visita">
-        <a class="dropdown-item" role="menuitem" href="documentos_redes.html" title="Documentos de Redes">DOCUMENTOS REDES</a>
+        <a class="dropdown-item" role="menuitem" href="documentos_redes.html" title="Documentos de Redes">ACTA REDES</a>
         <a class="dropdown-item" role="menuitem" href="planilla.html" title="Planilla de Acompañamiento">PLANILLA</a>
       </div>
     </div>
@@ -94,7 +104,7 @@
             <div class="full">
               <label class="small" for="objetivoEstrategico">Objetivo Estratégico</label>
               <textarea id="objetivoEstrategico" name="objetivoEstrategico"
-                placeholder="Describe el objetivo estratégico..."></textarea>
+                placeholder="Describe el objetivo estratégico...">Mejorar las capacidades de directores/as, docentes, educadores/as y asistentes de la educación, mediante la generación y ejecución de planes sistemáticos de capacitación, desarrollo y mejora continua, considerando la perspectiva de género en todo aquello que sea vinculante.</textarea>
             </div>
             <div class="full">
               <label class="small" for="director">Director/a de Establecimiento</label>
@@ -157,6 +167,7 @@
               <select id="capacidadBasal" name="capacidadBasal">
                 <option value="" disabled selected>Selecciona</option>
                 <option value="Reflexión">Reflexión</option>
+                <option value="ReflexiónREDES">Reflexión a partir del Análisis de datos</option>
                 <option value="Colaboración">Colaboración</option>
                 <option value="Confianza Relacional">Confianza Relacional</option>
                 <option value="Liderazgo Distribuido">Liderazgo Distribuido</option>
@@ -192,9 +203,15 @@
           <h2>Objetivo de la visita</h2>
           <div class="grid">
             <div class="full">
-              <label class="small" for="objetivoVisita">Objetivo de la Visita</label>
+              <div style="display:flex; align-items:center; justify-content:space-between; gap:.5rem;">
+                <label class="small" for="objetivoVisita">Objetivo de la Visita</label>
+                <button id="btnRetro" type="button" title="Entregar retroalimentacion" data-mode="retro"
+                        style="background:#000;color:#fff;border:1px solid #000;border-radius:9999px;padding:.35rem .6rem;font-size:.72rem;cursor:pointer;margin-bottom: 4px;">
+                  Entregar retroalimentacion
+                </button>
+              </div>
               <textarea id="objetivoVisita" name="objetivoVisita"
-                placeholder="Describe el objetivo de la visita..."></textarea>
+                placeholder="Describe el objetivo de la visita...">Observar y analizar las dinámicas y metodologías implementadas en las instancias de reflexión pedagógica lideradas por el equipo de gestión, con el fin de identificar oportunidades de mejora que fortalezcan su capacidad para promover el desarrollo profesional continuo de directores/as, docentes, educadores/as y asistentes de la educación, en concordancia con el objetivo estratégico de la institución.</textarea>
             </div>
           </div>
 
@@ -1236,6 +1253,57 @@
       const data = buildPreviewFromForm();
       openViewModal(data);
     });
+
+    // Botón negro: rellenar objetivo de la visita con el texto solicitado
+    const btnRetro = document.getElementById('btnRetro');
+    const retroText = 'Entregar retroalimentación constructiva y pertinente a los equipos de gestión, basada en la observación de las instancias de reflexión pedagógica, con el fin de fortalecer sus habilidades para facilitar y dinamizar estos espacios, así como para identificar e implementar estrategias que promueva la mejora continua y la integración de la perspectiva de género en las prácticas pedagógicas de su equipo';
+    const observaText = 'Observar y analizar las dinámicas y metodologías implementadas en las instancias de reflexión pedagógica lideradas por el equipo de gestión, con el fin de identificar oportunidades de mejora que fortalezcan su capacidad para promover el desarrollo profesional continuo de directores/as, docentes, educadores/as y asistentes de la educación, en concordancia con el objetivo estratégico de la institución.';
+    btnRetro?.addEventListener('click', (e) => {
+      e.preventDefault();
+      const ta = document.getElementById('objetivoVisita');
+      const mode = btnRetro?.dataset?.mode || 'retro';
+      if (ta) {
+        if (mode === 'retro') {
+          ta.value = retroText;
+          btnRetro.dataset.mode = 'observa';
+          btnRetro.textContent = 'Observar y analizar';
+          btnRetro.title = 'Observar y analizar';
+        } else {
+          ta.value = observaText;
+          btnRetro.dataset.mode = 'retro';
+          btnRetro.textContent = 'Entregar retroalimentación';
+          btnRetro.title = 'Entregar retroalimentación';
+        }
+        ta.focus();
+        try { ta.setSelectionRange(ta.value.length, ta.value.length); } catch {}
+      }
+    });
+
+    // Fallback por delegación: si por alguna razón no se adjuntó el handler directo
+    if (!btnRetro) {
+      document.addEventListener('click', (ev) => {
+        const b = ev.target?.closest?.('#btnRetro');
+        if (!b) return;
+        ev.preventDefault();
+        const ta = document.getElementById('objetivoVisita');
+        const mode = b.dataset.mode || 'retro';
+        if (ta) {
+          if (mode === 'retro') {
+            ta.value = retroText;
+            b.dataset.mode = 'observaandanalizar';
+            b.textContent = 'Observación y analizar ';
+            b.title = 'Observación y analizar ';
+          } else {
+            ta.value = observaText;
+            b.dataset.mode = 'retro';
+            b.textContent = 'Entregar retroalimentación';
+            b.title = 'Entregar retroalimentación';
+          }
+          ta.focus();
+          try { ta.setSelectionRange(ta.value.length, ta.value.length); } catch {}
+        }
+      });
+    }
 
     // Construye el contenido imprimible con todos los documentos
     function buildPrintableDoc(d) {

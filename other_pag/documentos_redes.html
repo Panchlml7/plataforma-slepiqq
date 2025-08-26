@@ -12,12 +12,135 @@
     /* Override inmediato: campos blancos en formulario Redes */
     #datosRedesForm input,
     #datosRedesForm select,
-    #datosRedesForm textarea{background:#fff !important;color:#0f172a !important;border:1px solid #cbd5e1 !important}
+    #datosRedesForm textarea {
+      background: #fff !important;
+      color: #0f172a !important;
+      border: 1px solid #cbd5e1 !important
+    }
+
     #datosRedesForm input:focus,
     #datosRedesForm select:focus,
-    #datosRedesForm textarea:focus{background:#fff !important;color:#0f172a !important;border-color:#cbd5e1 !important;box-shadow:none !important;outline:none !important}
+    #datosRedesForm textarea:focus {
+      background: #fff !important;
+      color: #0f172a !important;
+      border-color: #cbd5e1 !important;
+      box-shadow: none !important;
+      outline: none !important
+    }
+
     #datosRedesForm input::placeholder,
-    #datosRedesForm textarea::placeholder{color:#64748b;opacity:.95}
+    #datosRedesForm textarea::placeholder {
+      color: #64748b;
+      opacity: .95
+    }
+
+    /* Estilo mejorado: select múltiple y chips de RBD */
+    #datosRedesForm select#rbd {
+      border-radius: .5rem;
+    }
+
+    #datosRedesForm .chips {
+      display: flex;
+      gap: .4rem;
+      flex-wrap: wrap
+    }
+
+    #datosRedesForm .chip {
+      border: 1px solid transparent;
+      border-radius: 999px;
+      padding: .25rem .6rem;
+      cursor: pointer;
+      background: #eef2ff;
+      color: #3730a3;
+      font-size: .8rem;
+      line-height: 1;
+      transition: transform .06s ease, background .2s ease, color .2s ease, border-color .2s ease
+    }
+
+    #datosRedesForm .chip:hover {
+      transform: translateY(-1px)
+    }
+
+    #datosRedesForm .chip:focus {
+      outline: none;
+      box-shadow: 0 0 0 2px rgba(124, 58, 237, .25)
+    }
+
+    /* Paleta variada para chips bonitos */
+    #datosRedesForm .chip.color-1 {
+      background: #eef2ff;
+      color: #3730a3;
+      border-color: #c7d2fe
+    }
+
+    #datosRedesForm .chip.color-2 {
+      background: #e6fffa;
+      color: #0f766e;
+      border-color: #99f6e4
+    }
+
+    #datosRedesForm .chip.color-3 {
+      background: #ffe4e6;
+      color: #be123c;
+      border-color: #fecdd3
+    }
+
+    #datosRedesForm .chip.color-4 {
+      background: #fff7ed;
+      color: #b45309;
+      border-color: #fed7aa
+    }
+
+    #datosRedesForm .chip.color-5 {
+      background: #e0f2fe;
+      color: #075985;
+      border-color: #bae6fd
+    }
+
+    #datosRedesForm .chip.color-6 {
+      background: #ecfccb;
+      color: #3f6212;
+      border-color: #d9f99d
+    }
+
+    /* Botones utilitarios bajo el select */
+    #datosRedesForm #rbdSelectAllBtn {
+      background: #7c3aed;
+      color: #fff;
+      border: 1px solid #6d28d9
+    }
+
+    #datosRedesForm #rbdSelectAllBtn:hover {
+      filter: brightness(0.95)
+    }
+
+    #datosRedesForm #rbdClearAllBtn {
+      background: #374151;
+      color: #fff;
+      border: 1px solid #111827
+    }
+
+    #datosRedesForm #rbdClearAllBtn:hover {
+      filter: brightness(0.95)
+    }
+
+    /* rbdChips en grid */
+    #datosRedesForm #rbdChips {
+      display: grid;
+      grid-template-columns: repeat(6, minmax(0, 1fr));
+      justify-items: start
+    }
+
+    @media (max-width:640px) {
+      #datosRedesForm #rbdChips {
+        grid-template-columns: 1fr
+      }
+    }
+
+    /* Altura específica para Objetivo Estratégico */
+    #datosRedesForm #objetivoEstrategico {
+      height: 85px !important;
+    }
   </style>
 </head>
 
@@ -32,8 +155,8 @@
         Acompañamiento <span class="caret">▾</span>
       </button>
       <div class="dropdown-menu" role="menu" aria-label="Acompañamiento Visita">
-        <a class="dropdown-item" role="menuitem" href="documentos.html"
-          title="Documento de Acompañamiento">DOCUMENTO VISITA</a>
+        <a class="dropdown-item" role="menuitem" href="documentos.html" title="Documentos de Redes">DOCUMENTOS
+          VISITA</a>
         <a class="dropdown-item" role="menuitem" href="planilla.html" title="Planilla de Acompañamiento">PLANILLA</a>
       </div>
     </div>
@@ -72,7 +195,7 @@
     <!-- Sección: Nuevo Documento (wizard existente) -->
     <div id="nuevo-documento" class="main-content-section active">
       <!-- ABRIR FORM: envuelve ambos pasos y acciones -->
-  <form id="datosRedesForm" class="section-card">
+      <form id="datosRedesForm" class="section-card">
         <!-- Paso 1: Datos Básicos -->
         <div class="wizard-step" data-step="1">
           <div class="wizard-legend" style="text-align: end;">Paso 1 de 2: Datos Básicos</div>
@@ -93,10 +216,23 @@
           <h2 style="margin-top:1rem;">DATOS INSTITUCIÓN VISITADA</h2>
           <div class="grid cols-2">
             <div>
-              <label class="small" for="rbd">RBD</label>
-              <select id="rbd" name="rbd">
-                <option value="" disabled selected>Selecciona RBD</option>
+              <label class="small" for="rbd">RBD (puedes seleccionar varios)</label>
+              <select id="rbd" name="rbd" multiple size="6" aria-multiselectable="true">
+                <option value="" disabled>Selecciona RBD</option>
               </select>
+              <div style="display:flex;gap:.5rem;margin-top:.35rem;flex-wrap:wrap;">
+                <button id="rbdSelectAllBtn" type="button" class="btn-sm" title="Seleccionar todos">Seleccionar
+                  todos</button>
+                <button id="rbdClearAllBtn" type="button" class="btn-sm" title="Quitar todos"
+                  style="background:#374151;color:#fff;">Quitar todos</button>
+              </div>
+              <div style="display:flex;align-items:flex-start;gap:.75rem;margin-top:.35rem;">
+                <small style="display:block;opacity:.85;max-width:420px;">
+                  Consejo: haz clic para agregar o quitar. También puedes hacer doble clic.
+                </small>
+
+              </div>
+              <div id="rbdChips" class="chips" style="margin-top:.5rem;"></div>
             </div>
             <div>
               <label class="small" for="establecimiento">Establecimiento</label>
@@ -108,12 +244,9 @@
             <div class="full">
               <label class="small" for="objetivoEstrategico">Objetivo Estratégico</label>
               <textarea id="objetivoEstrategico" name="objetivoEstrategico"
-                placeholder="Describe el objetivo estratégico..."></textarea>
+                placeholder="Describe el objetivo estratégico...">Mejorar las capacidades de directores/as, docentes, educadores/as y asistentes de la educación, mediante la generación y ejecución de planes sistemáticos de capacitación, desarrollo y mejora continua, considerando la perspectiva de género en todo aquello que sea vinculante.</textarea>
             </div>
-            <div class="full">
-              <label class="small" for="director">Director/a de establecimiento</label>
-              <input id="director" name="director" type="text" placeholder="Nombre del/la director/a">
-            </div>
+
           </div>
 
           <!-- Equipo de Asesores -->
@@ -173,6 +306,7 @@
               <select id="capacidadBasal" name="capacidadBasal">
                 <option value="" disabled selected>Selecciona</option>
                 <option value="Reflexión">Reflexión</option>
+                <option value="ReflexiónREDES">Reflexión a partir del Análisis de datos</option>
                 <option value="Colaboración">Colaboración</option>
                 <option value="Confianza Relacional">Confianza Relacional</option>
                 <option value="Liderazgo Distribuido">Liderazgo Distribuido</option>
@@ -208,9 +342,12 @@
           <h2>Objetivo de la visita</h2>
           <div class="grid">
             <div class="full">
-              <label class="small" for="objetivoVisita">Objetivo de la Visita</label>
-              <textarea id="objetivoVisita" name="objetivoVisita"
-                placeholder="Describe el objetivo de la visita..."></textarea>
+              <div style="display:flex; align-items:center; justify-content:space-between; gap:.5rem;">
+                <label class="small" for="objetivoVisita">Objetivo de la Visita</label>
+                
+              </div>
+              <textarea id="objetivoVisita" name="objetivoVisita" 
+                placeholder="Describe el objetivo de la visita...">Implementar el ciclo de apoyo técnico-pedagógico para el trabajo en Red con los equipos de los establecimientos educacionales, que potencie el trabajo colaborativo y el desarrollo de capacidades.</textarea>
             </div>
           </div>
 
@@ -291,10 +428,17 @@
           <button id="btnSearch" class="btn-sm" style="background:#7c3aed;color:#fff;">Buscar</button>
           <button id="btnClear" class="btn-sm" style="background:#374151;color:#fff;">Limpiar</button>
         </div>
-        <!-- Visibilidad fija: solo Mis documentos -->
-        <div class="search-row" style="margin-top:.5rem; gap:1rem; color:#111827;">
+        <!-- Visibilidad: Mis documentos | Equipo (todos) -->
+        <div class="search-row" style="margin-top:.5rem; gap:1rem; color:#111827; align-items:center;">
           <span style="font-size:.85rem;">Visibilidad:</span>
-          <span>Mis documentos</span>
+          <label style="display:flex;align-items:center;gap:.3rem;">
+            <input type="radio" name="scope" id="scopeMine" checked>
+            <span>Mis documentos</span>
+          </label>
+          <label style="display:flex;align-items:center;gap:.3rem;">
+            <input type="radio" name="scope" id="scopeTeam">
+            <span>Equipo (todos)</span>
+          </label>
         </div>
         <small style="display:block;opacity:.75;margin-top:.5rem; color: #000;">Busca por cualquier campo. Consejo: para
           N° ACTA exacto, escribe el código completo (ej: ACT-20240809-123).</small>
@@ -369,10 +513,10 @@
     }
     const { initializeApp } = appMod;
     const { getAuth, onAuthStateChanged, signOut } = authMod;
-    const { getFirestore, collection, addDoc, serverTimestamp, doc, getDoc, getDocs, onSnapshot, query, where, updateDoc } = fsMod;
+  const { getFirestore, collection, addDoc, serverTimestamp, doc, getDoc, getDocs, onSnapshot, query, where, updateDoc } = fsMod;
 
     // Logo de impresión: archivo local (ruta relativa al HTML)
-  const PRINT_LOGO_URL = 'Imagen/slepiqq.png';
+    const PRINT_LOGO_URL = 'Imagen/slepiqq.png';
     // Precarga simple del logo para mejorar aparición en PDF
     const _preloadLogo = (() => { const img = new Image(); img.src = PRINT_LOGO_URL; return img; })();
 
@@ -391,11 +535,11 @@
       try {
         await signOut(auth);
       } catch (err) {
-        console.error(err);
         alert('Error al cerrar sesión');
+        console.error(err);
       } finally {
-        // Redirigir siempre al login
-        location.replace('../index.html');
+        // Volver al login
+        try { location.replace('../index.html'); } catch { /* noop */ }
       }
     });
 
@@ -485,7 +629,9 @@
           directorName: d.data().directorName || d.data().director || d.data().directorEstablecimiento || ''
         }));
         sel.innerHTML = '<option value="" disabled selected>Selecciona establecimiento</option>';
-        rbdSel.innerHTML = '<option value="" disabled selected>Selecciona RBD</option>';
+        // Construir lista de RBD únicos
+        const seen = new Set();
+        rbdSel.innerHTML = '<option value="" disabled>Selecciona RBD</option>';
         for (const it of items) {
           const opt = document.createElement('option');
           opt.value = it.name;
@@ -494,7 +640,8 @@
           if (it.directorName) opt.setAttribute('data-director', it.directorName);
           sel.appendChild(opt);
 
-          if (it.rbd) {
+          if (it.rbd && !seen.has(it.rbd)) {
+            seen.add(it.rbd);
             const ropt = document.createElement('option');
             ropt.value = it.rbd;
             ropt.textContent = it.rbd; // solo número
@@ -508,7 +655,7 @@
         const msg = (e && (e.code === 'permission-denied' || e.message?.includes('permission'))) ? 'Sin permisos para leer establecimientos; usando lista local.' : 'No se pudo cargar establecimientos; usando lista local.';
         console.warn(msg);
         sel.innerHTML = '<option value="" disabled selected>Selecciona establecimiento</option>';
-        rbdSel.innerHTML = '<option value="" disabled selected>Selecciona RBD</option>';
+        rbdSel.innerHTML = '<option value="" disabled>Selecciona RBD</option>';
         for (const it of fallback) {
           const opt = document.createElement('option');
           opt.value = it.name;
@@ -518,55 +665,106 @@
           sel.appendChild(opt);
 
           if (it.rbd) {
-            const ropt = document.createElement('option');
-            ropt.value = it.rbd;
-            ropt.textContent = it.rbd; // solo número
-            ropt.setAttribute('data-name', it.name);
-            if (it.directorName) ropt.setAttribute('data-director', it.directorName);
-            rbdSel.appendChild(ropt);
+            const exists = Array.from(rbdSel.options).some(o => o.value === it.rbd);
+            if (!exists) {
+              const ropt = document.createElement('option');
+              ropt.value = it.rbd;
+              ropt.textContent = it.rbd; // solo número
+              ropt.setAttribute('data-name', it.name);
+              if (it.directorName) ropt.setAttribute('data-director', it.directorName);
+              rbdSel.appendChild(ropt);
+            }
           }
         }
       }
     }
 
-    // Autocompletar RBD y Director al cambiar establecimiento
+    // Autocompletar RBD y Director al cambiar establecimiento (si RBD múltiple, se selecciona el RBD asociado si existe)
     document.getElementById('establecimiento').addEventListener('change', (e) => {
       const opt = e.target.selectedOptions?.[0];
       const rbd = opt?.getAttribute('data-rbd') || '';
-      document.getElementById('rbd').value = rbd;
+      const rbdSel = document.getElementById('rbd');
+      // Limpiar selección previa y seleccionar uno si existe
+      Array.from(rbdSel.options).forEach(o => o.selected = false);
+      if (rbd) {
+        const target = Array.from(rbdSel.options).find(o => o.value === rbd);
+        if (target) target.selected = true;
+      }
       const dir = opt?.getAttribute('data-director') || '';
       const dirEl = document.getElementById('director');
       if (dirEl) dirEl.value = dir;
     });
 
-    // NUEVO: Buscar por RBD y mostrar Establecimiento (y Director) automáticamente (con normalización)
-  const rbdInput = document.getElementById('rbd');
+    // NUEVO: Buscar por RBD y mostrar Establecimiento automáticamente (con normalización)
+    const rbdInput = document.getElementById('rbd');
     const normalizeRBD = (s) => (s ?? '').toString().replace(/[^0-9]/g, '');
-    function syncEstByRbd(rawVal) {
-      const val = normalizeRBD((rawVal || '').trim());
-      const sel = document.getElementById('establecimiento');
-      const rbdSel = document.getElementById('rbd');
-      if (!sel || !rbdSel || !val) return;
-      const opts = Array.from(sel.options || []);
-      const match = opts.find(o => normalizeRBD(o.getAttribute('data-rbd') || '') === val);
-      if (match) {
-        sel.value = match.value;
-        // Seleccionar también en el select de RBD
-        const rbdOpts = Array.from(rbdSel.options || []);
-        const rbdMatch = rbdOpts.find(o => normalizeRBD(o.value || '') === val);
-        if (rbdMatch) rbdSel.value = rbdMatch.value;
-        const dir = match.getAttribute('data-director') || '';
-        const dirEl = document.getElementById('director');
-        if (dirEl) dirEl.value = dir;
+    rbdInput?.addEventListener('change', () => syncEstByRbdMulti());
+    // Alternar selección con clic y doble clic; chips removibles
+    (function enhanceRbdMulti() {
+      const sel = document.getElementById('rbd');
+      const chips = document.getElementById('rbdChips');
+      const btnAll = document.getElementById('rbdSelectAllBtn');
+      const btnNone = document.getElementById('rbdClearAllBtn');
+      if (!sel) return;
+      function renderChips() {
+        if (!chips) return;
+        chips.innerHTML = '';
+        const vals = Array.from(sel.selectedOptions).map(o => o.value);
+        vals.forEach((v, idx) => {
+          const chip = document.createElement('button');
+          chip.type = 'button';
+          const colorClass = 'color-' + ((idx % 6) + 1);
+          chip.className = 'chip ' + colorClass;
+          chip.textContent = v;
+          chip.title = 'Quitar ' + v;
+          chip.addEventListener('click', () => {
+            Array.from(sel.options).forEach(o => { if (o.value === v) o.selected = false; });
+            sel.dispatchEvent(new Event('change', { bubbles: true }));
+            renderChips();
+          });
+          chips.appendChild(chip);
+        });
       }
-    }
-    rbdInput?.addEventListener('input', () => syncEstByRbd(rbdInput.value));
-    rbdInput?.addEventListener('change', () => syncEstByRbd(rbdInput.value));
-    // Cambio desde el select RBD: sincronizar establecimiento y director
-    rbdInput?.addEventListener('change', (e) => {
-      const val = normalizeRBD((e.target.value || '').trim());
-      syncEstByRbd(val);
-    });
+      // Clic simple: alterna sin necesidad de Ctrl
+      sel.addEventListener('mousedown', (e) => {
+        // Evita que el navegador cambie foco y borre selección previa
+        e.preventDefault();
+        const option = e.target.closest('option');
+        if (!option || option.disabled) return;
+        option.selected = !option.selected;
+        sel.dispatchEvent(new Event('change', { bubbles: true }));
+        renderChips();
+      });
+      // Doble clic: también alterna
+      sel.addEventListener('dblclick', (e) => {
+        e.preventDefault();
+        const option = e.target.closest('option');
+        if (!option || option.disabled) return;
+        option.selected = !option.selected;
+        sel.dispatchEvent(new Event('change', { bubbles: true }));
+        renderChips();
+      });
+      // Render inicial (por si hay valores precargados)
+      renderChips();
+      // Re-render en cambios externos
+      sel.addEventListener('change', renderChips);
+
+      // Botones select/deselect
+      btnAll?.addEventListener('click', () => {
+        Array.from(sel.options).forEach(o => { if (!o.disabled) o.selected = true; });
+        sel.dispatchEvent(new Event('change', { bubbles: true }));
+        renderChips();
+      });
+      btnNone?.addEventListener('click', () => {
+        Array.from(sel.options).forEach(o => { o.selected = false; });
+        sel.dispatchEvent(new Event('change', { bubbles: true }));
+        renderChips();
+      });
+      // Enfocar select al hacer clic en contenedor visual
+      chips?.addEventListener('click', () => { sel?.focus?.(); });
+    })();
+
+    // Eliminado: chips de Directores y entrada por Enter
 
     // Validar horario
     function validateTimes() {
@@ -579,7 +777,7 @@
       return true;
     }
 
-    // Guardar en Firestore con fallback a subcolección privada si falta permiso en global
+  // Guardar en Firestore (subcolección privada users/{uid}/datosActas, fallback a datosRedes)
     let currentUserName = null; // se define al cargar perfil
     async function saveForm(user) {
       if (!validateTimes()) return;
@@ -594,7 +792,7 @@
         fecha: fechaVal,
         objetivoEstrategico: document.getElementById('objetivoEstrategico').value,
         establecimiento: document.getElementById('establecimiento').value,
-        rbd: document.getElementById('rbd').value,
+        rbd: getSelectedRBDs(),
         director: document.getElementById('director')?.value?.trim() || null,
         asesorPrincipal: document.getElementById('asesorPrincipal').value,
         asesorSegundo: document.getElementById('asesorSegundo').value || null,
@@ -606,7 +804,7 @@
         nivelImplementacion: document.getElementById('nivelImplementacion').value,
         rolProfesional: document.getElementById('rolProfesional').value,
         // Paso 2
-  objetivoVisita: document.getElementById('objetivoVisita').value.trim(),
+        objetivoVisita: document.getElementById('objetivoVisita').value.trim(),
         antecedentes: document.getElementById('antecedentes').value.trim() || null,
         instrumentos: document.getElementById('instrumentos').value.trim() || null,
         practicaProblematica: document.getElementById('practicaProblematica').value.trim() || null,
@@ -622,39 +820,70 @@
         ownerEmail: user?.email || null,
         ownerName: currentUserName || user?.displayName || user?.email || null
       };
-  // No obligar otros campos
+      // No obligar otros campos
 
-      if (editingId) {
-        // Actualizar en colección global compartida; si el origen fue sub, creamos copia en global
+      // Util para detectar falta de permisos
+      const isPermDenied = (err) => (
+        err?.code === 'permission-denied' || /insufficient permissions|permission/i.test(err?.message || '')
+      );
+
+  if (editingId) {
         try {
           if (editingSrc === 'sub') {
-            await addDoc(collection(db, 'datosRedes'), { ...payload, createdAt: serverTimestamp(), migratedFrom: 'sub', migratedFromId: editingId });
-            alert('Documento publicado en compartidos (global).');
+            const owner = editingOwnerUid || user?.uid;
+    // Detectar subcarpeta de origen segura
+            const colName = editingCol || 'datosActas';
+            await updateDoc(doc(db, 'users', owner, colName, editingId), { ...payload, updatedAt: serverTimestamp() });
+            alert('Documento actualizado (Mis documentos).');
+            editingSrc = 'sub';
           } else {
-            await updateDoc(doc(db, 'datosRedes', editingId), { ...payload, updatedAt: serverTimestamp() });
-            alert('Documento actualizado.');
+            // Si el origen es global, guardar una copia en Mis documentos
+            await addDoc(collection(db, 'users', user.uid, 'datosActas'), { ...payload, createdAt: serverTimestamp(), migratedFrom: `datosRedes/${editingId}` });
+            alert('Sin permisos para editar compartidos. Se guardó una copia en Mis documentos.');
+            editingSrc = 'sub';
           }
         } catch (e) {
-          console.error('Error al guardar/actualizar en compartidos:', e);
-          alert('No se pudo guardar/actualizar en compartidos.');
+          console.error('Error al actualizar Mis documentos:', e);
+          alert('No se pudo guardar los cambios en Mis documentos.');
           return;
         }
       } else {
-        // Crear: guardar directamente en colección global compartida
+        // Crear en Mis documentos
         try {
-          await addDoc(collection(db, 'datosRedes'), { ...payload, createdAt: serverTimestamp() });
-          alert('Guardado en compartidos (global).');
-        } catch (e2) {
-          console.error('Fallo guardado en compartidos:', e2);
-          alert('No se pudo guardar el documento. Verifica tu conexión y permisos.');
-          return;
+          await addDoc(collection(db, 'users', user.uid, 'datosActas'), { ...payload, createdAt: serverTimestamp() });
+          alert('Guardado en Mis documentos.');
+          editingSrc = 'sub';
+        } catch (e3) {
+          console.error('Fallo guardado en Mis documentos:', e3);
+          // Fallback a carpeta alternativa privada si permisos en datosRedes
+          try {
+            await addDoc(collection(db, 'users', user.uid, 'datosRedes'), { ...payload, createdAt: serverTimestamp(), note: 'fallback a datosRedes por permisos en datosActas' });
+            alert('Guardado en Mis documentos (carpeta alternativa: datosRedes).');
+          } catch (e4) {
+            console.error('Fallo guardado también en carpeta alternativa:', e4);
+            // Tercer intento: publicar en Equipo (global) para no perder el trabajo
+            try {
+              await addDoc(collection(db, 'datosRedes'), { ...payload, createdAt: serverTimestamp(), publishedFrom: `users/${user.uid}`, ownerUid: user?.uid || null, ownerEmail: user?.email || null, ownerName: currentUserName || null });
+              alert('Sin permisos en Mis documentos. Se publicó en Equipo (datosRedes).');
+              editingSrc = 'global';
+            } catch (e5) {
+              console.error('Fallo guardado en Equipo (global) también:', e5);
+              // Guardar como borrador offline
+              const offline = enqueueOfflineDoc(payload);
+              offlineDocs = loadOfflineQueue().map(d => ({ ...d }));
+              applyFilters();
+              alert('Sin permisos para guardar. Se creó un borrador offline y se intentará sincronizar automáticamente.');
+              editingSrc = 'offline';
+            }
+          }
         }
       }
 
       // Reset a modo "nuevo"
-      editingId = null;
+  editingId = null;
+  editingCol = 'datosActas';
       document.getElementById('btnSubmit').textContent = 'Guardar';
-  document.getElementById('datosRedesForm').reset();
+      document.getElementById('datosRedesForm').reset();
       stepIndex = 0; showStep(stepIndex);
     }
 
@@ -665,7 +894,18 @@
       document.getElementById('fecha').value = toInputDate(d.fecha);
       document.getElementById('objetivoEstrategico').value = d.objetivoEstrategico || '';
       document.getElementById('establecimiento').value = d.establecimiento || '';
-      document.getElementById('rbd').value = d.rbd || '';
+      // Preselección múltiple RBD
+      (function () {
+        const rbdSel = document.getElementById('rbd');
+        const vals = Array.isArray(d.rbd) ? d.rbd : (d.rbd ? [d.rbd] : []);
+        Array.from(rbdSel.options).forEach(o => o.selected = false);
+        vals.forEach(v => {
+          const opt = Array.from(rbdSel.options).find(o => o.value === v);
+          if (opt) opt.selected = true;
+        });
+        // Notificar cambios para refrescar chips/sincronización
+        try { rbdSel.dispatchEvent(new Event('change', { bubbles: true })); } catch { }
+      })();
       const elDir = document.getElementById('director');
       if (elDir) elDir.value = d.director || '';
       document.getElementById('asesorPrincipal').value = d.asesorPrincipal || '';
@@ -698,7 +938,8 @@
       editingId = d._id;
       // Guardar origen para actualizar correctamente
       editingSrc = d._src || 'global';
-      editingOwnerUid = d._ownerUid || d.ownerUid || currentUser?.uid || null;
+  editingOwnerUid = d._ownerUid || d.ownerUid || currentUser?.uid || null;
+  editingCol = d._col || 'datosActas';
       loadDocIntoForm(d);
       // Activar pestaña "Nuevo Documento"
       document.getElementById('tabNuevo').click();
@@ -728,7 +969,7 @@
       window.scrollTo({ top: 0, behavior: 'smooth' });
     });
 
-  const form = document.getElementById('datosRedesForm');
+    const form = document.getElementById('datosRedesForm');
     const steps = Array.from(form.querySelectorAll('.wizard-step'));
     const btnBack = document.getElementById('btnBack');
     const btnNext = document.getElementById('btnNext');
@@ -791,6 +1032,81 @@
       s = (s ?? '').toString();
       return s.length > n ? s.slice(0, n).trim() + '…' : s;
     }
+    // Offline: cola local para guardar cuando no hay permisos
+    const OFFLINE_KEY = 'redes_offline_queue_v1';
+    function loadOfflineQueue() {
+      try { return JSON.parse(localStorage.getItem(OFFLINE_KEY) || '[]'); } catch { return []; }
+    }
+    function saveOfflineQueue(q) {
+      try { localStorage.setItem(OFFLINE_KEY, JSON.stringify(q)); } catch { }
+    }
+    function enqueueOfflineDoc(doc) {
+      const q = loadOfflineQueue();
+      const ts = new Date().toISOString();
+      const entry = { _id: 'offline-' + Math.random().toString(36).slice(2, 10), createdAt: ts, _src: 'offline', _col: 'datosActas', ...doc };
+      q.push(entry);
+      saveOfflineQueue(q);
+      return entry;
+    }
+    async function trySyncOfflineQueue(user) {
+      const q = loadOfflineQueue();
+      if (!q.length || !user) return;
+      const remain = [];
+      for (const item of q) {
+        try {
+          // intentar datosActas primero
+          await addDoc(collection(db, 'users', user.uid, 'datosActas'), { ...item, createdAt: serverTimestamp(), syncedFromOffline: true, _id: undefined, _src: undefined });
+        } catch (e1) {
+          try {
+            // fallback privado alterno
+            await addDoc(collection(db, 'users', user.uid, 'datosRedes'), { ...item, createdAt: serverTimestamp(), syncedFromOffline: true, _id: undefined, _src: undefined });
+          } catch (e2) {
+            remain.push(item); // no se pudo sincronizar, queda en cola
+          }
+        }
+      }
+      saveOfflineQueue(remain);
+      // refrescar vista si estamos en Mis documentos
+      if (!scopeRadioTeam?.checked) {
+        offlineDocs = loadOfflineQueue().map(copy => ({ ...copy }));
+        applyFilters();
+      }
+    }
+    // Helpers RBD múltiple
+    function rbdArray(val) {
+      if (!val) return [];
+      if (Array.isArray(val)) return val.filter(Boolean);
+      const s = (val ?? '').toString().trim();
+      if (!s) return [];
+      if (s.includes(',') || s.includes(';')) return s.split(/[;,]/).map(x => x.trim()).filter(Boolean);
+      return [s];
+    }
+    function rbdLabel(val) {
+      const arr = rbdArray(val);
+      return arr.length ? arr.join(', ') : '—';
+    }
+
+    // Helper: obtener RBD seleccionados del multiselect
+    function getSelectedRBDs() {
+      const sel = document.getElementById('rbd');
+      return Array.from(sel?.selectedOptions || []).map(o => o.value);
+    }
+
+    // Sincroniza Establecimiento cuando hay exactamente un RBD seleccionado
+    function syncEstByRbdMulti() {
+      try {
+        const rbds = getSelectedRBDs();
+        if (rbds.length !== 1) return; // solo si hay uno
+        const rbd = rbds[0];
+        const estSel = document.getElementById('establecimiento');
+        if (!estSel) return;
+        const opt = Array.from(estSel.options).find(o => (o.getAttribute('data-rbd') || '') === rbd);
+        if (opt) {
+          estSel.value = opt.value;
+          estSel.dispatchEvent(new Event('change', { bubbles: true }));
+        }
+      } catch { }
+    }
 
     // NUEVO: fecha para inputs type="date" (YYYY-MM-DD) con soporte a múltiples formatos
     function toInputDate(val) {
@@ -818,11 +1134,13 @@
     }
 
     // Estado de edición
-    let allDocs = [];
+  let allDocs = [];
     let filtered = [];
     let editingId = null; // <= id del doc en edición
     let editingSrc = 'global'; // 'global' | 'sub'
     let editingOwnerUid = null;
+  let editingCol = 'datosActas';
+  let offlineDocs = loadOfflineQueue().map(d => ({ ...d }));
 
     // Estadísticas
     function renderStats(list) {
@@ -857,7 +1175,7 @@
         el.className = 'doc-card';
         // Edición para todos; eliminación solo autor o admin
         const canEdit = true;
-        const canDelete = ((d.ownerUid && currentUser && d.ownerUid === currentUser.uid) || currentUserRole === 'admin');
+    const canDelete = (d._src === 'offline') || ((d.ownerUid && currentUser && d.ownerUid === currentUser.uid) || currentUserRole === 'admin');
         const editBtn = '<button type="button" class="btn-sm btn-edit" data-act="edit">Editar</button>';
         const delBtn = canDelete
           ? '<button type="button" class="btn-sm btn-del" data-act="del">Eliminar</button>'
@@ -866,10 +1184,11 @@
           <div class="doc-header" style="margin: 1rem;">
             <span class="badge">${d.actaNumber || 'SIN-ACTA'}</span>
             <span style="font-size:.8rem;opacity:.7;">${formatDate(d.fecha || d.createdAt)}</span>
+      ${d._src === 'offline' ? '<span class="badge" style="background:#f59e0b;color:#111; margin-left:.5rem;" title="Borrador offline">OFFLINE</span>' : ''}
           </div>
           <h3 style="margin:.2rem 0 1rem; text-align:center;">${d.establecimiento || '—'}</h3>
           <div class="doc-meta">
-            <span style="margin-left: 1.5rem;">🪪 RBD: <strong>${d.rbd || '—'}</strong></span>
+            <span style="margin-left: 1.5rem;">🪪 RBD: <strong>${rbdLabel(d.rbd)}</strong></span>
             <span>⏰ ${d.horaInicio || '—'} - ${d.horaTermino || '—'}</span>
             <span>👤 ${d.asesorPrincipal || '—'}</span>
             <span>📍 ${d.modalidad || '—'}</span>
@@ -892,14 +1211,24 @@
               if (!canDelete) { alert('Solo autor o admin puede eliminar.'); return; }
               if (confirm('¿Eliminar este documento?')) {
                 try {
-                  await import('https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js').then(async m => {
-                    if (d._src === 'sub') {
-                      const ownerUid = d._ownerUid || d.ownerUid || (currentUser?.uid || '');
-                      await m.deleteDoc(m.doc(db, 'users', ownerUid, 'datosRedes', d._id));
-                    } else {
-                      await m.deleteDoc(m.doc(db, 'datosRedes', d._id));
-                    }
-                  });
+                  if (d._src === 'offline') {
+                    // eliminar de la cola local
+                    const q = loadOfflineQueue();
+                    const nq = q.filter(x => x._id !== d._id);
+                    saveOfflineQueue(nq);
+                    offlineDocs = nq.map(x => ({ ...x }));
+                    applyFilters();
+                  } else {
+                    await import('https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js').then(async m => {
+                      if (d._src === 'sub') {
+                        const ownerUid = d._ownerUid || d.ownerUid || (currentUser?.uid || '');
+                        const colName = d._col || 'datosRedes';
+                        await m.deleteDoc(m.doc(db, 'users', ownerUid, colName, d._id));
+                      } else {
+                        await m.deleteDoc(m.doc(db, 'datosRedes', d._id));
+                      }
+                    });
+                  }
                 }
                 catch (e) { console.error(e); alert('No se pudo eliminar'); }
               }
@@ -929,13 +1258,16 @@
       const f = (v) => (v && typeof v === 'string' ? v : (v ?? '—'));
       const dt = formatDate(d.fecha || d.createdAt);
       viewModalBody.innerHTML = `
-        <div style="margin-bottom:1rem;">
-          <div style="font-size:1.2rem; font-weight:600; color:#111827;">${f(d.establecimiento)}</div>
-          <div style="font-size:.85rem; color:#6b7280;">
-            ${f(d.rbd)} &bull; ${f(d.horaInicio)} - ${f(d.horaTermino)} &bull; ${f(d.modalidad)}
-          </div>
+         <div style="margin-bottom:1rem;">
+           <div style="font-size:1.2rem; font-weight:600; color:#111827;">${f(d.establecimiento)}</div>
+           <div style="font-size:.85rem; color:#6b7280;">
+             ${rbdLabel(d.rbd)} &bull; ${f(d.horaInicio)} - ${f(d.horaTermino)} &bull; ${f(d.modalidad)}
+           </div>
+         </div>
+        <div style="margin:.5rem 0 1rem; font-size:.9rem; color:#111827;">
+          <strong>Director:</strong> ${(d.director || '—')}
         </div>
-        <br />
+         <br />
         <div style="margin-bottom:1rem;">
           <strong>Objetivo Estratégico:</strong>
           <div style="white-space:pre-wrap;">${f(d.objetivoEstrategico)}</div>
@@ -1013,7 +1345,9 @@
 
     function applyFilters() {
       const q = (searchInput?.value || '').trim().toLowerCase();
-      let list = [...allDocs];
+  // Mezclar offline solo cuando estamos viendo Mis documentos
+  const base = scopeRadioTeam?.checked ? allDocs : [...allDocs, ...offlineDocs];
+  let list = [...base];
 
       if (quickFilter === 'Presencial' || quickFilter === 'Remoto' || quickFilter === 'Híbrida') {
         list = list.filter(x => (x.modalidad || '').toLowerCase() === quickFilter.toLowerCase());
@@ -1024,8 +1358,10 @@
       if (q) {
         const exact = list.filter(x => (x.actaNumber || '').toLowerCase() === q);
         filtered = exact.length ? exact : list.filter(x => {
+          const rbdText = Array.isArray(x.rbd) ? x.rbd.join(', ') : (x.rbd || '');
+          const dirText = (x.director || '');
           const hay = [
-            x.actaNumber, x.establecimiento, x.asesorPrincipal, x.fecha, x.modalidad, x.capacidadBasal, x.cicloApoyo
+            x.actaNumber, x.establecimiento, x.asesorPrincipal, x.fecha, x.modalidad, x.capacidadBasal, x.cicloApoyo, rbdText, dirText
           ].map(v => (typeof v === 'string' ? v.toLowerCase() : (v?.toString?.().toLowerCase?.() || '')));
           return hay.some(s => s.includes(q));
         });
@@ -1061,97 +1397,129 @@
     function showDocsInfo(msg) { if (infoEl) infoEl.textContent = msg || ''; }
     function clearDocsInfo() { showDocsInfo(''); }
 
-    // Radios de alcance y función global de resuscripción
-    let scopeRadioMine = null, scopeRadioTeam = null;
-    let globalResubscribe = () => { };
+  // Radios de alcance y función global de resuscripción
+  let scopeRadioMine = null, scopeRadioTeam = null;
+  let globalResubscribe = () => { };
 
-    // Suscripción: solo “Mis documentos” (subcolección privada) para evitar bloqueos de permisos
+    // Suscripción: “Mis documentos” (subcolección privada users/{uid}/datosActas; fallback a datosRedes)
     function subscribeUserDocs(uid) {
-  const mySubRef = collection(db, 'users', uid, 'datosRedes');
+      const myRef = collection(db, 'users', uid, 'datosActas');
       let subDocs = [];
+      let altUnsub = null;
       const render = () => {
         allDocs = [...subDocs];
         allDocs.sort((a, b) => (b.createdAt?.seconds || 0) - (a.createdAt?.seconds || 0));
         applyFilters();
       };
-      const unsubSub = onSnapshot(mySubRef, (snap) => {
-  subDocs = snap.docs.map(d => ({ _id: d.id, _src: 'sub', _ownerUid: uid, _path: `users/${uid}/datosRedes/${d.id}`, ...d.data() }));
+      const unsub = onSnapshot(myRef, (snap) => {
+        subDocs = snap.docs.map(d => ({ _id: d.id, _src: 'sub', _col: 'datosActas', _ownerUid: uid, _path: `users/${uid}/datosActas/${d.id}`, ...d.data() }));
         clearDocsInfo();
         if (!subDocs.length) showDocsInfo('Aún no tienes documentos. Guarda uno nuevo.');
         render();
-      }, async (_err) => {
-        showDocsInfo('No se pudieron leer “Mis documentos”. Intentando una lectura puntual...');
-        try {
-          const s = await getDocs(mySubRef);
-          subDocs = s.docs.map(d => ({ _id: d.id, _src: 'sub', _ownerUid: uid, _path: `users/${uid}/datosRedes/${d.id}`, ...d.data() }));
-          clearDocsInfo();
-          if (!subDocs.length) showDocsInfo('Aún no tienes documentos.');
-          render();
-        } catch (e) {
-          showDocsInfo('No se pudieron leer “Mis documentos”. Revisa tu conexión o permisos.');
+      }, async (err) => {
+        const perm = err?.code === 'permission-denied' || /insufficient permissions/i.test(err?.message || '');
+        if (perm) {
+          // Fallback: carpeta alternativa privada
+          try {
+            const altRef = collection(db, 'users', uid, 'datosRedes');
+            altUnsub = onSnapshot(altRef, (snap) => {
+              subDocs = snap.docs.map(d => ({ _id: d.id, _src: 'sub', _col: 'datosRedes', _ownerUid: uid, _path: `users/${uid}/datosRedes/${d.id}`, ...d.data() }));
+              showDocsInfo('Usando Mis documentos (carpeta alternativa: datosRedes).');
+              render();
+            }, async () => {
+              try {
+                const s = await getDocs(altRef);
+                subDocs = s.docs.map(d => ({ _id: d.id, _src: 'sub', _col: 'datosRedes', _ownerUid: uid, _path: `users/${uid}/datosRedes/${d.id}`, ...d.data() }));
+                showDocsInfo('Usando Mis documentos (carpeta alternativa: datosRedes).');
+                render();
+              } catch {
+                // Fallback 3: filtrar tus documentos desde la colección global por ownerUid
+                try {
+                  const ownQ = query(collection(db, 'datosRedes'), where('ownerUid', '==', uid));
+                  const unsubOwn = onSnapshot(ownQ, (snap2) => {
+                    subDocs = snap2.docs.map(d => ({ _id: d.id, _src: 'global', _col: 'datosRedes', _ownerUid: d.data().ownerUid, _path: `datosRedes/${d.id}`, ...d.data() }));
+                    showDocsInfo('Mostrando tus documentos desde Equipo (filtro por propietario).');
+                    render();
+                  }, async () => {
+                    try {
+                      const s2 = await getDocs(ownQ);
+                      subDocs = s2.docs.map(d => ({ _id: d.id, _src: 'global', _col: 'datosRedes', _ownerUid: d.data().ownerUid, _path: `datosRedes/${d.id}`, ...d.data() }));
+                      showDocsInfo('Mostrando tus documentos desde Equipo (filtro por propietario).');
+                      render();
+                    } catch {
+                      showDocsInfo('No se pudieron leer Mis documentos (permisos en subcolecciones).');
+                    }
+                  });
+                  // reutilizar altUnsub para poder limpiar este snapshot si cambia el alcance
+                  altUnsub = () => { try { unsubOwn(); } catch {} };
+                } catch {
+                  showDocsInfo('No se pudieron leer Mis documentos (permisos en datosActas y datosRedes).');
+                }
+              }
+            });
+          } catch {
+            showDocsInfo('No se pudieron leer Mis documentos (permisos).');
+          }
+        } else {
+          showDocsInfo('No se pudieron leer “Mis documentos”. Intentando una lectura puntual...');
+          try {
+            const s = await getDocs(myRef);
+            subDocs = s.docs.map(d => ({ _id: d.id, _src: 'sub', _col: 'datosActas', _ownerUid: uid, _path: `users/${uid}/datosActas/${d.id}`, ...d.data() }));
+            clearDocsInfo();
+            if (!subDocs.length) showDocsInfo('Aún no tienes documentos.');
+            render();
+          } catch (e) {
+            showDocsInfo('No se pudieron leer “Mis documentos”. Verifica tu conexión y permisos.');
+          }
         }
       });
-      return () => { try { unsubSub(); } catch { } };
+      return () => { try { unsub(); } catch { } try { altUnsub && altUnsub(); } catch { } };
     }
 
-    // NUEVO: suscripción combinada: propios + compartidos por un usuario específico
-    function subscribeUserDocsWithShared(uid) {
-      const SHARED_OWNER_EMAIL = 'francisco.ramos@slepiquique.cl';
-  const myRef = query(collection(db, 'datosRedes'), where('ownerUid', '==', uid));
-  const sharedRef = query(collection(db, 'datosRedes'), where('ownerEmail', '==', SHARED_OWNER_EMAIL));
-      let myDocs = [];
-      let sharedDocs = [];
-      const mergeAndRender = () => {
-        const map = new Map();
-        [...myDocs, ...sharedDocs].forEach(doc => { map.set(doc._id, doc); });
-        allDocs = Array.from(map.values());
+    // Suscripción: “Equipo (todos)” (colección global datosRedes)
+    function subscribeTeamDocs() {
+      const teamRef = collection(db, 'datosRedes');
+      let teamDocs = [];
+      const render = () => {
+        allDocs = [...teamDocs];
         allDocs.sort((a, b) => (b.createdAt?.seconds || 0) - (a.createdAt?.seconds || 0));
         applyFilters();
       };
-      const unsubMy = onSnapshot(myRef, (snap) => {
-        myDocs = snap.docs.map(d => ({ _id: d.id, ...d.data() }));
-        mergeAndRender();
-      }, async (_err) => {
-        try { const s = await getDocs(myRef); myDocs = s.docs.map(d => ({ _id: d.id, ...d.data() })); mergeAndRender(); } catch { }
-      });
-      const unsubShared = onSnapshot(sharedRef, (snap) => {
-        sharedDocs = snap.docs.map(d => ({ _id: d.id, ...d.data() }));
-        mergeAndRender();
-      }, async (_err) => {
-        try { const s = await getDocs(sharedRef); sharedDocs = s.docs.map(d => ({ _id: d.id, ...d.data() })); mergeAndRender(); } catch { }
-      });
-      return () => { try { unsubMy(); } catch { } try { unsubShared(); } catch { } };
-    }
-    function subscribeAllDocs() {
-  const cRef = collection(db, 'datosRedes');
-      return onSnapshot(cRef, (snap) => {
-        allDocs = snap.docs.map(d => ({ _id: d.id, ...d.data() }));
-        allDocs.sort((a, b) => (b.createdAt?.seconds || 0) - (a.createdAt?.seconds || 0));
+      const unsub = onSnapshot(teamRef, (snap) => {
+        teamDocs = snap.docs.map(d => ({ _id: d.id, _src: 'global', _col: 'datosRedes', _path: `datosRedes/${d.id}`, ...d.data() }));
         clearDocsInfo();
-        applyFilters();
+        if (!teamDocs.length) showDocsInfo('No hay documentos de Equipo aún.');
+        render();
       }, async (err) => {
-        // Si es permiso-denegado, cambiar a "Mis documentos"
-        if (err?.code === 'permission-denied' && scopeRadioMine && scopeRadioTeam) {
-          scopeRadioMine.checked = true;
-          scopeRadioTeam.checked = false;
-          showDocsInfo('Sin permiso para ver “Equipo”. Cambiando a “Mis documentos”.');
-          try { globalResubscribe(); } catch { }
-          return () => { };
-        }
-        showDocsInfo('No se pudo leer “Equipo (todos)”. Intentando lectura puntual...');
-        try {
-          const s = await getDocs(cRef);
-          allDocs = s.docs.map(d => ({ _id: d.id, ...d.data() }));
-          clearDocsInfo();
-          applyFilters();
-        } catch (e) {
-          showDocsInfo('No se pudo leer “Equipo”. Revisa permisos o conexión.');
+        const perm = err?.code === 'permission-denied' || /insufficient permissions/i.test(err?.message || '');
+        if (perm) {
+          showDocsInfo('Sin permisos para ver Equipo (todos).');
+        } else {
+          showDocsInfo('No se pudieron leer documentos de Equipo. Intentando lectura puntual...');
+          try {
+            const s = await getDocs(teamRef);
+            teamDocs = s.docs.map(d => ({ _id: d.id, _src: 'global', _col: 'datosRedes', _path: `datosRedes/${d.id}`, ...d.data() }));
+            clearDocsInfo();
+            if (!teamDocs.length) showDocsInfo('No hay documentos de Equipo aún.');
+            render();
+          } catch (e) {
+            showDocsInfo('No se pudieron leer “Equipo (todos)”. Verifica permisos o conexión.');
+          }
         }
       });
+      return () => { try { unsub(); } catch { } };
     }
 
-    // Visibilidad fija: no hay radios ni cambios
-    function updateScopeVisibility() { }
+    // Actualizar visibilidad (radios y eventos)
+    function updateScopeVisibility() {
+      scopeRadioMine = document.getElementById('scopeMine');
+      scopeRadioTeam = document.getElementById('scopeTeam');
+      const onChange = () => { try { globalResubscribe(); } catch { } };
+      scopeRadioMine?.addEventListener('change', onChange);
+      scopeRadioTeam?.addEventListener('change', onChange);
+      // Valor por defecto: Mis documentos
+      if (scopeRadioMine) scopeRadioMine.checked = true;
+    }
 
     // NUEVO: restaurar onAuthStateChanged para cargar y suscribirse
     onAuthStateChanged(auth, async (user) => {
@@ -1165,7 +1533,7 @@
       await loadEstablecimientos();
       updateScopeVisibility();
 
-  document.getElementById('datosRedesForm').addEventListener('submit', async (e) => {
+      document.getElementById('datosRedesForm').addEventListener('submit', async (e) => {
         e.preventDefault();
         try {
           await saveForm(user);
@@ -1175,36 +1543,59 @@
         }
       });
 
-      // Suscripción fija: Mis documentos
+      // Suscripción según alcance (Mis | Equipo)
       let unsubDocs = null;
       function resub() {
         try { unsubDocs && unsubDocs(); } catch { }
-        unsubDocs = subscribeAllDocs();
+        if (scopeRadioTeam?.checked) {
+          unsubDocs = subscribeTeamDocs();
+        } else {
+          unsubDocs = subscribeUserDocs(user.uid);
+        }
       }
       globalResubscribe = resub;
       resub();
+  // Intentar sincronizar borradores offline al iniciar sesión
+  try { await trySyncOfflineQueue(user); } catch {}
       // Eventos de conectividad y botón Reconectar
       btnReconnect?.addEventListener('click', () => { showDocsInfo('Reconectando...'); resub(); });
+  btnReconnect?.addEventListener('click', async () => { await trySyncOfflineQueue(user); });
       window.addEventListener('online', () => { showDocsInfo('Conectado. Actualizando...'); resub(); });
+  window.addEventListener('online', async () => { await trySyncOfflineQueue(user); });
       window.addEventListener('offline', () => { showDocsInfo('Estás sin conexión (offline).'); });
       btnDiag?.addEventListener('click', async () => {
-        try {
-          showDocsInfo('Diagnóstico: probando conexión y permisos...');
-          // 1) Ping: intentar getDocs en colección global compartida
+        if (!currentUser) { showDocsInfo('No hay sesión. Inicia sesión nuevamente.'); return; }
+        if (scopeRadioTeam?.checked) {
+          showDocsInfo('Diagnóstico: probando acceso a Equipo (datosRedes)...');
           try {
-            const cref = collection(db, 'datosRedes');
-            await getDocs(cref);
+            await getDocs(collection(db, 'datosRedes'));
+            showDocsInfo('Diagnóstico OK: Acceso a Equipo (datosRedes).');
           } catch (e) {
-            console.error('Diag global:', e);
-            throw e;
+            const msg = (e && (e.code === 'permission-denied' || String(e.message||'').includes('permission'))) ? 'Permisos insuficientes para Equipo.' : 'Fallo de red o Firestore.';
+            showDocsInfo('Diagnóstico: ' + msg);
           }
-          showDocsInfo('Diagnóstico OK: Firestore responde para documentos compartidos.');
-        } catch (e) {
-          showDocsInfo('Diagnóstico: fallo general. Revisa conexión y sesión.');
+        } else {
+          showDocsInfo('Diagnóstico: probando acceso a Mis documentos (datosActas)...');
+          try {
+            const myRef = collection(db, 'users', currentUser.uid, 'datosActas');
+            await getDocs(myRef);
+            showDocsInfo('Diagnóstico OK: Acceso a Mis documentos (datosActas).');
+          } catch (e) {
+            console.error('Diag Mis documentos:', e);
+            try {
+              const altRef = collection(db, 'users', currentUser.uid, 'datosRedes');
+              await getDocs(altRef);
+              showDocsInfo('Diagnóstico OK: Acceso por carpeta alternativa (datosRedes).');
+            } catch (e2) {
+              console.error('Diag alternativa:', e2);
+              const msg = (e2 && (e2.code === 'permission-denied' || String(e2.message||'').includes('permission'))) ? 'Permisos insuficientes para Mis documentos.' : 'Fallo de red o Firestore.';
+              showDocsInfo('Diagnóstico: ' + msg);
+            }
+          }
         }
       });
 
-      // Deep-link: abrir documento por ID vía ?id= o ?doc= (modo opcional ?mode=edit|view)
+  // Deep-link: abrir documento por ID vía ?id= o ?doc= (modo opcional ?mode=edit|view)
       async function openDocFromQuery() {
         try {
           const qs = new URLSearchParams(location.search);
@@ -1221,35 +1612,43 @@
           if (!targetId) return; // sin ID, no hacemos nada
           const mode = (qs.get('mode') || 'view').toLowerCase();
           showDocsInfo('Abriendo documento…');
-          // 1) Intentar en colección global
+          // 1) Buscar en Equipo (global) primero
           try {
             const gref = doc(db, 'datosRedes', targetId);
             const gs = await getDoc(gref);
             if (gs.exists()) {
-              const d = { _id: targetId, _src: 'global', _ownerUid: gs.data().ownerUid || null, ...gs.data() };
-              // Forzar alcance Equipo para coherencia visual si no es admin, solo si tiene permiso de lectura
-              if (scopeRadioTeam && scopeRadioMine && scopeRadioTeam.checked === false) {
-                scopeRadioTeam.checked = true; scopeRadioMine.checked = false;
-                try { globalResubscribe(); } catch { }
-              }
+              const d = { _id: targetId, _src: 'global', _col: 'datosRedes', ...gs.data() };
+              if (scopeRadioMine && scopeRadioTeam) { scopeRadioTeam.checked = true; scopeRadioMine.checked = false; try { globalResubscribe(); } catch { } }
               clearDocsInfo();
               if (mode === 'edit') startEdit(d); else openViewModal(d);
               return;
             }
-          } catch (e) { /* puede ser permiso-denegado, seguimos a subcolección */ }
-          // 2) Intentar en subcolección del usuario actual
+          } catch { }
+          // 2) Si no está, buscar en Mis documentos del usuario actual (datosActas)
           try {
-            const sref = doc(db, 'users', currentUser.uid, 'datosRedes', targetId);
+            const sref = doc(db, 'users', currentUser.uid, 'datosActas', targetId);
             const ss = await getDoc(sref);
             if (ss.exists()) {
-              const d = { _id: targetId, _src: 'sub', _ownerUid: currentUser.uid, ...ss.data() };
+              const d = { _id: targetId, _src: 'sub', _ownerUid: currentUser.uid, _col: 'datosActas', ...ss.data() };
               if (scopeRadioMine && scopeRadioTeam) { scopeRadioMine.checked = true; scopeRadioTeam.checked = false; try { globalResubscribe(); } catch { } }
               clearDocsInfo();
               if (mode === 'edit') startEdit(d); else openViewModal(d);
               return;
             }
-          } catch (e) { /* ignorar y reportar */ }
-          showDocsInfo('No se encontró el documento o no tienes permisos para verlo.');
+          } catch { }
+          // 3) Fallback: Mis documentos alterno (datosRedes)
+          try {
+            const sref2 = doc(db, 'users', currentUser.uid, 'datosRedes', targetId);
+            const ss2 = await getDoc(sref2);
+            if (ss2.exists()) {
+              const d2 = { _id: targetId, _src: 'sub', _ownerUid: currentUser.uid, _col: 'datosRedes', ...ss2.data() };
+              if (scopeRadioMine && scopeRadioTeam) { scopeRadioMine.checked = true; scopeRadioTeam.checked = false; try { globalResubscribe(); } catch { } }
+              clearDocsInfo();
+              if (mode === 'edit') startEdit(d2); else openViewModal(d2);
+              return;
+            }
+          } catch {}
+          showDocsInfo('No se encontró el documento en Equipo ni en Mis documentos.');
         } catch { /* noop */ }
       }
       // Ejecutar después de la primera suscripción
@@ -1269,7 +1668,8 @@
         fecha: v('fecha'), // formato input date
         objetivoEstrategico: v('objetivoEstrategico').trim(),
         establecimiento: v('establecimiento'),
-        rbd: v('rbd'),
+        rbd: Array.from(document.getElementById('rbd')?.selectedOptions || []).map(o => o.value),
+        // Eliminado: directores (chips)
         director: v('director').trim(),
         asesorPrincipal: v('asesorPrincipal'),
         asesorSegundo: v('asesorSegundo'),
@@ -1303,6 +1703,8 @@
       openViewModal(data);
     });
 
+  // Sin botón auxiliar para objetivo de la visita en la vista de Redes (comportamiento normal)
+
     // Construye el contenido imprimible con todos los documentos
     function buildPrintableDoc(d) {
       const f = v => {
@@ -1333,7 +1735,7 @@
             <div class="print-meta-cell">
               <div>
                 <div style="font-size:1.15rem;font-weight:700;">
-                  ${f(d.establecimiento)} <small style="font-weight:400;opacity:.7;">(${f(d.rbd)})</small>
+                  ${f(d.establecimiento)} <small style="font-weight:400;opacity:.7;">(${rbdLabel(d.rbd)})</small>
                 </div>
                 <div class="print-meta">
                   ${f(d.actaNumber)} <br>
@@ -1375,6 +1777,7 @@
           <div class="print-section"><strong>Práctica Problemática:</strong><div style="white-space:pre-wrap;">${f(d.practicaProblematica)}</div></div>
           <div class="print-section"><strong>Actividades Realizadas:</strong><div style="white-space:pre-wrap;">${f(d.actividadesRealizadas)}</div></div>
           <div class="print-section"><strong>Acuerdos:</strong><div style="white-space:pre-wrap;">${f(d.acuerdos)}</div></div>
+          <div class="print-section"><strong>Director:</strong><div>${d.director || '—'}</div></div>
           <div class="print-section"><strong>Aspectos Positivos:</strong><div style="white-space:pre-wrap;">${f(d.aspectosPositivos)}</div></div>
           <div class="print-section"><strong>Áreas de Mejora:</strong><div style="white-space:pre-wrap;">${f(d.areasMejora)}</div></div>
         </div>
@@ -1393,7 +1796,7 @@
               <div>
                 <div style="font-size:1.05rem;font-weight:750;">Firmas y validación</div>
                 <div class="print-meta">
-                  ${f(d.actaNumber)} • <strong>${fmt(d.fecha || d.createdAt)}</strong> • ${f(d.establecimiento)} (${f(d.rbd)})
+                  ${f(d.actaNumber)} • <strong>${fmt(d.fecha || d.createdAt)}</strong> • ${f(d.establecimiento)} (${rbdLabel(d.rbd)})
                 </div>
               </div>
             </div>
