@@ -1273,7 +1273,7 @@
       // Prioridad: si coincide con CON PEL -> modo on; si coincide con SIN PEL -> modo off; si no coincide -> off
       btnPEL.dataset.mode = isConPEL ? 'on' : 'off';
       btnPEL.textContent = (isConPEL ? 'SIN PEL' : 'PEL');
-      btnPEL.title = (isConPEL ? 'Quitar PEL (poner SIN PEL)' : 'Insertar PEL (poner CON PEL)');
+      btnPEL.title = (isConPEL ? 'poner SIN PEL' : 'poner CON PEL');
       // Si no coincide con ninguno y está vacío, opcional: dejar SIN PEL por defecto
       if (!isConPEL && !isSinPEL && !val) {
         ta.value = sinPelText;
