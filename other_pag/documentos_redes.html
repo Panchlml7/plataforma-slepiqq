@@ -242,9 +242,15 @@
               </select>
             </div>
             <div class="full">
-              <label class="small" for="objetivoEstrategico">Objetivo Estratégico</label>
+              <div style="display:flex; align-items:center; justify-content:space-between; gap:.5rem;">
+                <label class="small" for="objetivoEstrategico">Objetivo Estratégico</label>
+                <button id="btnPEL" type="button" title="Insertar PEL"
+                        style="background:#000;color:#fff;border:1px solid #000;border-radius:9999px;padding:.25rem .6rem;font-size:.72rem;cursor:pointer; margin-bottom: 8px;">
+                  PEL
+                </button>
+              </div>
               <textarea id="objetivoEstrategico" name="objetivoEstrategico"
-                placeholder="Describe el objetivo estratégico...">Mejorar las capacidades de directores/as, docentes, educadores/as y asistentes de la educación, mediante la generación y ejecución de planes sistemáticos de capacitación, desarrollo y mejora continua, considerando la perspectiva de género en todo aquello que sea vinculante.</textarea>
+                placeholder="Describe el objetivo estratégico...">Mejorar los diversos niveles de aprendizaje en jardines, escuelas y liceos dependientes del SLEP, a través de una gestión pedagógica innovadora, pertinente y de calidad, considerando la perspectiva de género en todo aquello que sea vinculante.</textarea>
             </div>
 
           </div>
@@ -1701,6 +1707,46 @@
       if (!acta || !fecha || !est) { alert('Completa N° Acta, Fecha y Establecimiento para previsualizar.'); return; }
       const data = buildPreviewFromForm();
       openViewModal(data);
+    });
+
+    // Botón PEL (toggle fijo): alterna entre SIN PEL y CON PEL exactamente como se indicó
+    const btnPEL = document.getElementById('btnPEL');
+    const sinPelText = 'Mejorar las capacidades de directores/as, docentes, educadores/as y asistentes de la educación, mediante la generación y ejecución de planes sistemáticos de capacitación, desarrollo y mejora continua, considerando la perspectiva de género en todo aquello que sea vinculante.';
+    const conPelText = 'Mejorar los diversos niveles de aprendizaje en jardines, escuelas y liceos dependientes del SLEP, a través de una gestión pedagógica innovadora, pertinente y de calidad, considerando la perspectiva de género en todo aquello que sea vinculante';
+    (function initPELToggle() {
+      const ta = document.getElementById('objetivoEstrategico');
+      if (!btnPEL || !ta) return;
+      const val = (ta.value || '').trim();
+      const isConPEL = val === conPelText.trim();
+      const isSinPEL = val === sinPelText.trim();
+      btnPEL.dataset.mode = isConPEL ? 'on' : 'off';
+      btnPEL.textContent = (isConPEL ? 'SIN PEL' : 'PEL');
+      btnPEL.title = (isConPEL ? 'Quitar PEL (poner SIN PEL)' : 'Insertar PEL (poner CON PEL)');
+      if (!isConPEL && !isSinPEL && !val) {
+        ta.value = sinPelText;
+      }
+    })();
+
+    btnPEL?.addEventListener('click', (e) => {
+      e.preventDefault();
+      const ta = document.getElementById('objetivoEstrategico');
+      if (!ta) return;
+      const mode = btnPEL.dataset.mode || 'off';
+      if (mode === 'off') {
+        // Cambiar a CON PEL
+        ta.value = conPelText;
+        btnPEL.dataset.mode = 'on';
+        btnPEL.textContent = 'SIN PEL';
+        btnPEL.title = 'Quitar PEL (poner SIN PEL)';
+      } else {
+        // Cambiar a SIN PEL
+        ta.value = sinPelText;
+        btnPEL.dataset.mode = 'off';
+        btnPEL.textContent = 'PEL';
+        btnPEL.title = 'Insertar PEL (poner CON PEL)';
+      }
+      ta.focus();
+      try { ta.setSelectionRange(ta.value.length, ta.value.length); } catch {}
     });
 
   // Sin botón auxiliar para objetivo de la visita en la vista de Redes (comportamiento normal)
