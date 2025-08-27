@@ -142,6 +142,8 @@
       border: 1px solid #2b425f;
       letter-spacing: .4px;
     }
+  /* Username clickeable para ir a dashboard */
+  .top-nav .user-badge #navUserName { cursor: pointer; text-decoration: underline; text-underline-offset: 2px; }
 
     /* Variante para administradores */
     .top-nav .user-badge.admin {
@@ -403,7 +405,7 @@
     <a href="#habilitacion">Habilitación</a>
     <a id="adminLink" href="other_pag/tools/grant-admin.html" style="display:none;">Admin usuarios</a>
     <div class="user-badge">
-      <span id="navUserName">Usuario...</span>
+      <span id="navUserName" role="link" tabindex="0" title="Abrir Dashboard">Usuario...</span>
       <button id="logoutBtnPlat" class="btn logout-btn" type="button"
         style="padding:.4rem .65rem;font-size:.6rem;">Salir</button>
     </div>
@@ -479,6 +481,13 @@
     const authStateMsg = document.getElementById('authStateMsg');
     const logoutBtnPlat = document.getElementById('logoutBtnPlat');
     const navUserName = document.getElementById('navUserName');
+  // Click en nombre de usuario -> dashboard.html
+    function goDashboard(){
+      const url = 'other_pag/users/perfil_users.html';
+      try { location.href = url; } catch { location.assign(url); }
+    }
+  navUserName?.addEventListener('click', goDashboard);
+  navUserName?.addEventListener('keydown', (e)=>{ if(e.key==='Enter' || e.key===' '){ e.preventDefault(); goDashboard(); } });
 
     // Gracia: espera rehidratación de sesión antes de volver a index
     let redirectTimer = setTimeout(() => {

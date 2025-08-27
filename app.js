@@ -84,7 +84,11 @@ async function upsertUserProfile(user, opts = {}) {
       provider: (user.providerData && user.providerData[0]?.providerId) || 'password',
       lastLoginAt: serverTimestamp()
     };
-    if (opts.isNew) payload.profileCreatedAt = serverTimestamp();
+    if (opts.isNew) {
+      payload.profileCreatedAt = serverTimestamp();
+      // Establece rol base sólo al crear el perfil (las reglas impiden elevar rol desde cliente)
+      payload.role = 'user';
+    }
     await setDoc(doc(db, 'users', user.uid), payload, { merge: true });
   } catch (e) {
     console.warn('No se pudo guardar el perfil en Firestore:', e);

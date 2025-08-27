@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Perfil | SLEP IQUIQUE</title>
+  <link rel="stylesheet" href="../style.css"><!-- usa estilos comunes de other_pag -->
+  <style>
+    :root {
+      --bg1: #0b1323; --bg2: #0f1b2d; --border: #213555; --text: #e5e7eb; --muted: #94a3b8;
+      --accent: #2563eb; --shadow: 0 30px 60px -25px rgba(0,0,0,.45);
+    }
+    body { min-height: 100vh; margin: 0; color: var(--text);
+      background: radial-gradient(1200px 600px at 10% 0%, #12213a 0%, #0a1628 45%, #071221 100%),
+                  linear-gradient(180deg, var(--bg1), var(--bg2));
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      display: grid; grid-template-rows: auto 1fr auto; }
+    header { display: flex; align-items: center; gap: .8rem; padding: .85rem 1rem;
+      border-bottom: 1px solid #20314f; background: rgba(10, 22, 40, .7); backdrop-filter: blur(6px); }
+    header .brand { font-weight: 700; letter-spacing: .4px; }
+    header .spacer { flex: 1; }
+    header a.back { color: var(--text); text-decoration: none; font-size: .85rem; opacity: .9;
+      border: 1px solid #2a3c5a; border-radius: 10px; padding: .4rem .65rem; }
+    header a.back:hover { background: #14233d; }
+
+    main { display: grid; place-items: center; padding: 1.2rem; width: 100%; }
+    .dash-wrap { width: min(100%, 1100px); }
+
+    .hero { display: grid; grid-template-columns: 88px 1fr; gap: 1rem; align-items: center;
+      background: linear-gradient(145deg, #172843, #0f2036 60%);
+      border: 1px solid var(--border); border-radius: 16px; padding: 1rem 1.1rem; box-shadow: var(--shadow);
+      animation: fadeIn .45s ease; }
+    .avatar { width: 72px; height: 72px; border-radius: 50%; background: #0f1b2d; border: 1px solid #2a3d58; color: #9fb3d1;
+      display: grid; place-items: center; font-size: 1.35rem; font-weight: 700; text-transform: uppercase; }
+    .hero h1 { margin: 0; font-size: 1.25rem; letter-spacing: .4px; }
+    .hero p { margin: .2rem 0 0; font-size: .85rem; color: var(--muted); }
+
+    .grid { display: grid; gap: 1rem; margin-top: 1.2rem; }
+    @media(min-width: 900px){ .grid { grid-template-columns: 1.3fr .7fr; } }
+
+    .card { background: linear-gradient(145deg, #162640, #0e1e33 60%);
+      border: 1px solid var(--border); border-radius: 16px; padding: 1rem 1.1rem; box-shadow: var(--shadow); }
+    .card h3 { margin: .2rem 0 .6rem; font-size: 1rem; letter-spacing: .4px; }
+    .row { display: grid; grid-template-columns: 160px 1fr; gap: .6rem; padding: .35rem 0; }
+    .row .k { color: var(--muted); font-size: .85rem; }
+    .row .v { font-size: .92rem; }
+  .row .v a { color: #93c5fd; text-decoration: none; }
+  .row .v a:hover { text-decoration: underline; }
+  .muted { color: var(--muted); font-size: .85rem; }
+
+    .actions { display: flex; flex-wrap: wrap; gap: .6rem; margin-top: .8rem; }
+    .btn { appearance: none; border: 1px solid #2a3d58; color: #e5e7eb; background: #152744;
+      padding: .55rem .85rem; border-radius: 10px; cursor: pointer; font-weight: 600; text-decoration: none; }
+    .btn:hover { background: #163055; }
+    .btn.primary { background: linear-gradient(180deg, #2563eb, #1d4ed8); border-color: transparent; }
+    .btn.primary:hover { filter: brightness(.98); }
+    .pill { font-size: .78rem; border: 1px solid #2a3d58; border-radius: 999px; padding: .25rem .6rem; }
+
+    footer { text-align: center; padding: 1.2rem 0 1.6rem; font-size: .75rem; opacity: .7; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: translateY(0); } }
+
+    /* Form contraseña */
+    .pw-section { margin-top: 1rem; border-top: 1px dashed #2a3d58; padding-top: .8rem; }
+    .pw-grid { display: grid; gap: .6rem; }
+    @media(min-width: 640px){ .pw-grid { grid-template-columns: 1fr 1fr; } }
+    .pw-field { display: grid; gap: .3rem; }
+    .pw-field label { font-size: .85rem; color: var(--muted); }
+    .pw-field input { background: #0f1b2d; border: 1px solid #2a3d58; color: var(--text);
+      border-radius: 10px; padding: .55rem .65rem; }
+    .pw-actions { display: flex; gap: .6rem; margin-top: .4rem; }
+  /* Strength meter */
+  .pw-strength { margin-top: .2rem; }
+  .pw-meter { height: 8px; background: #1e293b; border: 1px solid #2a3d58; border-radius: 999px; overflow: hidden; }
+  .pw-meter > span { display: block; height: 100%; width: 0%; background: #ef4444; transition: width .25s ease, background-color .25s ease; }
+  .pw-strength-text { font-size: .8rem; color: var(--muted); margin-top: .25rem; }
+
+  /* Modal editar perfil */
+  .modal-backdrop { position: fixed; inset: 0; background: rgba(0,0,0,.5); display: none; align-items: center; justify-content: center; z-index: 50; }
+  .modal-backdrop.show { display: flex; }
+  .modal { width: min(95vw, 520px); background: linear-gradient(145deg, #162640, #0e1e33 60%); border: 1px solid var(--border); border-radius: 16px; padding: 1rem 1.1rem; box-shadow: var(--shadow); }
+  .modal h3 { margin: .2rem 0 .6rem; font-size: 1rem; letter-spacing: .4px; }
+  .field { display: grid; gap: .35rem; margin-bottom: .6rem; }
+  .field label { font-size: .85rem; color: var(--muted); }
+  .field input { background: #0f1b2d; border: 1px solid #2a3d58; color: var(--text); border-radius: 10px; padding: .55rem .65rem; }
+  .modal-actions { display: flex; justify-content: flex-end; gap: .6rem; margin-top: .4rem; }
+  </style>
+</head>
+<body>
+  <header>
+    <span class="brand">SLEPIQQ</span>
+    <span class="spacer"></span>
+    <a class="back" href="../../plataforma.html" title="Volver a la plataforma">← Volver</a>
+  </header>
+
+  <main>
+    <div class="dash-wrap">
+      <section class="hero">
+        <div class="avatar" id="avatar">U</div>
+        <div>
+          <h1 id="userName">Bienvenido a tu perfil</h1>
+          <p id="userEmail">Actualiza tu información y accede a accesos rápidos.</p>
+        </div>
+      </section>
+
+      <div class="grid">
+        <section class="card">
+          <h3>Información de usuario</h3>
+          <div class="row"><div class="k">Nombre</div><div class="v" id="infoName">—</div></div>
+          <div class="row"><div class="k">Correo</div><div class="v" id="infoEmail">—</div></div>
+          <div class="row"><div class="k">Rol</div><div class="v" id="infoRole"><span class="pill">user</span></div></div>
+          <div class="actions">
+            <button class="btn primary" type="button" id="editProfile">Editar perfil</button>
+            <button class="btn" type="button" id="logout">Cerrar sesión</button>
+          </div>
+
+          <div class="pw-section" id="pwSection">
+            <h3 style="margin-top:.2rem;">Cambiar contraseña</h3>
+            <div id="pwProviderMsg" class="muted" style="margin:.2rem 0 .4rem;"></div>
+            <div class="pw-grid">
+              <div class="pw-field">
+                <label for="pwNew">Nueva contraseña</label>
+                <input type="password" id="pwNew" autocomplete="new-password" placeholder="Mínimo 8, mayús, minús, número y símbolo" />
+                <div class="pw-strength" id="pwStrength">
+                  <div class="pw-meter"><span id="pwMeterBar"></span></div>
+                  <div class="pw-strength-text" id="pwStrengthText">Fortaleza: —</div>
+                </div>
+              </div>
+              <div class="pw-field">
+                <label for="pwConfirm">Confirmar nueva</label>
+                <input type="password" id="pwConfirm" autocomplete="new-password" placeholder="Repite la nueva contraseña" />
+              </div>
+            </div>
+            <div class="muted" style="margin-top:.2rem;">Reglas: mínimo 8 caracteres, incluir mayúscula, minúscula, número y símbolo.</div>
+            <div class="pw-actions">
+              <button class="btn primary" type="button" id="savePassword">Guardar contraseña</button>
+              <button class="btn" type="button" id="clearPassword">Limpiar</button>
+            </div>
+            <div id="pwChangeMsg" class="muted" aria-live="polite" style="margin-top:.4rem;"></div>
+          </div>
+        </section>
+
+        <section class="card">
+          <h3>Accesos rápidos</h3>
+          <div class="actions">
+            <a class="btn" href="../documentos.html">Acta Visita</a>
+            <a class="btn" href="../documentos_redes.html">Acta Redes</a>
+            <a class="btn" href="../asistencia.html">Asistencia</a>
+            <a class="btn" href="../establecimiento.html">Establecimiento</a>
+          </div>
+        </section>
+      </div>
+    </div>
+  </main>
+
+  <footer>&copy; SLEP IQUIQUE</footer>
+
+  <!-- Modal Editar Perfil -->
+  <div id="editModal" class="modal-backdrop" role="dialog" aria-modal="true" aria-labelledby="editTitle">
+    <div class="modal">
+      <h3 id="editTitle">Editar perfil</h3>
+      <div class="field">
+        <label for="editName">Nombre</label>
+        <input type="text" id="editName" maxlength="120" placeholder="Tu nombre" />
+      </div>
+      <div class="field">
+        <label for="editEst">Establecimiento</label>
+        <input type="text" id="editEst" maxlength="160" placeholder="Ej: Liceo ..." />
+      </div>
+      <div class="field">
+        <label for="editEmail">Correo (visual)</label>
+        <input type="email" id="editEmail" maxlength="160" placeholder="usuario@dominio" />
+        <span class="muted">Nota: esto no cambia tu correo de inicio de sesión.</span>
+      </div>
+      <div class="modal-actions">
+        <button class="btn" type="button" id="cancelEdit">Cancelar</button>
+        <button class="btn primary" type="button" id="saveEdit">Guardar</button>
+      </div>
+      <div id="editMsg" class="muted" aria-live="polite" style="margin-top:.4rem;"></div>
+    </div>
+  </div>
+
+  <script type="module">
+    // Rellena datos desde Firebase si hay sesión
+    import { initializeApp, getApps } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js';
+  import { getAuth, onAuthStateChanged, signOut, updatePassword } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js';
+  import { getFirestore, doc, getDoc, setDoc, serverTimestamp } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js';
+
+    const firebaseConfig = window.firebaseConfig || {
+      apiKey: "AIzaSyDzUGdJT-eyYjKtej63iThVLgvTHVzvxvA",
+      authDomain: "ia-slep-iqq.firebaseapp.com",
+      projectId: "ia-slep-iqq",
+      storageBucket: "ia-slep-iqq.appspot.com",
+      messagingSenderId: "528895424744",
+      appId: "1:528895424744:web:7144f5e5db1bce5ffb315d"
+    };
+    const app = getApps().length ? getApps()[0] : initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+
+    const $ = (s)=>document.querySelector(s);
+    const nameEl = $('#userName');
+    const emailEl = $('#userEmail');
+    const avatarEl = $('#avatar');
+    const infoName = $('#infoName');
+    const infoEmail = $('#infoEmail');
+    const infoRole = $('#infoRole');
+  const btnLogout = $('#logout');
+  const btnEdit = $('#editProfile');
+  const editModal = $('#editModal');
+  const editName = $('#editName');
+  const editEst = $('#editEst');
+  const editEmail = $('#editEmail');
+  const btnCancelEdit = $('#cancelEdit');
+  const btnSaveEdit = $('#saveEdit');
+  const editMsg = $('#editMsg');
+  let CURRENT_UID = null;
+  const pwSection = $('#pwSection');
+  const pwProviderMsg = $('#pwProviderMsg');
+  const pwNew = $('#pwNew');
+  const pwConfirm = $('#pwConfirm');
+  const btnSavePw = $('#savePassword');
+  const btnClearPw = $('#clearPassword');
+  const pwChangeMsg = $('#pwChangeMsg');
+  const pwStrength = $('#pwStrength');
+  const pwMeterBar = $('#pwMeterBar');
+  const pwStrengthText = $('#pwStrengthText');
+
+    function setInitials(target, name, email){
+      const base = (name || email || 'U').toString().trim();
+      const parts = base.split(/\s+/).filter(Boolean);
+      const initials = parts.length >= 2 ? (parts[0][0] + parts[1][0]) : base[0];
+      target.textContent = (initials || 'U').toUpperCase();
+    }
+
+  async function loadProfile(uid, fallbackEmail){
+      try {
+        const snap = await getDoc(doc(db, 'users', uid));
+        const data = snap.exists() ? snap.data() : {};
+        const name = data.name || fallbackEmail || uid;
+  const email = data.email || fallbackEmail || '—';
+        const role = (data.role || 'user');
+        nameEl.textContent = name;
+  emailEl.innerHTML = email && email !== '—' ? `<a href="mailto:${email}">${email}</a>` : '—';
+        infoName.textContent = name;
+  infoEmail.innerHTML = email && email !== '—' ? `<a href="mailto:${email}">${email}</a>` : '—';
+        infoRole.innerHTML = `<span class="pill">${role}</span>`;
+        setInitials(avatarEl, name, email);
+    // precarga modal
+    editName.value = data.name || '';
+    editEst.value = data.establishment || '';
+    editEmail.value = data.email || fallbackEmail || '';
+      } catch (e) { console.warn('No se pudo leer el perfil:', e); }
+    }
+
+    onAuthStateChanged(auth, (user)=>{
+      if (!user) return; // opcional: redirigir a login si no hay sesión
+      CURRENT_UID = user.uid;
+      loadProfile(user.uid, user.email);
+      const providers = user.providerData?.map(p=>p.providerId) || [];
+      const isEmailPwd = providers.includes('password') || user.providerId === 'password';
+      if (!isEmailPwd) {
+        pwProviderMsg.textContent = 'Tu cuenta usa un proveedor externo (por ejemplo Google). La contraseña se gestiona en ese proveedor.';
+        pwSection.querySelectorAll('input,button').forEach(el=>{ if (el.id!=='clearPassword') el.disabled = true; });
+      } else {
+        pwProviderMsg.textContent = 'Puedes cambiar tu contraseña aquí. Si se te solicita, vuelve a iniciar sesión.';
+      }
+    });
+
+    btnLogout?.addEventListener('click', async ()=>{
+      try { await signOut(auth); location.replace('../../index.html'); } catch {}
+    });
+
+    // Modal editar
+    function openEdit(){ editMsg.textContent=''; editModal.classList.add('show'); }
+    function closeEdit(){ editModal.classList.remove('show'); }
+    btnEdit?.addEventListener('click', openEdit);
+    btnCancelEdit?.addEventListener('click', closeEdit);
+    editModal?.addEventListener('click', (e)=>{ if (e.target === editModal) closeEdit(); });
+
+    btnSaveEdit?.addEventListener('click', async ()=>{
+      if (!CURRENT_UID) return;
+      const payload = {
+        name: editName.value.trim() || null,
+        establishment: editEst.value.trim() || null,
+        email: editEmail.value.trim() || null,
+        updatedAt: serverTimestamp()
+      };
+      editMsg.textContent = 'Guardando…';
+      try {
+        await setDoc(doc(db, 'users', CURRENT_UID), payload, { merge: true });
+        editMsg.textContent = 'Guardado.';
+        // refresca UI visible
+        await loadProfile(CURRENT_UID, auth.currentUser?.email || '');
+        setTimeout(closeEdit, 400);
+      } catch (e) {
+        editMsg.textContent = 'No se pudo guardar.';
+      }
+    });
+
+    function validateNewPassword(pw){
+      if (typeof pw !== 'string') return false;
+      // 8+ chars, at least one lowercase, one uppercase, one digit, one symbol
+      const re = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^\w\s]).{8,}$/;
+      return re.test(pw);
+    }
+
+    function scorePassword(pw){
+      if (!pw) return 0;
+      let score = 0;
+      // longitud
+      if (pw.length >= 8) score += 1;
+      if (pw.length >= 12) score += 1;
+      // clases de caracteres
+      if (/[a-z]/.test(pw)) score += 1;
+      if (/[A-Z]/.test(pw)) score += 1;
+      if (/\d/.test(pw)) score += 1;
+      if (/[^\w\s]/.test(pw)) score += 1;
+      // bonus por no repetir mucho
+      if (!/(.)\1{2,}/.test(pw)) score += 1;
+      // max 6
+      return Math.min(score, 6);
+    }
+
+    function updateStrengthUI(pw){
+      const s = scorePassword(pw);
+      const pct = (s/6)*100;
+      pwMeterBar.style.width = pct + '%';
+      let label = 'Muy débil';
+      let color = '#ef4444'; // red-500
+      if (s >= 2){ label = 'Débil'; color = '#f97316'; } // orange-500
+      if (s >= 3){ label = 'Media'; color = '#eab308'; } // yellow-500
+      if (s >= 4){ label = 'Fuerte'; color = '#22c55e'; } // green-500
+      if (s >= 5){ label = 'Muy fuerte'; color = '#16a34a'; }
+      pwMeterBar.style.backgroundColor = color;
+      pwStrengthText.textContent = 'Fortaleza: ' + label;
+    }
+
+    pwNew?.addEventListener('input', ()=>{
+      updateStrengthUI(pwNew.value);
+    });
+
+    btnSavePw?.addEventListener('click', async ()=>{
+      pwChangeMsg.textContent = '';
+      const user = auth.currentUser;
+      if (!user) { pwChangeMsg.textContent = 'No hay sesión activa.'; return; }
+      const next = pwNew.value.trim();
+      const confirm = pwConfirm.value.trim();
+      if (!next || !confirm) { pwChangeMsg.textContent = 'Completa todos los campos.'; return; }
+      if (next !== confirm) { pwChangeMsg.textContent = 'La nueva contraseña y su confirmación no coinciden.'; return; }
+  if (!validateNewPassword(next)) { pwChangeMsg.textContent = 'La nueva contraseña debe tener mínimo 8 caracteres e incluir mayúscula, minúscula, número y símbolo.'; return; }
+      try {
+        await updatePassword(user, next);
+        pwChangeMsg.textContent = 'Contraseña actualizada correctamente.';
+        pwNew.value = pwConfirm.value = '';
+      } catch (e) {
+        const map = {
+          'auth/weak-password': 'La nueva contraseña es muy débil.',
+          'auth/too-many-requests': 'Demasiados intentos. Intenta más tarde.',
+          'auth/requires-recent-login': 'Por seguridad, vuelve a iniciar sesión e intenta de nuevo.'
+        };
+        pwChangeMsg.textContent = map[e?.code] || 'No se pudo cambiar la contraseña.';
+      }
+    });
+
+    btnClearPw?.addEventListener('click', ()=>{
+      pwNew.value = pwConfirm.value = '';
+      pwChangeMsg.textContent = '';
+    });
+  </script>
+</body>
+</html>

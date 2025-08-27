@@ -137,7 +137,7 @@
       }
     }
 
-    /* Altura específica para Objetivo Estratégico */
+    /* Altura específica para Objetivo Estratégico (igual que Documentos) */
     #datosRedesForm #objetivoEstrategico {
       height: 85px !important;
     }
@@ -162,8 +162,8 @@
     }
     .print-sign-image {
       display: block;
-  max-height: 95px;
-  max-width: 90%;
+      max-height: 100px; /* igual que Documentos */
+      max-width: 95%;
       object-fit: contain;
       margin: 0 auto 8px;
     }
@@ -176,6 +176,21 @@
     }
     .print-sign-label {
       text-align: center;
+    }
+
+    /* Impresión: lista de RBD seleccionados */
+    .print-rbd-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px 8px;
+      margin-top: 4px;
+    }
+    .print-rbd-pill {
+      border: 1px solid #111;
+      border-radius: 9999px;
+      padding: 2px 8px;
+      background: #fff;
+      font-size: .9rem;
     }
   </style>
 </head>
@@ -280,6 +295,10 @@
             <div class="full">
               <div style="display:flex; align-items:center; justify-content:space-between; gap:.5rem;">
                 <label class="small" for="objetivoEstrategico">Objetivo Estratégico</label>
+                <button id="btnPELRedes" type="button" title="Insertar PEL"
+                        style="background:#000;color:#fff;border:1px solid #000;border-radius:9999px;padding:.25rem .6rem;font-size:.72rem;cursor:pointer; margin-bottom: 8px;">
+                  PEL
+                </button>
               </div>
               <textarea id="objetivoEstrategico" name="objetivoEstrategico"
                 placeholder="Describe el objetivo estratégico...">Mejorar los diversos niveles de aprendizaje en jardines, escuelas y liceos dependientes del SLEP, a través de una gestión pedagógica innovadora, pertinente y de calidad, considerando la perspectiva de género en todo aquello que sea vinculante.</textarea>
@@ -1832,7 +1851,44 @@
       openViewModal(data);
     });
 
-    // Sin botón PEL en la vista de Redes
+    // Botón PEL (toggle fijo) para Redes: alterna entre SIN PEL y CON PEL
+    const btnPELRedes = document.getElementById('btnPELRedes');
+    const sinPelTextR = 'Mejorar las capacidades de directores/as, docentes, educadores/as y asistentes de la educación, mediante la generación y ejecución de planes sistemáticos de capacitación, desarrollo y mejora continua, considerando la perspectiva de género en todo aquello que sea vinculante.';
+    const conPelTextR = 'Mejorar los diversos niveles de aprendizaje en jardines, escuelas y liceos dependientes del SLEP, a través de una gestión pedagógica innovadora, pertinente y de calidad, considerando la perspectiva de género en todo aquello que sea vinculante';
+    (function initPELToggleRedes() {
+      const ta = document.getElementById('objetivoEstrategico');
+      if (!btnPELRedes || !ta) return;
+      const val = (ta.value || '').trim();
+      const isConPEL = val === conPelTextR.trim();
+      const isSinPEL = val === sinPelTextR.trim();
+      btnPELRedes.dataset.mode = isConPEL ? 'on' : 'off';
+      btnPELRedes.textContent = (isConPEL ? 'SIN PEL' : 'PEL');
+      btnPELRedes.title = (isConPEL ? 'poner SIN PEL' : 'poner CON PEL');
+      if (!isConPEL && !isSinPEL && !val) {
+        ta.value = sinPelTextR;
+      }
+    })();
+    btnPELRedes?.addEventListener('click', (e) => {
+      e.preventDefault();
+      const ta = document.getElementById('objetivoEstrategico');
+      if (!ta) return;
+      const mode = btnPELRedes.dataset.mode || 'off';
+      if (mode === 'off') {
+        // Cambiar a CON PEL
+        ta.value = conPelTextR;
+        btnPELRedes.dataset.mode = 'on';
+        btnPELRedes.textContent = 'SIN PEL';
+        btnPELRedes.title = 'poner SIN PEL';
+      } else {
+        // Cambiar a SIN PEL
+        ta.value = sinPelTextR;
+        btnPELRedes.dataset.mode = 'off';
+        btnPELRedes.textContent = 'PEL';
+        btnPELRedes.title = 'poner CON PEL';
+      }
+      ta.dispatchEvent(new Event('input', { bubbles: true }));
+      ta.dispatchEvent(new Event('change', { bubbles: true }));
+    });
 
     // Construye el contenido imprimible con todos los documentos
     function buildPrintableDoc(d) {
@@ -1863,8 +1919,12 @@
             </div>
             <div class="print-meta-cell">
               <div>
-                <div style="font-size:1.15rem;font-weight:700;">
-                  ${f(d.establecimiento)} <small style="font-weight:400;opacity:.7;">(${rbdLabel(d.rbd)})</small>
+                <div style="font-size:1.15rem;font-weight:700;">${f(d.establecimiento)}</div>
+                <div class="print-meta" style="margin-top:2px;">
+                  ${(() => { const arr = Array.from(new Set((Array.isArray(d.rbd)? d.rbd : (d.rbd? [d.rbd] : [])).filter(Boolean))); return `RBD seleccionados (${arr.length||0}):`; })()}
+                </div>
+                <div class="print-rbd-grid">
+                  ${Array.from(new Set((Array.isArray(d.rbd)? d.rbd : (d.rbd? [d.rbd] : [])).filter(Boolean))).map(x => `<span class=\"print-rbd-pill\">${x}</span>`).join('') || '<span class="print-rbd-pill">—</span>'}
                 </div>
                 <div class="print-meta">
                   ${f(d.actaNumber)} <br>
@@ -1925,7 +1985,13 @@
               <div>
                 <div style="font-size:1.05rem;font-weight:750;">Firmas y validación</div>
                 <div class="print-meta">
-                  ${f(d.actaNumber)} • <strong>${fmt(d.fecha || d.createdAt)}</strong> • ${f(d.establecimiento)} (${rbdLabel(d.rbd)})
+                  ${f(d.actaNumber)} • <strong>${fmt(d.fecha || d.createdAt)}</strong> • ${f(d.establecimiento)}
+                </div>
+                <div class="print-meta" style="margin-top:2px;">
+                  ${(() => { const arr = Array.from(new Set((Array.isArray(d.rbd)? d.rbd : (d.rbd? [d.rbd] : [])).filter(Boolean))); return `RBD seleccionados (${arr.length||0}):`; })()}
+                </div>
+                <div class="print-rbd-grid">
+                  ${Array.from(new Set((Array.isArray(d.rbd)? d.rbd : (d.rbd? [d.rbd] : [])).filter(Boolean))).map(x => `<span class=\"print-rbd-pill\">${x}</span>`).join('') || '<span class="print-rbd-pill">—</span>'}
                 </div>
               </div>
             </div>

@@ -189,28 +189,48 @@
     modal?.addEventListener('click', (e)=>{ if (e.target.dataset.close) closeModal(); });
 
     btnSend?.addEventListener('click', async ()=>{
-      const email = (emailInput.value || '').trim();
+      const email = (emailInput.value || '').trim().toLowerCase();
       if (!email) { showMsg('Ingresa tu correo.', 'warn'); emailInput.focus(); return; }
       btnSend.classList.add('is-wait');
       showMsg('Enviando correo…');
 
+      const needsDomainHint = (code) => (
+        code === 'auth/invalid-continue-uri' ||
+        code === 'auth/unauthorized-domain' ||
+        code === 'auth/invalid-dynamic-link-domain'
+      );
+
       try {
-        // URL de continuación opcional (vuelve al login después de completar el enlace)
+        // Intento 1: con continue URL (útil para volver al login tras cambio)
         const actionSettings = { url: location.origin + '/index.html', handleCodeInApp: false };
         await sendPasswordResetEmail(auth, email, actionSettings);
         showMsg('Te enviamos un correo para restablecer tu contraseña. Revisa tu bandeja (y spam).', 'ok');
         setTimeout(closeModal, 3000);
-      } catch (e) {
-        // Mensajes amigables por código
+      } catch (e1) {
+        const code1 = (e1.code || '').toLowerCase();
+        console.warn('Reset password error (con URL):', e1);
+        if (needsDomainHint(code1)) {
+          try {
+            // Intento 2: sin continue URL (evita errores de dominio/URI no autorizados)
+            await sendPasswordResetEmail(auth, email);
+            showMsg('Te enviamos un correo para restablecer tu contraseña. Revisa tu bandeja (y spam).', 'ok');
+            setTimeout(closeModal, 3000);
+            return;
+          } catch (e2) {
+            const code2 = (e2.code || '').toLowerCase();
+            console.warn('Reset password error (sin URL):', e2);
+            showMsg('No se pudo enviar el correo. Verifica dominios autorizados en Firebase (Authentication > Settings).', 'warn');
+            return;
+          }
+        }
+        // Otros errores comunes
         const map = {
           'auth/invalid-email': 'Correo no válido.',
           'auth/user-not-found': 'No existe una cuenta con ese correo.',
           'auth/too-many-requests': 'Demasiados intentos. Inténtalo más tarde.',
           'auth/network-request-failed': 'Problema de red. Verifica tu conexión.',
         };
-        const code = (e.code || '').toLowerCase();
-        showMsg(map[code] || 'No se pudo enviar el correo. Inténtalo de nuevo.', 'warn');
-        console.warn('Reset password error:', e);
+        showMsg(map[code1] || 'No se pudo enviar el correo. Inténtalo de nuevo.', 'warn');
       } finally {
         btnSend.classList.remove('is-wait');
       }
